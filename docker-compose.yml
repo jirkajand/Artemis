@@ -1,0 +1,23 @@
+services:
+  user-management-service:
+    build:
+      context: .
+      dockerfile: usermanagement/Dockerfile
+    container_name: user-management-service
+    ports:
+      - "${USER_MANAGEMENT_PORT}:${USER_MANAGEMENT_PORT}"
+    environment:
+      - SERVER_PORT=${USER_MANAGEMENT_PORT}
+
+  gateway:
+    image: nginx:alpine
+    container_name: api-gateway
+    command: /bin/sh -c "envsubst '$$USER_MANAGEMENT_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    volumes:
+      - ./devops/nginx.conf:/etc/nginx/nginx.conf.template:ro
+    environment:
+      - USER_MANAGEMENT_PORT=${USER_MANAGEMENT_PORT}
+    ports:
+      - "${GATEWAY_PORT}:80"
+    depends_on:
+      - user-management-service

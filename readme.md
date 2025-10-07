@@ -1,0 +1,44 @@
+## Open Api Artemis
+There is one file with OpenAPI specification for all microservices: `openapi.yaml`.
+It is used to generate API documentation and client SDKs.
+
+### Backend Code Generation
+For backend there is need to use the following command to generate models and API interfaces:
+```bash
+mvn clean compile
+```
+This will generate code for each microservice based on the `openapi.yaml` file and the tag of each api specification.
+
+- User Management Service - tag: `UserManagement`
+
+### Frontend Code Generation
+
+**TODO**
+
+## Backend Development
+
+### Rerun docker compose
+
+Restart for docker compose to run new BE builds
+
+```bash
+# stop current build
+docker compose down
+
+# setup new build
+docker compose up --build -d
+```
+
+### How to add new microservice
+
+1. Right click on the Artemis project and create create "new module" (Spring Boot) for your microservice.
+   1. Setup the new module with dependencies, check existing microservices for reference.
+   2. Make sure to set the port for your microservice in `application.properties` file.
+   3. Make sure to set correct the openapi generator plugin in `pom.xml` file.
+2. Add your microservice code and a `Dockerfile` in that folder.
+3. Update the `docker-compose.yml` file to include your new microservice.
+   1. Update also command for `nginx` service to wait for new microservice to be ready.
+   2. Update also command for replace variables in `nginx.conf` file.
+4. Update the `nginx.conf` file to route requests to your new microservice.
+5. Update the `.env` file with new microservice port and other necessary environment variables.
+6. Restart the Docker Compose setup using the commands above.

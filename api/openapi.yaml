@@ -1,0 +1,21 @@
+openapi: 3.0.3
+info:
+  title: Artemis API
+  version: 0.0.1
+  description: Artemis API
+servers:
+    - url: /api
+paths:
+  /health:
+    get:
+      tags: [UserManagement]
+      summary: healthCheck
+      description: healthCheck endpoint to verify if the API is running
+      operationId: getHealthCheck
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+                schema:
+                    $ref: './api-components.yaml#/components/schemas/HealthCheckResponse'
