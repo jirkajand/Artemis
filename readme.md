@@ -15,6 +15,16 @@ This will generate code for each microservice based on the `openapi.yaml` file a
 
 **TODO**
 
+### API Documentation
+
+
+Url for Health Check is:
+```
+http://localhost:8080/user-management/api/health
+```
+
+The api should be in format `localhost:${GATEWAY_PORT}/{microservice-name}/api/...`
+
 ## Backend Development
 
 ### Rerun docker compose
