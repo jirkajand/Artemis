@@ -198,9 +198,9 @@ public interface {{classname}} {
         }{{/hasAuthMethods}}{{#externalDocs}},
         externalDocs = @ExternalDocumentation(description = "{{externalDocs.description}}", url = "{{externalDocs.url}}"){{/externalDocs}}
     )
-    {{#vendorExtensions.x-security-role}}
-    @PreAuthorize("hasRole('{{vendorExtensions.x-security-role}}')")
-    {{/vendorExtensions.x-security-role}}
+    {{#vendorExtensions.x-security-roles.0}}
+    @PreAuthorize("hasAnyRole({{#vendorExtensions.x-security-roles}}'{{.}}'{{^-last}}, {{/-last}}{{/vendorExtensions.x-security-roles}})")
+    {{/vendorExtensions.x-security-roles.0}}
     {{/swagger2AnnotationLibrary}}
     {{#swagger1AnnotationLibrary}}
     @ApiOperation(

@@ -17,7 +17,7 @@ import java.util.Map;
 
 
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @Configuration
 public class SecurityConfig {
 
