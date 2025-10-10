@@ -43,8 +43,11 @@ public class SecurityConfig {
 
             Map<String, Object> realmAccess = jwt.getClaim("realm_access");
             if (realmAccess != null && realmAccess.get("roles") instanceof Collection<?> roles) {
-                roles.forEach(role ->
-                        authorities.add(new SimpleGrantedAuthority("ROLE_" + role))
+                roles.forEach(role -> {
+                            if (role instanceof String roleStr) {
+                                authorities.add(new SimpleGrantedAuthority("ROLE_" + roleStr));
+                            }
+                        }
                 );
             }
 
@@ -52,8 +55,11 @@ public class SecurityConfig {
             if (resourceAccess != null) {
                 resourceAccess.forEach((client, access) -> {
                     if (access instanceof Map<?, ?> accessMap && accessMap.get("roles") instanceof Collection<?> clientRoles) {
-                        clientRoles.forEach(role ->
-                                authorities.add(new SimpleGrantedAuthority("ROLE_" + role))
+                        clientRoles.forEach(role -> {
+                                    if (role instanceof String roleStr) {
+                                        authorities.add(new SimpleGrantedAuthority("ROLE_" + roleStr));
+                                    }
+                                }
                         );
                     }
                 });
