@@ -2,7 +2,7 @@ name: Deploy to Hetzner VPS
 
 on:
   push:
-    branches: [ workflows-setup ]
+    branches: [ develop ]
 
 jobs:
   deploy:
@@ -35,16 +35,16 @@ jobs:
             set -e
             cd /var/www/artemis2/Artemis
 
-            echo "📦 Pulling latest code..."
+            echo "Pulling latest code..."
             git fetch origin main
             git reset --hard origin/main
 
-            echo "🐳 Rebuilding containers..."
+            echo "Rebuilding containers..."
             docker compose pull
             docker compose build --no-cache
             docker compose up -d --remove-orphans
 
-            echo "🧹 Cleaning up unused images..."
+            echo "Cleaning up unused images..."
             docker image prune -af
 
             echo "✅ Secure deployment complete."
