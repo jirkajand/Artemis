@@ -2,7 +2,7 @@ name: Deploy to Hetzner VPS
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ workflows-setup ]
 
 jobs:
   deploy:
@@ -12,10 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug SSH key (first 50 chars)
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | head -c 50
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          printf "%s\n" "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H cipisek.jirka.test.esnhk.cz >> ~/.ssh/known_hosts
 
