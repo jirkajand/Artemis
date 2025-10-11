@@ -2,6 +2,17 @@
 
 There is need to get keycloak client secret and set it in `.env` file before running the docker compose.
 
+To obtain the client secret, follow these steps:
+
+1. Open the Keycloak admin console in your web browser.
+2. Log in with your admin credentials.
+3. Navigate to correct realm (e.g., `Artemis`).
+4. Go to the "Clients" section in the left-hand menu.
+5. Select the client for which you need (e.g., `artemisBE-admin-cli`).
+6. Go to the "Credentials" tab.
+7. Copy the value of the "Secret" field.
+8. Open the `.env` file in the root directory of the Artemis project.
+
 ## Open Api Artemis
 There is one file with OpenAPI specification for all microservices: `openapi.yaml`.
 It is used to generate API documentation and client SDKs.
