@@ -18,9 +18,9 @@ public class KeycloakService {
 
     private final UsersResource keycloakUsersResource;
 
-    public Optional<String> registerUser(RegisterKeycloakUserDTO request) {
+    public Optional<String> registerUser(RegisterKeycloakUserDTO request, String defaultRole) {
         try {
-            // Příprava uživatelské reprezentace
+            // basic user info
             UserRepresentation user = new UserRepresentation();
             user.setEnabled(true);
             user.setEmail(request.getEmail());
@@ -28,15 +28,15 @@ public class KeycloakService {
             user.setLastName(request.getLastName());
             user.setEmailVerified(false);
 
-            // Příprava hesla
+            // password
             CredentialRepresentation credential = new CredentialRepresentation();
             credential.setType(CredentialRepresentation.PASSWORD);
             credential.setValue(request.getPassword());
             credential.setTemporary(false);
             user.setCredentials(Collections.singletonList(credential));
 
-            // Výchozí role
-            user.setRealmRoles(Collections.singletonList("USER"));
+            // default role
+            user.setRealmRoles(Collections.singletonList(defaultRole));
 
             Response response = keycloakUsersResource.create(user);
 

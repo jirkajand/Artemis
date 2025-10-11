@@ -16,6 +16,11 @@ components:
           example: OK
     RegisterLocalStudentRequest:
       type: object
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
       properties:
         email:
           type: string
