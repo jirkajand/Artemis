@@ -23,6 +23,14 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H cipisek.jirka.test.esnhk.cz >> ~/.ssh/known_hosts
 
+      - name: Test SSH connection
+        run: |
+          ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 root@cipisek.jirka.test.esnhk.cz "echo ✅ Connected successfully"
+
+      - name: Verify key file content
+        run: |
+          head -n 5 ~/.ssh/id_ed25519
+
       - name: Deploy
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 root@cipisek.jirka.test.esnhk.cz << 'EOF'
@@ -30,3 +38,8 @@ jobs:
             git pull origin main
             docker compose up -d --build
           EOF
+
+      - name: Debug key permissions
+        run: |
+          ls -la ~/.ssh
+          file ~/.ssh/id_ed25519
