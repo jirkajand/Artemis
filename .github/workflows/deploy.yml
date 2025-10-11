@@ -22,8 +22,8 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-          # Pin server key (replace with actual output from ssh-keyscan)
-          echo "cipisek.jirka.test.esnhk.cz ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9i7D+iDjzdNIXqRAOa1xg3sjfFhoq0eCAUbHdAu1yH" > ~/.ssh/known_hosts
+          # Pin server key using GitHub secret
+          echo "${{ secrets.SSH_KNOWN_HOST }}" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
       - name: Test SSH connection
