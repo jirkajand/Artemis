@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -15,14 +16,37 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H cipisek.jirka.test.esnhk.cz >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
 
-      - name: Deploy
+          # Load private key into SSH agent (not written to disk)
+          eval "$(ssh-agent -s)"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
+
+          # Veryfiing that the server is one i expect it will be
+          echo "cipisek.jirka.test.esnhk.cz ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9i7D+iDjzdNIXqRAOa1xg3sjfFhoq0eCAUbHdAu1yH" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 root@cipisek.jirka.test.esnhk.cz << 'EOF'
+          ssh -o StrictHostKeyChecking=yes root@cipisek.jirka.test.esnhk.cz "echo '✅ Secure SSH connection OK'"
+
+      - name: Deploy new version
+        run: |
+          ssh -o StrictHostKeyChecking=yes root@cipisek.jirka.test.esnhk.cz << 'EOF'
+            set -e
             cd /var/www/artemis2/Artemis
-            git pull origin main
-            docker compose up -d --build
+
+            echo "📦 Pulling latest code..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "🐳 Rebuilding containers..."
+            docker compose pull
+            docker compose build --no-cache
+            docker compose up -d --remove-orphans
+
+            echo "🧹 Cleaning up unused images..."
+            docker image prune -af
+
+            echo "✅ Secure deployment complete."
           EOF
