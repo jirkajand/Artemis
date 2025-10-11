@@ -46,7 +46,7 @@ jobs:
             docker compose up -d --remove-orphans
 
             echo "Cleaning up unused images..."
-            docker image prune -af
+            docker image prune -f --filter until=24h
 
             echo "✅ Secure deployment complete."
           EOF
