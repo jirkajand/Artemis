@@ -26,6 +26,9 @@ public class KeycloakService {
             user.setEmail(request.getEmail());
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
+            // NOTE: Setting emailVerified to false creates unverified user accounts.
+            // TODO: Implement email verification flow to ensure users verify their email address.
+            // If you intentionally allow unverified accounts, document this decision and its security implications.
             user.setEmailVerified(false);
 
             // password
