@@ -18,35 +18,35 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Load private key into SSH agent (not written to disk)
-          eval "$(ssh-agent -s)"
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
+          # Add private key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
 
-          # Veryfiing that the server is one i expect it will be
-          echo "cipisek.jirka.test.esnhk.cz ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9i7D+iDjzdNIXqRAOa1xg3sjfFhoq0eCAUbHdAu1yH" > ~/.ssh/known_hosts
+          # Pin server key using GitHub secret
+          echo "${{ secrets.SSH_KNOWN_HOST }}" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=yes root@cipisek.jirka.test.esnhk.cz "echo '✅ Secure SSH connection OK'"
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz "echo ✅ SSH connection OK"
 
       - name: Deploy new version
         run: |
-          ssh -o StrictHostKeyChecking=yes root@cipisek.jirka.test.esnhk.cz << 'EOF'
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz << 'EOF'
             set -e
             cd /var/www/artemis2/Artemis
 
-            echo "📦 Pulling latest code..."
+            echo "Pulling latest code..."
             git fetch origin main
             git reset --hard origin/main
 
-            echo "🐳 Rebuilding containers..."
+            echo "Rebuilding containers..."
             docker compose pull
             docker compose build --no-cache
             docker compose up -d --remove-orphans
 
-            echo "🧹 Cleaning up unused images..."
-            docker image prune -af
+            echo "Cleaning up unused images..."
+            docker image prune -f --filter until=24h
 
             echo "✅ Secure deployment complete."
           EOF
