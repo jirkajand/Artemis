@@ -27,11 +27,11 @@ jobs:
 
       - name: Test SSH connection
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes root@cipisek.jirka.test.esnhk.cz "echo ✅ SSH connection OK"
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes deploy@cipisek.jirka.test.esnhk.cz "echo ✅ SSH connection OK"
 
       - name: Deploy new version
         run: |
-          ssh -o StrictHostKeyChecking=yes root@cipisek.jirka.test.esnhk.cz << 'EOF'
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes deploy@cipisek.jirka.test.esnhk.cz << 'EOF'
             set -e
             cd /var/www/artemis2/Artemis
 
