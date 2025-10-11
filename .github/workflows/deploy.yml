@@ -22,7 +22,7 @@ jobs:
       - name: Deploy
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 root@cipisek.jirka.test.esnhk.cz << 'EOF'
-            cd /var/www/artemis2
+            cd /var/www/artemis2/Artemis
             git pull origin main
             docker compose up -d --build
           EOF
