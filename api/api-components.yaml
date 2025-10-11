@@ -7,10 +7,24 @@ paths:
 
 
 components:
-    schemas:
-      HealthCheckResponse:
-        type: object
-        properties:
-          status:
-            type: string
-            example: OK
+  schemas:
+    HealthCheckResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: OK
+
+
+  securitySchemes:
+    keycloak_auth:
+      type: oauth2
+      description: OAuth2 flow via Keycloak
+      flows:
+        authorizationCode:
+          authorizationUrl: https://keycloak.artemis.jirka.test.esnhk.cz/realms/Artemis/protocol/openid-connect/auth
+          tokenUrl: https://keycloak.artemis.jirka.test.esnhk.cz/realms/Artemis/protocol/openid-connect/token
+          scopes:
+            ADMIN: Full administrative access
+            USER: Standard user access
+            TUTOR: Tutor-level access

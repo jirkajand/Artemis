@@ -12,6 +12,12 @@ paths:
       summary: healthCheck
       description: healthCheck endpoint to verify if the API is running
       operationId: getHealthCheck
+      #security: []  # no auth required
+      security:
+        - keycloak_auth: [TUTOR, ADMIN]
+      x-security-roles:
+        - ADMIN
+        - TUTOR
       responses:
         '200':
           description: API is running
