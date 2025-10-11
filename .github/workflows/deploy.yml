@@ -15,9 +15,19 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 700 ~/.ssh
+
+          # Add private key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H cipisek.jirka.test.esnhk.cz >> ~/.ssh/known_hosts
+
+          # Pin server key (replace with actual output from ssh-keyscan)
+          echo "cipisek.jirka.test.esnhk.cz ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9i7D+iDjzdNIXqRAOa1xg3sjfFhoq0eCAUbHdAu1yH" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes root@cipisek.jirka.test.esnhk.cz "echo ✅ SSH connection OK"
 
       - name: Deploy new version
         run: |
