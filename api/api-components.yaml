@@ -14,7 +14,24 @@ components:
         status:
           type: string
           example: OK
-
+    RegisterLocalStudentRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    RegisterLocalStudentResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Student registered successfully
 
   securitySchemes:
     keycloak_auth:

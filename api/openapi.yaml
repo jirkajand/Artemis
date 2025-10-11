@@ -4,17 +4,17 @@ info:
   version: 0.0.1
   description: Artemis API
 servers:
-    - url: /api
+  - url: /api
 paths:
   /health:
     get:
-      tags: [UserManagement]
+      tags: [ UserManagement ]
       summary: healthCheck
       description: healthCheck endpoint to verify if the API is running
       operationId: getHealthCheck
       #security: []  # no auth required
       security:
-        - keycloak_auth: [TUTOR, ADMIN]
+        - keycloak_auth: [ TUTOR, ADMIN ]
       x-security-roles:
         - ADMIN
         - TUTOR
@@ -23,5 +23,27 @@ paths:
           description: API is running
           content:
             application/json:
-                schema:
-                    $ref: './api-components.yaml#/components/schemas/HealthCheckResponse'
+              schema:
+                $ref: './api-components.yaml#/components/schemas/HealthCheckResponse'
+
+  /local-student/register:
+    post:
+      tags: [ UserManagement ]
+      summary: registerLocalStudent
+      description: registerLocalStudent endpoint to register a new local student
+      operationId: registerLocalStudent
+      security: [ ]  # no auth required
+      requestBody:
+        description: Local student registration details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './api-components.yaml#/components/schemas/RegisterLocalStudentRequest'
+      responses:
+        '200':
+          description: Student registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: './api-components.yaml#/components/schemas/RegisterLocalStudentResponse'

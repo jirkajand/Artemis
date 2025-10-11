@@ -1,3 +1,7 @@
+## Run Artemis
+
+There is need to get keycloak client secret and set it in `.env` file before running the docker compose.
+
 ## Open Api Artemis
 There is one file with OpenAPI specification for all microservices: `openapi.yaml`.
 It is used to generate API documentation and client SDKs.
@@ -51,4 +55,5 @@ docker compose up --build -d
    2. Update also command for replace variables in `nginx.conf` file.
 4. Update the `nginx.conf` file to route requests to your new microservice.
 5. Update the `.env` file with new microservice port and other necessary environment variables.
+   6. Also update `DB_NAMES` to add new database name if your microservice needs a database.
 6. Restart the Docker Compose setup using the commands above.
