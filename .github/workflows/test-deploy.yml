@@ -39,7 +39,7 @@ jobs:
             docker compose up -d --build
           EOF
 
-      - name: Debug key permissions
+      - name: Debug key permissions -working
         run: |
           ls -la ~/.ssh
           file ~/.ssh/id_ed25519
