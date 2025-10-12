@@ -8,6 +8,15 @@ services:
       - "${USER_MANAGEMENT_PORT}:${USER_MANAGEMENT_PORT}"
     environment:
       - SERVER_PORT=${USER_MANAGEMENT_PORT}
+    
+    
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-builder
+    volumes:
+      - frontend-build:/app/build
 
   gateway:
     image: nginx:alpine
@@ -15,9 +24,14 @@ services:
     command: /bin/sh -c "envsubst '$$USER_MANAGEMENT_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
     volumes:
       - ./devops/nginx.conf:/etc/nginx/nginx.conf.template:ro
+      - frontend-build:/usr/share/nginx/html:ro
     environment:
       - USER_MANAGEMENT_PORT=${USER_MANAGEMENT_PORT}
     ports:
       - "${GATEWAY_PORT}:80"
     depends_on:
       - user-management-service
+      - frontend
+
+volumes:
+  frontend-build:
