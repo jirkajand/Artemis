@@ -31,14 +31,20 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz "echo ✅ SSH connection OK"
 
       - name: Deploy new version
+        env:
+          KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
         run: |
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz << 'EOF'
             set -e
+            set +x  # disable debug output (protect secrets)
             cd /var/www/artemis2/Artemis
 
             echo "Pulling latest code..."
             git fetch origin main
             git reset --hard origin/main
+          
+            echo "Updating .env with Keycloak secret..."
+            sed -i "s|^KEYCLOAK_CLIENT_SECRET=.*|KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}|" .env
 
             echo "Rebuilding containers..."
             docker compose pull
