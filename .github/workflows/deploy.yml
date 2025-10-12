@@ -40,8 +40,8 @@ jobs:
             cd /var/www/artemis2/Artemis
 
             echo "Pulling latest code..."
-            git fetch origin main
-            git reset --hard origin/main
+            git fetch origin develop
+            git reset --hard origin/develop
           
             echo "Updating .env with Keycloak secret..."
             sed -i "s|^KEYCLOAK_CLIENT_SECRET=.*|KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}|" .env
