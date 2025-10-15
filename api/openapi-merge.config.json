@@ -1,0 +1,11 @@
+{
+  "inputs": [
+    {
+      "inputFile": "./user-management-api.yaml",
+      "pathModification": {
+        "prepend": "/user-management/api"
+      }
+    }
+  ],
+  "output": "./merged-openapi.yaml"
+}

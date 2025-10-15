@@ -28,7 +28,12 @@ This will generate code for each microservice based on the `openapi.yaml` file a
 
 ### Frontend Code Generation
 
-**TODO**
+Generate merged OpenAPI specification file and generate client:
+
+```bash
+npx openapi-merge-cli --config ./api/openapi-merge.config.json
+npx openapi-generator-cli generate -i ./api/merged-openapi.yaml -g typescript-fetch -o src/api
+```
 
 ### API Documentation
 
