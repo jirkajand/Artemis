@@ -4,7 +4,7 @@ info:
   version: 0.0.1
   description: Artemis API
 servers:
-  - url: localhost:8080
+  - url: localhost:8050
 paths:
   /health:
     get:
