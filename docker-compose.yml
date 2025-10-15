@@ -1,22 +1,4 @@
 services:
-  user-management-service:
-    build:
-      context: .
-      dockerfile: usermanagement/Dockerfile
-    container_name: user-management-service
-    ports:
-      - "${USER_MANAGEMENT_PORT}:${USER_MANAGEMENT_PORT}"
-    environment:
-      - SERVER_PORT=${USER_MANAGEMENT_PORT}
-    
-    
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: frontend-builder
-    volumes:
-      - frontend-build:/app/build
 
   gateway:
     image: nginx:alpine
@@ -33,5 +15,47 @@ services:
       - user-management-service
       - frontend
 
+  artemis-database:
+    image: postgres:13
+    container_name: artemis-database
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DB_NAMES=${DB_NAMES}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./devops/init-multiple-db.sh:/docker-entrypoint-initdb.d/init-multiple-db.sh:ro
+    command: [ "bash", "-c", "/docker-entrypoint-initdb.d/init-multiple-db.sh & docker-entrypoint.sh postgres" ]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-builder
+    volumes:
+      - frontend-build:/app/build
+
+  user-management-service:
+    build:
+      context: .
+      dockerfile: usermanagement/Dockerfile
+    container_name: user-management-service
+    ports:
+      - "${USER_MANAGEMENT_PORT}:${USER_MANAGEMENT_PORT}"
+    environment:
+      - SERVER_PORT=${USER_MANAGEMENT_PORT}
+      - DB_HOST=artemis-database
+      - DB_PORT=5432
+      - DB_NAME=user_management_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    depends_on:
+      - artemis-database
+
 volumes:
+  db-data:
   frontend-build:

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - property:
+      name: uuid_type
+      value: uuid
+  - include:
+      file: changesets/001-create-local-students.yml
+      relativeToChangelogFile: true
