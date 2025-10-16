@@ -27,7 +27,6 @@ services:
       - "${DB_PORT}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-    command: [ "bash", "-c", "/docker-entrypoint-initdb.d/init-multiple-db.sh & docker-entrypoint.sh postgres" ]
 
 
   user-management-service:
