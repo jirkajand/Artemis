@@ -14,7 +14,9 @@ services:
       - user-management-service
 
   artemis-database:
-    image: postgres:13
+    build:
+      context: .
+      dockerfile: devops/Dockerfile
     container_name: artemis-database
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -25,8 +27,6 @@ services:
       - "${DB_PORT}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./devops/init-multiple-db.sh:/docker-entrypoint-initdb.d/init-multiple-db.sh:ro
-    command: [ "bash", "-c", "/docker-entrypoint-initdb.d/init-multiple-db.sh & docker-entrypoint.sh postgres" ]
 
 
   user-management-service:
