@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 001-create-local-students
-      author: Matej Vana
+      author: David Szczurek
       changes:
         - createTable:
             tableName: local_students
