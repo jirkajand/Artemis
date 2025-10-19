@@ -8,7 +8,7 @@ export const load: LayoutLoad = async () => {
 
     const client = new UserManagementApi();
     // const health = await client.getHealthCheck();
-    const health: HealthCheckResponse = { status: "indeterminate" }
+    const health: HealthCheckResponse = { status: "mock" }
 
     return {
         test: 'hello',
