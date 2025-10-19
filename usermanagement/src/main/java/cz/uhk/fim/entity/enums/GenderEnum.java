@@ -1,6 +1,6 @@
 package cz.uhk.fim.entity.enums;
 
-public enum SexEnum {
+public enum GenderEnum {
     MALE,
     FEMALE,
     OTHER

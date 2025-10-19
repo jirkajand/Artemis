@@ -14,24 +14,108 @@ components:
         status:
           type: string
           example: OK
-    RegisterLocalStudentRequest:
+
+    # A gender enum reused
+    GenderEnum:
+      type: string
+      enum: [MALE, FEMALE, OTHER]
+
+    # Common base schema for students
+    StudentBase:
       type: object
-      required:
-        - email
-        - password
-        - firstName
-        - lastName
       properties:
-        email:
-          type: string
-          format: email
-        password:
-          type: string
         firstName:
           type: string
         lastName:
           type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+        bio:
+          type: string
+        favouriteActivities:
+          type: array
+          items:
+            type: string
+        profilePicturePath:
+          type: string
+        emailMarketingChecked:
+          type: boolean
+
+    # Local student registration schema
+    RegisterLocalStudentRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentBase'
+        - type: object
+          properties:
+            facultyId:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              $ref: '#/components/schemas/GenderEnum'
+            termsAndConditionsChecked:
+              type: boolean
+            password:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - password
+            - dateOfBirth
+            - phoneNumber
+            - gender
+            - termsAndConditionsChecked
+            - facultyId
+
+    # International student registration schema
+    RegisterInternationalStudentRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentBase'
+        - type: object
+          properties:
+            countryISO:
+              type: string
+              pattern: '^[A-Z]{2}$'
+            homeUniversity:
+              type: string
+            facultyId:
+              type: string
+            accommodationId:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              $ref: '#/components/schemas/GenderEnum'
+            termsAndConditionsChecked:
+              type: boolean
+            password:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - password
+            - dateOfBirth
+            - phoneNumber
+            - gender
+            - termsAndConditionsChecked
+
+    # Responses
     RegisterLocalStudentResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Student registered successfully
+
+    RegisterInternationalStudentResponse:
       type: object
       properties:
         result:

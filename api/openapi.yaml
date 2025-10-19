@@ -47,3 +47,24 @@ paths:
             application/json:
               schema:
                 $ref: './api-components.yaml#/components/schemas/RegisterLocalStudentResponse'
+  /international-student/register:
+    post:
+      tags: [ UserManagement ]
+      summary: registerInternationalStudent
+      description: Register a new international student
+      operationId: registerInternationalStudent
+      requestBody:
+        description: International student registration details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './api-components.yaml#/components/schemas/RegisterInternationalStudentRequest'
+      responses:
+        '200':
+          description: Student registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: './api-components.yaml#/components/schemas/RegisterInternationalStudentResponse'
+
