@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 003-create-student-favourite-activities
-      author: Matej Vana
+      author: David Szczurek
       changes:
         - createTable:
             tableName: student_favourite_activities

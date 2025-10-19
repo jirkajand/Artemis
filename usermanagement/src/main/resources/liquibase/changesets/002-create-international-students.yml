@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 002-create-international-students
-      author: Matej Vana
+      author: David Szczurek
       changes:
         - createTable:
             tableName: international_students

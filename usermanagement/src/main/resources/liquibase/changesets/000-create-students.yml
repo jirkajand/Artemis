@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 000-create-students
-      author: Matej Vana
+      author: David Szczurek
       changes:
         - createTable:
             tableName: students
