@@ -146,7 +146,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/../api/openapi.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../api/user-management-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <templateDirectory>${project.basedir}/src/main/resources/openapi-templates/JavaSpring
@@ -158,8 +158,7 @@
                             <modelPackage>cz.uhk.fim.usermanagement.model</modelPackage>
                             <additionalProperties>
                                 interfaceOnly=true,
-                                skipDefaultInterface=true,
-                                openApiNormalizerTags=UserManagement
+                                skipDefaultInterface=true
                             </additionalProperties>
                         </configuration>
                     </execution>

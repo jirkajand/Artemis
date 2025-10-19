@@ -28,6 +28,13 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    expose:
+      - "80"
 
   user-management-service:
     build:
