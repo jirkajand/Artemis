@@ -40,7 +40,7 @@ npm run generate:api
 
 Url for Health Check is:
 ```
-http://localhost:8080/user-management/api/health
+http://localhost:8050/user-management/api/health
 ```
 
 The api should be in format `localhost:${GATEWAY_PORT}/{microservice-name}/api/...`
