@@ -56,9 +56,12 @@ public class FacultyService {
         if (entity.isEmpty()) {
             throw new EntityNotFoundException(String.format("Faculty with id %s not found", id));
         }
-        var updatedEntity = facultyMapper.toFacultyEntity(facultyCreateRequest);
-        updatedEntity.setId(id);
-        var savedEntity = facultyRepository.save(updatedEntity);
+        var existingEntity = entity.get();
+        existingEntity.setFacultyNameInternational(facultyCreateRequest.getFacultyNameInternational());
+        existingEntity.setFacultyNameLocal(facultyCreateRequest.getFacultyNameLocal());
+        existingEntity.setColor(facultyCreateRequest.getColor());
+        existingEntity.setShortName(facultyCreateRequest.getShortName());
+        var savedEntity = facultyRepository.save(existingEntity);
         return facultyMapper.toFacultyResponse(savedEntity);
     }
 }

@@ -6,6 +6,7 @@ import cz.uhk.fim.settingsservice.model.FacultyResponse;
 import cz.uhk.fim.settingsservice.service.FacultyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class FacultyController implements FacultyApi {
     //todo preauthorize methods
     @Override
     public ResponseEntity<FacultyResponse> createFaculty(FacultyCreateRequest facultyCreateRequest) {
-        return ResponseEntity.ok(facultyService.createFaculty(facultyCreateRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultyService.createFaculty(facultyCreateRequest));
     }
 
     @Override

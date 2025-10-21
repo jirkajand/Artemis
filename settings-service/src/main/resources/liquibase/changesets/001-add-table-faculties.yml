@@ -26,11 +26,11 @@ databaseChangeLog:
                   type: varchar(255)
               - column:
                   name: created_at
-                  type: timestamp with timezone
+                  type: timestamp with time zone
                   constraints:
                     nullable: false
               - column:
                   name: last_modified_at
-                  type: timestamp with timezone
+                  type: timestamp with time zone
                   constraints:
                     nullable: false
