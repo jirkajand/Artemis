@@ -22,9 +22,11 @@ For backend there is need to use the following command to generate models and AP
 ```bash
 mvn clean compile
 ```
-This will generate code for each microservice based on the `openapi.yaml` file and the tag of each api specification.
 
-- User Management Service - tag: `UserManagement`
+This will generate code for each microservice based on the `api` folder and each microservice has it own file.
+
+- User Management Service: `user-management-api.yaml`
+- Settings service: `settings-service-api.yaml`
 
 ### Frontend Code Generation
 

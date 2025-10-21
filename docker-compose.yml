@@ -3,7 +3,7 @@ services:
   gateway:
     image: nginx:alpine
     container_name: api-gateway
-    command: /bin/sh -c "envsubst '$$USER_MANAGEMENT_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    command: /bin/sh -c "envsubst '$$USER_MANAGEMENT_PORT $$SETTINGS_SERVICE_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
     volumes:
       - ./devops/nginx.conf:/etc/nginx/nginx.conf.template:ro
     environment:
@@ -48,6 +48,24 @@ services:
       - DB_HOST=artemis-database
       - DB_PORT=5432
       - DB_NAME=user_management_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    depends_on:
+      - artemis-database
+
+  settings-service:
+    build:
+      context: .
+      dockerfile: settings-service/Dockerfile
+    container_name: settings-service
+    ports:
+      - "${SETTINGS_SERVICE_PORT}:${SETTINGS_SERVICE_PORT}"
+    environment:
+      - SERVER_PORT=${SETTINGS_SERVICE_PORT}
+      - DB_HOST=artemis-database
+      - DB_PORT=5432
+      - DB_NAME=settings_service_db
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}

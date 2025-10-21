@@ -1,0 +1,209 @@
+openapi: 3.0.3
+info:
+  title: Artemis API
+  version: 0.0.1
+  description: Artemis API
+servers:
+  - url: localhost:8050
+paths:
+  /health:
+    get:
+      tags: [ SettingsService ]
+      summary: healthCheck
+      description: healthCheck endpoint to verify if the API is running
+      operationId: getHealthCheck
+      #security: []  # no auth required
+      security:
+        - keycloak_auth: [ TUTOR, ADMIN ]
+      x-security-roles:
+        - ADMIN
+        - TUTOR
+        - USER
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+
+  /faculty:
+    get:
+      tags: [ SettingsService ]
+      summary: getAllFaculties
+      description: getAllFaculties endpoint to retrieve all faculties
+      operationId: getAllFaculties
+      security:
+        - keycloak_auth: [ USER, TUTOR, ADMIN ]
+      x-security-roles:
+        - ADMIN
+        - TUTOR
+        - USER
+      responses:
+        '200':
+          description: List of all faculties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyResponse'
+    post:
+      tags: [ SettingsService ]
+      summary: createFaculty
+      description: createFaculty endpoint to create a new faculty
+      operationId: createFaculty
+      security:
+        - keycloak_auth: [ ADMIN ]
+      x-security-roles:
+        - ADMIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyCreateRequest'
+      responses:
+        '201':
+          description: Faculty created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyResponse'
+  /faculty/{id}:
+    delete:
+      tags: [ SettingsService ]
+      summary: deleteFaculty
+      description: deleteFaculty endpoint to delete a faculty by ID
+      operationId: deleteFaculty
+      security:
+        - keycloak_auth: [ ADMIN ]
+      x-security-roles:
+        - ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The UUID of the faculty to delete
+      responses:
+        '204':
+          description: Faculty deleted successfully
+        '404':
+          description: Faculty not found
+    get:
+      tags: [ SettingsService ]
+      summary: getFacultyById
+      description: getFacultyById endpoint to retrieve a faculty by ID
+      operationId: getFacultyById
+      security:
+        - keycloak_auth: [ USER, TUTOR, ADMIN ]
+      x-security-roles:
+        - ADMIN
+        - TUTOR
+        - USER
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Faculty details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyResponse'
+        '404':
+          description: Faculty not found
+    put:
+      tags: [ SettingsService ]
+      summary: updateFaculty
+      description: updateFaculty endpoint to update a faculty by ID
+      operationId: updateFaculty
+      security:
+        - keycloak_auth: [ ADMIN ]
+      x-security-roles:
+        - ADMIN
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyCreateRequest'
+      responses:
+        '200':
+          description: Faculty updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyResponse'
+        '404':
+          description: Faculty not found
+
+components:
+  parameters:
+
+    id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The UUID of the faculty to retrieve
+  schemas:
+    HealthCheckResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: OK
+    FacultyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        facultyNameInternational:
+          type: string
+          example: "Faculty of informatics and management"
+        facultyNameLocal:
+          type: string
+          example: "Fakulta informatiky a managementu"
+        color:
+          type: string
+          example: "#FF5733"
+        shortName:
+          type: string
+          example: "FIM"
+    FacultyCreateRequest:
+      type: object
+      properties:
+        facultyNameInternational:
+          type: string
+          example: "Faculty of informatics and management"
+        facultyNameLocal:
+          type: string
+          example: "Fakulta informatiky a managementu"
+        color:
+          type: string
+          example: "#FF5733"
+        shortName:
+          type: string
+          example: "FIM"
+
+  securitySchemes:
+    keycloak_auth:
+      type: oauth2
+      description: OAuth2 flow via Keycloak
+      flows:
+        authorizationCode:
+          authorizationUrl: https://keycloak.artemis.jirka.test.esnhk.cz/realms/Artemis/protocol/openid-connect/auth
+          tokenUrl: https://keycloak.artemis.jirka.test.esnhk.cz/realms/Artemis/protocol/openid-connect/token
+          scopes:
+            ADMIN: Full administrative access
+            USER: Standard user access
+            TUTOR: Tutor-level access

@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-add-table-faculties
+      author: Matej Vana
+      changes:
+        - createTable:
+            tableName: faculty_entity
+            columns:
+              - column:
+                  name: id
+                  type: ${uuid_type}
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_faculty_id
+              - column:
+                  name: faculty_name_international
+                  type: varchar(255)
+              - column:
+                  name: faculty_name_local
+                  type: varchar(255)
+              - column:
+                  name: color
+                  type: varchar(255)
+              - column:
+                  name: short_name
+                  type: varchar(255)
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false

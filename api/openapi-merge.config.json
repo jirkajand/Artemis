@@ -5,6 +5,12 @@
       "pathModification": {
         "prepend": "/user-management/api"
       }
+    },
+    {
+      "inputFile": "./settings-service-api.yaml",
+      "pathModification": {
+        "prepend": "/settings/api"
+      }
     }
   ],
   "output": "./merged-openapi.yaml"
