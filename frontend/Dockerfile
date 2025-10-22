@@ -8,7 +8,6 @@ COPY frontend ./frontend
 COPY api ./api
 WORKDIR /app/frontend
 
-COPY frontend/package*.json .
 RUN npm ci
 RUN npm run generate:api
 RUN npm run build
