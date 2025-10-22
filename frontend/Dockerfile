@@ -4,15 +4,18 @@
 # build stage
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package*.json .
+COPY frontend ./frontend
+COPY api ./api
+WORKDIR /app/frontend
+
 RUN npm ci
-COPY . .
+RUN npm run generate:api
 RUN npm run build
 RUN npm prune --production
 
 # runtime stage (Static server)
 FROM nginx:alpine
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/frontend/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
