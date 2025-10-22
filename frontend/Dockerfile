@@ -11,7 +11,6 @@ WORKDIR /app/frontend
 COPY frontend/package*.json .
 RUN npm ci
 RUN npm run generate:api
-COPY . .
 RUN npm run build
 RUN npm prune --production
 
