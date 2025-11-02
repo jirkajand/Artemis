@@ -1,0 +1,136 @@
+openapi: 3.1.0
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+paths:
+
+
+components:
+  schemas:
+    HealthCheckResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: OK
+
+    # A gender enum reused
+    GenderEnum:
+      type: string
+      enum: [MALE, FEMALE, OTHER]
+
+    # Common base schema for students
+    StudentBase:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+        bio:
+          type: string
+        favouriteActivities:
+          type: array
+          items:
+            type: string
+        profilePicturePath:
+          type: string
+        emailMarketingChecked:
+          type: boolean
+
+    # Local student registration schema
+    RegisterLocalStudentRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentBase'
+        - type: object
+          properties:
+            facultyId:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              $ref: '#/components/schemas/GenderEnum'
+            termsAndConditionsChecked:
+              type: boolean
+            password:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - password
+            - dateOfBirth
+            - phoneNumber
+            - gender
+            - termsAndConditionsChecked
+            - facultyId
+
+    # International student registration schema
+    RegisterInternationalStudentRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentBase'
+        - type: object
+          properties:
+            countryISO:
+              type: string
+              pattern: '^[A-Z]{2}$'
+            homeUniversity:
+              type: string
+            facultyId:
+              type: string
+            accommodationId:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              $ref: '#/components/schemas/GenderEnum'
+            termsAndConditionsChecked:
+              type: boolean
+            password:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - password
+            - dateOfBirth
+            - phoneNumber
+            - gender
+            - termsAndConditionsChecked
+
+    # Responses
+    RegisterLocalStudentResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Student registered successfully
+
+    RegisterInternationalStudentResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Student registered successfully
+
+  securitySchemes:
+    keycloak_auth:
+      type: oauth2
+      description: OAuth2 flow via Keycloak
+      flows:
+        authorizationCode:
+          authorizationUrl: https://keycloak.artemis.jirka.test.esnhk.cz/realms/Artemis/protocol/openid-connect/auth
+          tokenUrl: https://keycloak.artemis.jirka.test.esnhk.cz/realms/Artemis/protocol/openid-connect/token
+          scopes:
+            ADMIN: Full administrative access
+            USER: Standard user access
+            TUTOR: Tutor-level access
