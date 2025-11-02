@@ -58,7 +58,7 @@ public abstract class StudentEntity {
             joinColumns = @JoinColumn(name = "student_id")
     )
     @Column(name = "activity")
-    @Builder.Default
+    
     private Set<String> favouriteActivities = new HashSet<>();
 
 
