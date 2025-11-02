@@ -12,5 +12,5 @@ databaseChangeLog:
       file: changesets/002-create-international-students.yml
       relativeToChangelogFile: true
   - include:
-       file: changesets/003-create-student-favourite-activities.yml
-       relativeToChangelogFile: true
+      file: changesets/003-create-student-favourite-activities.yml
+      relativeToChangelogFile: true
