@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-international-students
+      author: David Szczurek
+      changes:
+        - createTable:
+            tableName: international_students
+            columns:
+              - column:
+                  name: id
+                  type: ${uuid_type}
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: home_university
+                  type: varchar(255)
+              - column:
+                  name: country_iso
+                  type: varchar(2)
+              - column:
+                  name: assigned_buddy_id
+                  type: ${uuid_type}
+                  constraints:
+                    nullable: true
+              - column:
+                  name: accommodation_id
+                  type: ${uuid_type}
+              - column:
+                  name: student_entity_id
+                  type: ${uuid_type}
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: international_students
+            baseColumnNames: assigned_buddy_id
+            constraintName: fk_international_students_buddies
+            referencedTableName: local_students
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: international_students
+            baseColumnNames: student_entity_id
+            constraintName: fk_international_students_students
+            referencedTableName: students
+            referencedColumnNames: id
+            onDelete: CASCADE
