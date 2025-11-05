@@ -4,7 +4,7 @@ info:
   version: 0.0.1
   description: Artemis API
 servers:
-  - url: 'localhost:8050'
+  - url: /api
 paths:
   /user-management/api/health:
     get:
@@ -13,13 +13,7 @@ paths:
       summary: healthCheck
       description: healthCheck endpoint to verify if the API is running
       operationId: getHealthCheck
-      security:
-        - keycloak_auth:
-            - TUTOR
-            - ADMIN
-      x-security-roles:
-        - ADMIN
-        - TUTOR
+      security: []
       responses:
         '200':
           description: API is running
@@ -49,6 +43,208 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterLocalStudentResponse'
+  '/user-management/api/local-student/{localStudentId}/profile-details':
+    parameters:
+      - name: localStudentId
+        in: path
+        description: ID of the local student
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags:
+        - UserManagement
+      summary: Complete local student profile details
+      description: >-
+        Allows a registered and approved local student to complete their profile
+        details.
+      operationId: completeLocalStudentProfile
+      security:
+        - keycloak_auth:
+            - TUTOR
+            - ADMIN
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LocalStudentProfileDetailsRequest'
+      responses:
+        '200':
+          description: Profile details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocalStudentProfileDetailsResponse'
+        '400':
+          description: Bad request (invalid data)
+        '401':
+          description: Unauthorized
+  /user-management/api/international-student/register:
+    post:
+      tags:
+        - UserManagement
+      summary: registerInternationalStudent
+      description: Register a new international student
+      operationId: registerInternationalStudent
+      requestBody:
+        description: International student registration details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInternationalStudentRequest'
+      responses:
+        '200':
+          description: Student registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterInternationalStudentResponse'
+  /settings/api/health:
+    get:
+      tags:
+        - SettingsService
+      summary: healthCheck
+      description: healthCheck endpoint to verify if the API is running
+      operationId: getHealthCheck1
+      security: []
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+  /settings/api/faculty:
+    get:
+      tags:
+        - SettingsService
+      summary: getAllFaculties
+      description: getAllFaculties endpoint to retrieve all faculties
+      operationId: getAllFaculties
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+        - TUTOR
+        - USER
+      responses:
+        '200':
+          description: List of all faculties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyResponse'
+    post:
+      tags:
+        - SettingsService
+      summary: createFaculty
+      description: createFaculty endpoint to create a new faculty
+      operationId: createFaculty
+      security:
+        - keycloak_auth:
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyCreateRequest'
+      responses:
+        '201':
+          description: Faculty created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyResponse'
+  '/settings/api/faculty/{id}':
+    delete:
+      tags:
+        - SettingsService
+      summary: deleteFaculty
+      description: deleteFaculty endpoint to delete a faculty by ID
+      operationId: deleteFaculty
+      security:
+        - keycloak_auth:
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The UUID of the faculty to delete
+      responses:
+        '204':
+          description: Faculty deleted successfully
+        '404':
+          description: Faculty not found
+    get:
+      tags:
+        - SettingsService
+      summary: getFacultyById
+      description: getFacultyById endpoint to retrieve a faculty by ID
+      operationId: getFacultyById
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+        - TUTOR
+        - USER
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Faculty details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyResponse'
+        '404':
+          description: Faculty not found
+    put:
+      tags:
+        - SettingsService
+      summary: updateFaculty
+      description: updateFaculty endpoint to update a faculty by ID
+      operationId: updateFaculty
+      security:
+        - keycloak_auth:
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyCreateRequest'
+      responses:
+        '200':
+          description: Faculty updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyResponse'
+        '404':
+          description: Faculty not found
 components:
   schemas:
     HealthCheckResponse:
@@ -57,29 +253,166 @@ components:
         status:
           type: string
           example: OK
-    RegisterLocalStudentRequest:
+    GenderEnum:
+      type: string
+      enum:
+        - MALE
+        - FEMALE
+        - OTHER
+    StudentBase:
       type: object
-      required:
-        - email
-        - password
-        - firstName
-        - lastName
       properties:
-        email:
-          type: string
-          format: email
-        password:
-          type: string
         firstName:
           type: string
         lastName:
           type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+        bio:
+          type: string
+        favouriteActivities:
+          type: array
+          items:
+            type: string
+        profilePicturePath:
+          type: string
+        emailMarketingChecked:
+          type: boolean
+    RegisterLocalStudentRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentBase'
+        - type: object
+          properties:
+            facultyId:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              $ref: '#/components/schemas/GenderEnum'
+            termsAndConditionsChecked:
+              type: boolean
+            password:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - password
+            - dateOfBirth
+            - phoneNumber
+            - gender
+            - termsAndConditionsChecked
+            - facultyId
+    LocalStudentProfileDetailsRequest:
+      type: object
+      properties:
+        facultyId:
+          type: string
+          description: ID of the faculty
+        description:
+          type: string
+          description: Short student bio
+        emailMarketingChecked:
+          type: boolean
+          description: Consent to receive marketing emails
+        profilePicture:
+          type: string
+          format: binary
+          description: Profile picture file
+      required:
+        - facultyId
+        - description
+        - emailMarketingChecked
+        - profilePicture
+    RegisterInternationalStudentRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentBase'
+        - type: object
+          properties:
+            countryISO:
+              type: string
+              pattern: '^[A-Z]{2}$'
+            homeUniversity:
+              type: string
+            facultyId:
+              type: string
+            accommodationId:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              $ref: '#/components/schemas/GenderEnum'
+            termsAndConditionsChecked:
+              type: boolean
+            password:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - password
+            - dateOfBirth
+            - phoneNumber
+            - gender
+            - termsAndConditionsChecked
     RegisterLocalStudentResponse:
       type: object
       properties:
         result:
           type: string
           example: Student registered successfully
+    RegisterInternationalStudentResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Student registered successfully
+    LocalStudentProfileDetailsResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Profile details updated successfully
+    FacultyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        facultyNameInternational:
+          type: string
+          example: Faculty of informatics and management
+        facultyNameLocal:
+          type: string
+          example: Fakulta informatiky a managementu
+        color:
+          type: string
+          example: '#FF5733'
+        shortName:
+          type: string
+          example: FIM
+    FacultyCreateRequest:
+      type: object
+      properties:
+        facultyNameInternational:
+          type: string
+          example: Faculty of informatics and management
+        facultyNameLocal:
+          type: string
+          example: Fakulta informatiky a managementu
+        color:
+          type: string
+          example: '#FF5733'
+        shortName:
+          type: string
+          example: FIM
   securitySchemes:
     keycloak_auth:
       type: oauth2
@@ -94,3 +427,12 @@ components:
             ADMIN: Full administrative access
             USER: Standard user access
             TUTOR: Tutor-level access
+  parameters:
+    id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The UUID of the faculty to retrieve
