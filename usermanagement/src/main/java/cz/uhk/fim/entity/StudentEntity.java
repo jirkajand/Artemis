@@ -2,12 +2,28 @@ package cz.uhk.fim.entity;
 
 import cz.uhk.fim.entity.enums.AccountStatusEnum;
 import cz.uhk.fim.entity.enums.GenderEnum;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -43,7 +59,8 @@ public abstract class StudentEntity {
     private GenderEnum gender;
 
     @Enumerated(EnumType.STRING)
-    private AccountStatusEnum accountStatus;
+    @Builder.Default
+    private AccountStatusEnum accountStatus = AccountStatusEnum.NEW;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;

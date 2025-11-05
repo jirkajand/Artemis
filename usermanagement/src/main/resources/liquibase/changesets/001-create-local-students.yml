@@ -11,18 +11,17 @@ databaseChangeLog:
                   type: ${uuid_type}
                   constraints:
                     primaryKey: true
-              - column:
-                  name: assigned_students_capacity
-                  type: integer
-              - column:
-                  name: student_entity_id
-                  type: ${uuid_type}
-                  constraints:
                     nullable: false
         - addForeignKeyConstraint:
             baseTableName: local_students
-            baseColumnNames: student_entity_id
+            baseColumnNames: id
             constraintName: fk_local_students_students
             referencedTableName: students
             referencedColumnNames: id
             onDelete: CASCADE
+        - addColumn:
+            tableName: local_students
+            columns:
+              - column:
+                  name: assigned_students_capacity
+                  type: integer

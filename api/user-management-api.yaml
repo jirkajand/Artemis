@@ -12,12 +12,7 @@ paths:
       summary: healthCheck
       description: healthCheck endpoint to verify if the API is running
       operationId: getHealthCheck
-      #security: []  # no auth required
-      security:
-        - keycloak_auth: [ TUTOR, ADMIN ]
-      x-security-roles:
-        - ADMIN
-        - TUTOR
+      security: [ ]  # no auth required
       responses:
         '200':
           description: API is running
@@ -47,6 +42,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterLocalStudentResponse'
+  /local-student/{localStudentId}/profile-details:
+    parameters:
+      - name: localStudentId
+        in: path
+        description: ID of the local student
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags: [ UserManagement ]
+      summary: Complete local student profile details
+      description: Allows a registered and approved local student to complete their profile details.
+      operationId: completeLocalStudentProfile
+      security:
+        - keycloak_auth: [ TUTOR, ADMIN ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LocalStudentProfileDetailsRequest'
+      responses:
+        '200':
+          description: Profile details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocalStudentProfileDetailsResponse'
+
+        '400':
+          description: Bad request (invalid data)
+        '401':
+          description: Unauthorized
 
   /international-student/register:
     post:
@@ -136,6 +165,27 @@ components:
             - gender
             - termsAndConditionsChecked
             - facultyId
+    LocalStudentProfileDetailsRequest:
+      type: object
+      properties:
+        facultyId:
+          type: string
+          description: ID of the faculty
+        description:
+          type: string
+          description: Short student bio
+        emailMarketingChecked:
+          type: boolean
+          description: Consent to receive marketing emails
+        profilePicture:
+          type: string
+          format: binary
+          description: Profile picture file
+      required:
+        - facultyId
+        - description
+        - emailMarketingChecked
+        - profilePicture
 
     # International student registration schema
     RegisterInternationalStudentRequest:
@@ -185,6 +235,13 @@ components:
         result:
           type: string
           example: Student registered successfully
+
+    LocalStudentProfileDetailsResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Profile details updated successfully
 
   securitySchemes:
     keycloak_auth:
