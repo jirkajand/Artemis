@@ -58,7 +58,6 @@ public abstract class StudentEntity {
             joinColumns = @JoinColumn(name = "student_id")
     )
     @Column(name = "activity")
-    
     private Set<String> favouriteActivities = new HashSet<>();
 
 
