@@ -9,7 +9,7 @@ const config = {
 	// for more information about preprocessors
 	preprocess: vitePreprocess(),
 
-	kit: {	
+	kit: {
 		adapter: adapter({
 			// No "fallback" => this is NOT pure SPA mode
 			// Each route becomes its own .html file
