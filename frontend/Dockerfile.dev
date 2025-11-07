@@ -1,0 +1,16 @@
+FROM node:20-alpine
+WORKDIR /app
+
+COPY frontend ./frontend
+WORKDIR /app/frontend
+
+# Install deps only once
+COPY package*.json ./
+RUN npm install
+
+# Copy source (you’ll override this with a volume mount)
+COPY . .
+
+# Vite dev server
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host"]
