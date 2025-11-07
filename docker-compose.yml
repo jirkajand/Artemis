@@ -34,8 +34,12 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     container_name: frontend
+    environment:
+      - VITE_KEYCLOAK_URL=https://keycloak.artemis.jirka.test.esnhk.cz/
+      - VITE_KEYCLOAK_REALM=Artemis
+      - VITE_KEYCLOAK_CLIENT_ID=artemisFE
     expose:
-      - "80"
+      - "${FRONTEND_PORT}"
 
   user-management-service:
     build:
