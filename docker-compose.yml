@@ -37,7 +37,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     container_name: frontend
-    env_file: 
+    env_file:
       - frontend/.env
     expose:
       - "${FRONTEND_PORT}"
