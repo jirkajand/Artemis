@@ -3,5 +3,14 @@ databaseChangeLog:
       name: uuid_type
       value: uuid
   - include:
+      file: changesets/000-create-students.yml
+      relativeToChangelogFile: true
+  - include:
       file: changesets/001-create-local-students.yml
+      relativeToChangelogFile: true
+  - include:
+      file: changesets/002-create-international-students.yml
+      relativeToChangelogFile: true
+  - include:
+      file: changesets/003-create-student-favourite-activities.yml
       relativeToChangelogFile: true
