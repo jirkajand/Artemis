@@ -54,5 +54,5 @@ function scheduleTokenRefresh() {
         await keycloak.login();
       }
     }
-  }, 10000);
+  }, 300000);
 }
