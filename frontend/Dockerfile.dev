@@ -11,6 +11,6 @@ RUN npm install
 # Copy source (you’ll override this with a volume mount)
 COPY . .
 
-# Vite dev server (listen on 80, the default exposed port that nginx proxys to)
+# Vite dev server
 EXPOSE 5173
 CMD ["npm", "run", "dev", "--", "--host"]

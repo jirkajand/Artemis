@@ -3,16 +3,19 @@ services:
   gateway:
     image: nginx:alpine
     container_name: api-gateway
-    command: /bin/sh -c "envsubst '$$USER_MANAGEMENT_PORT $$SETTINGS_SERVICE_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    command: /bin/sh -c "envsubst '$$USER_MANAGEMENT_PORT $$SETTINGS_SERVICE_PORT $$FRONTEND_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
     volumes:
       - ./devops/nginx.conf:/etc/nginx/nginx.conf.template:ro
     environment:
       - USER_MANAGEMENT_PORT=${USER_MANAGEMENT_PORT}
       - SETTINGS_SERVICE_PORT=${SETTINGS_SERVICE_PORT}
+      - FRONTEND_PORT=${FRONTEND_PORT}
     ports:
       - "${GATEWAY_PORT}:80"
     depends_on:
       - user-management-service
+      - settings-service
+      - frontend
 
   artemis-database:
     build:
@@ -34,10 +37,8 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     container_name: frontend
-    environment:
-      - VITE_KEYCLOAK_URL=https://keycloak.artemis.jirka.test.esnhk.cz/
-      - VITE_KEYCLOAK_REALM=Artemis
-      - VITE_KEYCLOAK_CLIENT_ID=artemisFE
+    env_file: 
+      - frontend/.env
     expose:
       - "${FRONTEND_PORT}"
 
