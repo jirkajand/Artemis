@@ -8,17 +8,11 @@ export const prerender = true;
 export const ssr = false;
 
 export const load: LayoutLoad = async ({ fetch }) => {
-  console.log("Layout load started");
   await initKeycloak();
-  console.log("Layout load finished");
 
   if (!keycloak.authenticated) {
-    console.warn("User not authenticated, redirecting to login...");
     throw redirect(302, await keycloak.createLoginUrl());
   }
-
-  // console.log("✅ Keycloak authenticated, token:", keycloak.token?.substring(0, 10) + "...");
-
   const config = new Configuration({
     accessToken: async () => `Bearer ${keycloak.token ?? ""}`,
     fetchApi: fetch
