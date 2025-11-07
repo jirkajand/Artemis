@@ -17,7 +17,7 @@ export const load: LayoutLoad = async ({ fetch }) => {
     throw redirect(302, await keycloak.createLoginUrl());
   }
 
-  console.log("✅ Keycloak authenticated, token:", keycloak.token?.substring(0, 10) + "...");
+  // console.log("✅ Keycloak authenticated, token:", keycloak.token?.substring(0, 10) + "...");
 
   const config = new Configuration({
     accessToken: async () => `Bearer ${keycloak.token ?? ""}`,
