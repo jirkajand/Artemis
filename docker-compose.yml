@@ -35,7 +35,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: frontend/Dockerfile
+      dockerfile: frontend/Dockerfile.dev
     container_name: frontend
     env_file:
       - frontend/.env

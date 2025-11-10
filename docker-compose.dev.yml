@@ -1,0 +1,10 @@
+# override (merge with) the original docker-compose.yml for development settings
+# docker compose -f .\docker-compose.yml -f .\docker-compose.dev.yml up -d
+
+services:
+  frontend:
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
