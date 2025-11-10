@@ -1,5 +1,5 @@
 # override (merge with) the original docker-compose.yml for development settings
-# docker compose -f .\docker-compose.yml -f .\docker-compose.dev.yml up -d
+# docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up -d
 
 services:
   frontend:
