@@ -75,3 +75,10 @@ docker compose up --build -d
 5. Update the `.env` file with new microservice port and other necessary environment variables.
    6. Also update `DB_NAMES` to add new database name if your microservice needs a database.
 6. Restart the Docker Compose setup using the commands above.
+
+## Frontend Development
+
+1. In `docker-compose.yml` change the `dockerfile` for `frontend` service to `frontend/Dockerfile.dev` to enable hot-reloading during development.
+2. In `./.env` set `FRONTEND_PORT` to the development port `5173`.
+3. Run the OpenAPI client generation see "Frontend Code Generation" section above.
+4. Start the docker compose using `docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up --build -d`.

@@ -13,7 +13,7 @@ node_modules
 Thumbs.db
 
 # Env
-.env
+# .env  # required for frontend build (public keycloak variables)
 .env.*
 !.env.example
 !.env.test
