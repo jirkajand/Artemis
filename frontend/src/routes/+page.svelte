@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageProps } from "./$types";
+    import Button, { Label } from '@smui/button';
 
     // data loaded from +layout.ts
     let { data }: PageProps = $props();
@@ -16,3 +17,6 @@
 {:catch error}
     <p>❌ Health check failed: {error.message}</p>
 {/await}
+
+<br>
+<Button variant="raised"><Label>SMUI Button</Label></Button>
