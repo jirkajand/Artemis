@@ -3,8 +3,7 @@ info:
   title: Artemis API
   version: 0.0.1
   description: Artemis API
-servers:
-  - url: 'localhost:8050'
+servers: []
 paths:
   /user-management/api/health:
     get:
