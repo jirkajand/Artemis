@@ -78,6 +78,5 @@ docker compose up --build -d
 
 ## Frontend Development
 
-1. In `./.env` set `FRONTEND_PORT` to the development port `5173`.
-2. Run the OpenAPI client generation see "Frontend Code Generation" section above.
-3. Start the docker compose using `docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up --build -d`.
+1. Run the OpenAPI client generation see "Frontend Code Generation" section above.
+2. Start the docker compose using `docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up --build -d`.
