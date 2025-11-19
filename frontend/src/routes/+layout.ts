@@ -2,9 +2,6 @@ import { Configuration, FetchError, SettingsServiceApi, UserManagementApi, type 
 import { initKeycloak, keycloak } from "$lib/auth/keycloak";
 import { error, redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
-import type { Key } from "readline";
-import type { KeycloakProfile } from "keycloak-js";
-import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
 
 export const prerender = true;
 export const ssr = false;
