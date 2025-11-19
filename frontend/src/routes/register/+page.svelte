@@ -5,6 +5,7 @@
   import Select, { Option } from "@smui/select";
   import Checkbox from "@smui/checkbox";
   import FormField from "@smui/form-field";
+	import { goto } from "$app/navigation";
 
   const { data } = $props()
   const { clients } = data;
@@ -29,7 +30,9 @@
   let errorMessage = $state<string | null>(null);
   let loading = $state(false);
 
-  async function submit() {
+  async function submit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) {
+    event.preventDefault();
+
     // 1) Basic validation
     errorMessage = null;
     if (form.password !== confirmPassword) {
@@ -50,11 +53,11 @@
         gender: form.gender as GenderEnum
       }
 
-      console.log("Submitting registration form:", updatedForm);
-
       const res = await userManagementClient.registerLocalStudent({
         registerLocalStudentRequest: updatedForm
       });
+
+      await goto('/register/succes');
     } catch (error: any) {
       console.error("Failed to register:", error?.message);
       errorMessage = error?.message || 'An unknown error occurred.';
