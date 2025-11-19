@@ -64,7 +64,7 @@
   }
 </script>
 
-<h1>Register - member</h1>
+<h1>Register - Member</h1>
 
 <form onsubmit={submit}>
 
