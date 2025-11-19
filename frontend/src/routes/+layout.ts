@@ -12,10 +12,6 @@ export const ssr = false;
 export const load: LayoutLoad = async ({ fetch }) => {
   await initKeycloak();
 
-
-  console.log("Keycloak token:", keycloak.token?.substring(0, 20) + "...");
-
-  console.log("Setting openapi clients without token");
   const config = new Configuration({
     // skip accessToken
     accessToken: undefined,

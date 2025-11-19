@@ -26,9 +26,24 @@
   
   let form = $state(formInitial);
   let confirmPassword = $state('');
+  let errorMessage = $state<string | null>(null);
+  let loading = $state(false);
 
   async function submit() {
+    // 1) Basic validation
+    errorMessage = null;
+    if (form.password !== confirmPassword) {
+      errorMessage = "Passwords do not match.";
+      return;
+    }
+    if (!form.termsAndConditionsChecked) {
+      errorMessage = "You must agree to the terms and conditions.";
+      return;
+    }
+
+    // 2) Submit the form
     try {
+      loading = true;
       const updatedForm = {
         ... form,
         dateOfBirth: new Date(form.dateOfBirth),
@@ -37,11 +52,14 @@
 
       console.log("Submitting registration form:", updatedForm);
 
-      // const res = await userManagementClient.registerLocalStudent({
-      //   registerLocalStudentRequest: updatedForm
-      // });
+      const res = await userManagementClient.registerLocalStudent({
+        registerLocalStudentRequest: updatedForm
+      });
     } catch (error: any) {
       console.error("Failed to register:", error?.message);
+      errorMessage = error?.message || 'An unknown error occurred.';
+    } finally {
+      loading = false;
     }
   }
 </script>
@@ -83,10 +101,16 @@
     You will receive an email once your account is verified.
   </p>
 
-  <Button type="submit">
+  <Button type="submit" disabled={loading} variant="outlined">
     Become a member
   </Button>
 </form>
+{#if loading}
+  <p>Submitting your registration...</p>
+{/if}
+{#if errorMessage}
+  <p style="color: red;">{errorMessage}</p>
+{/if}
 
 <a href="/login">Back to login</a>
 
