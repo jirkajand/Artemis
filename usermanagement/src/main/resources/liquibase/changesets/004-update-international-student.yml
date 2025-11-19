@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-update-international-student-accommodation
+      author: Matej Vana
+      changes:
+        - dropColumn:
+            columnName: accommodation_id
+            tableName: international_students
+        - addColumn:
+            tableName: international_students
+            columns:
+              - column:
+                  name: accommodation
+                  type: varchar(255)

@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -19,6 +21,7 @@ public class InternationalStudentService {
     private final InternationalStudentRepository internationalStudentRepository;
     private final InternationalStudentMapper internationalStudentMapper;
     private final KeycloakService keycloakService;
+    private final ProfilePicturesService profilePicturesService;
 
     @Value("${international-student.default-role}")
     private String defaultRole;
@@ -43,5 +46,31 @@ public class InternationalStudentService {
 
         // Save to DB
         return internationalStudentRepository.save(internationalStudentEntity);
+    }
+
+    public void completeInternationalStudentProfile(UUID internationalStudentId, String facultyId, String description, Boolean emailMarketingChecked, MultipartFile profilePicture, String homeUniversity, String accommodation) {
+        var internationalStudentOpt = getInternationalStudentById(internationalStudentId);
+        if (internationalStudentOpt.isEmpty()) {
+            throw new IllegalArgumentException("Student with id " + internationalStudentId + " not found.");
+        }
+
+        var internationalStudent = internationalStudentOpt.get();
+
+        internationalStudent.setBio(description);
+        internationalStudent.setFacultyId(UUID.fromString(facultyId));
+        internationalStudent.setEmailMarketingChecked(emailMarketingChecked);
+        internationalStudent.setHomeUniversity(homeUniversity);
+        internationalStudent.setAccommodation(accommodation);
+
+        // Handle profile picture upload
+        // Assuming ProfilePicturesService is available and injected
+        var profilePicturePath = profilePicturesService.storeProfilePicture(internationalStudentId, profilePicture);
+        profilePicturePath.ifPresent(internationalStudent::setProfilePicturePath);
+
+        internationalStudentRepository.save(internationalStudent);
+    }
+
+    public Optional<InternationalStudentEntity> getInternationalStudentById(UUID internationalStudentId) {
+        return internationalStudentRepository.findById(internationalStudentId);
     }
 }
