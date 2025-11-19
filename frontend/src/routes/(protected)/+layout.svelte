@@ -9,8 +9,12 @@
 </script>
 
 <nav class="topbar">
-  <div>Welcome, {user?.preferred_username}</div>
-  <Button onclick={() => keycloak.logout()}>Logout</Button>
+	{#if user}
+		<div>Welcome, {user?.preferred_username}</div>
+		<Button onclick={() => keycloak.logout()}>Logout</Button>
+	{:else}
+		<Button onclick={() => keycloak.login()}>Login</Button>
+	{/if}
 </nav>
 
 {@render children?.()}
