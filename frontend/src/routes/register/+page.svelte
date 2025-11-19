@@ -45,7 +45,7 @@
     try {
       loading = true;
       const updatedForm = {
-        ... form,
+        ...form,
         dateOfBirth: new Date(form.dateOfBirth),
         gender: form.gender as GenderEnum
       }
