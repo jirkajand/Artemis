@@ -96,6 +96,7 @@
     flex-direction: column;
     gap: 1rem;
     max-width: 400px;
+    margin: 1rem 0;
   }
 
   form section {
