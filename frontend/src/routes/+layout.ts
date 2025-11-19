@@ -15,7 +15,8 @@ export const load: LayoutLoad = async ({ fetch }) => {
   }
   const config = new Configuration({
     accessToken: async () => `Bearer ${keycloak.token ?? ""}`,
-    fetchApi: fetch
+    fetchApi: fetch,
+    basePath: import.meta.env.VITE_API_BASE_URL
   });
 
   const clients = {
