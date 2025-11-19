@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { PageProps } from "./$types";
+	import { keycloak } from '$lib/auth/keycloak';
+    import Button, { Label } from '@smui/button';
 
-    // data loaded from +layout.ts
-    let { data }: PageProps = $props();
+    const { data } = $props()
+
 </script>
 
-<h1>Artemis Frontend</h1>
+<h1>Welcome to Artemis</h1>
 
 <p>Bellow is a health check response status of the user management service:</p>
 
@@ -16,3 +17,7 @@
 {:catch error}
     <p>❌ Health check failed: {error.message}</p>
 {/await}
+
+<Button variant="raised" onclick={() => keycloak.register()}>
+    <Label>Go to register</Label>
+</Button>

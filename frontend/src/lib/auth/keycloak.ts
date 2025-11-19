@@ -23,18 +23,16 @@ export async function initKeycloak() {
   }
   try {
     const authenticated = await keycloak.init({
-      onLoad: "login-required", // auto-login
+      onLoad: "check-sso",
+      pkceMethod: "S256",
       checkLoginIframe: false,
     });
 
-    if (!authenticated) {
-      await keycloak.login();
-    } else {
-      console.log("🔐 Keycloak initialized and user is authenticated");
-    }
+    console.log("🔐 Keycloak init:", authenticated ? "authenticated" : "not authenticated");
 
-    // Optional: schedule token refresh
-    scheduleTokenRefresh();
+    if (authenticated) {
+      scheduleTokenRefresh();
+    }
 
   } catch (err) {
     console.error("Failed to initialize Keycloak:", err);
