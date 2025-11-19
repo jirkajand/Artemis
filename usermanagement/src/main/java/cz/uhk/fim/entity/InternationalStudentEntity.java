@@ -1,12 +1,16 @@
 package cz.uhk.fim.entity;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "international_students")
@@ -26,6 +30,6 @@ public class InternationalStudentEntity extends StudentEntity {
     @JoinColumn(name = "assigned_buddy_id")
     private LocalStudentEntity assignedBuddy;
 
-    private UUID accommodationId;
+    private String accommodation;
 
 }

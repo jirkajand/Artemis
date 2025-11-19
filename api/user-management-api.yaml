@@ -96,7 +96,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterInternationalStudentResponse'
+  /international-student/{internationalStudentId}/profile-details:
+    parameters:
+      - name: internationalStudentId
+        in: path
+        description: ID of the international student
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags: [ UserManagement ]
+      summary: Complete international student profile details
+      description: Allows a registered and approved international student to complete their profile details.
+      operationId: completeInternationalStudentProfile
+      security:
+        - keycloak_auth: [ TUTOR, ADMIN ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InternationalStudentProfileDetailsRequest'
+      responses:
+        '200':
+          description: Profile details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternationalStudentProfileDetailsResponse'
 
+        '400':
+          description: Bad request (invalid data)
+        '401':
+          description: Unauthorized
 
 components:
   schemas:
@@ -199,8 +232,6 @@ components:
               type: string
             facultyId:
               type: string
-            accommodationId:
-              type: string
             dateOfBirth:
               type: string
               format: date
@@ -220,6 +251,34 @@ components:
             - gender
             - termsAndConditionsChecked
 
+    InternationalStudentProfileDetailsRequest:
+      type: object
+      properties:
+        homeUniversity:
+          type: string
+          description: Name of the home university
+        accommodation:
+          type: string
+          description: Accommodation details
+        facultyId:
+          type: string
+          description: ID of the faculty
+        description:
+          type: string
+          description: Short student bio
+        emailMarketingChecked:
+          type: boolean
+          description: Consent to receive marketing emails
+        profilePicture:
+          type: string
+          format: binary
+          description: Profile picture file
+      required:
+        - facultyId
+        - description
+        - emailMarketingChecked
+        - profilePicture
+
     # Responses
     RegisterLocalStudentResponse:
       type: object
@@ -236,6 +295,13 @@ components:
           example: Student registered successfully
 
     LocalStudentProfileDetailsResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: Profile details updated successfully
+
+    InternationalStudentProfileDetailsResponse:
       type: object
       properties:
         result:
