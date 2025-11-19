@@ -57,7 +57,11 @@ public class InternationalStudentService {
         var internationalStudent = internationalStudentOpt.get();
 
         internationalStudent.setBio(description);
-        internationalStudent.setFacultyId(UUID.fromString(facultyId));
+        try {
+            internationalStudent.setFacultyId(UUID.fromString(facultyId));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid facultyId format: " + facultyId);
+        }
         internationalStudent.setEmailMarketingChecked(emailMarketingChecked);
         internationalStudent.setHomeUniversity(homeUniversity);
         internationalStudent.setAccommodation(accommodation);

@@ -232,8 +232,6 @@ components:
               type: string
             facultyId:
               type: string
-            accommodationId:
-              type: string
             dateOfBirth:
               type: string
               format: date
