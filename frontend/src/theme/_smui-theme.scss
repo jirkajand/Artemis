@@ -1,25 +1,61 @@
 @use 'sass:color';
-
 @use '@material/theme/color-palette';
 
-// Svelte Colors!
-@use '@material/theme/index' as theme with (
-  $primary: #ff3e00,
-  $secondary: #676778,
-  $surface: #fff,
-  $background: #fff,
-  $error: color-palette.$red-900
-);
+// ---------------------
+// LIGHT THEME
+// ---------------------
+:root {
+  --mdc-theme-primary: #ff3e00;
+  --mdc-theme-secondary: #676778;
+  --mdc-theme-background: #ffffff;
+  --mdc-theme-surface: #ffffff;
+  --mdc-theme-error: #{color-palette.$red-900};
 
-html,
-body {
-  background-color: theme.$surface;
-  color: theme.$on-surface;
+  --mdc-theme-on-primary: white;
+  --mdc-theme-on-secondary: white;
+  --mdc-theme-on-surface: #222;
+  --mdc-theme-on-background: #222;
+  --mdc-theme-on-error: white;
+
+  --mdc-theme-outline: #d0d0d0;
+}
+
+// ---------------------
+// DARK THEME
+// ---------------------
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mdc-theme-primary: #ff3e00;
+    --mdc-theme-secondary: #{color.scale(#676778, $whiteness: -10%)};
+    --mdc-theme-background: #000;
+    --mdc-theme-surface: #{color.adjust(color-palette.$grey-900, $blue: +4)};
+    --mdc-theme-error: #{color-palette.$red-700};
+
+    --mdc-theme-on-primary: black;
+    --mdc-theme-on-secondary: white;
+    --mdc-theme-on-surface: white;
+    --mdc-theme-on-background: white;
+    --mdc-theme-on-error: white;
+
+    --mdc-theme-outline: #333;
+  }
+
+}
+
+// ---------------------
+// BASE GLOBAL STYLES / OVERRIDES
+// ---------------------
+html, body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background-color: var(--mdc-theme-surface);
+  color: var(--mdc-theme-on-surface);
 }
 
 a {
   color: #40b3ff;
 }
+
 a:visited {
-  color: color.scale(#40b3ff, $lightness: -35%);
+  color: #{color.scale(#40b3ff, $lightness: -35%)};
 }
