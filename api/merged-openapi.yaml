@@ -162,15 +162,7 @@ paths:
       summary: getAllFaculties
       description: getAllFaculties endpoint to retrieve all faculties
       operationId: getAllFaculties
-      security:
-        - keycloak_auth:
-            - USER
-            - TUTOR
-            - ADMIN
-      x-security-roles:
-        - ADMIN
-        - TUTOR
-        - USER
+      security: []
       responses:
         '200':
           description: List of all faculties
