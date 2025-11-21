@@ -214,6 +214,7 @@ components:
           type: integer
         totalElements:
           type: integer
+          format: int64
         totalPages:
           type: integer
         isLast:
@@ -258,6 +259,10 @@ components:
           type: string
         facultyId:
           type: string
+          format: uuid
+        semesterId:
+          type: string
+          format: uuid
         bio:
           type: string
     

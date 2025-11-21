@@ -35,6 +35,7 @@ public class InternationalStudentController implements InternationalStudentApi {
         return ResponseEntity.ok(new InternationalStudentProfileDetailsResponse().result("OK"));
     }
 
+    //todo add preAuthorize or Secured annotation
     @Override
     public ResponseEntity<GetAllInternationalStudentsAnonymous200Response> getAllInternationalStudentsAnonymous(Integer page, Integer size, UUID semesterId, UUID facultyId, String countryCode) {
         return ResponseEntity.ok(internationalStudentService.getAllInternationalStudents(page, size, semesterId, facultyId, countryCode));

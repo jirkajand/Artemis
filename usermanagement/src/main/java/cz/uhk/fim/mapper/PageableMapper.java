@@ -10,7 +10,7 @@ public interface PageableMapper {
 
     @Mapping(target = "pageNumber", source = "number")
     @Mapping(target = "pageSize", source = "size")
-    @Mapping(target = "totalElements", expression = "java((int) page.getTotalElements())")
+    @Mapping(target = "totalElements", source = "totalElements")
     @Mapping(target = "totalPages", source = "totalPages")
     @Mapping(target = "isLast", source = "last")
     PageableResponse toResponse(Page<?> page);

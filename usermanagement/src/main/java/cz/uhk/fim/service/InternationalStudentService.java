@@ -58,7 +58,7 @@ public class InternationalStudentService {
     public void completeInternationalStudentProfile(UUID internationalStudentId, String facultyId, String description, Boolean emailMarketingChecked, MultipartFile profilePicture, String homeUniversity, String accommodation) {
         var internationalStudentOpt = getInternationalStudentById(internationalStudentId);
         if (internationalStudentOpt.isEmpty()) {
-            throw new IllegalArgumentException("Student with id " + internationalStudentId + " not found.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "International student not found with id: " + internationalStudentId);
         }
 
         var internationalStudent = internationalStudentOpt.get();
@@ -88,13 +88,10 @@ public class InternationalStudentService {
     public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode);
-        if (!internationalStudents.isEmpty()) {
-            return new GetAllInternationalStudentsAnonymous200Response()
+        return new GetAllInternationalStudentsAnonymous200Response()
                     .students(internationalStudents.stream()
                             .map(internationalStudentMapper::toInternationalStudentAnonymous)
                             .toList())
                     .pageable(pageableMapper.toResponse(internationalStudents));
-        }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No international students found with the provided filters.");
     }
 }
