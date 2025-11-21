@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-edit-international-students
+      author: Matej Vana
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: international_students
+            constraintName: fk_international_students_students
+        - dropColumn:
+            tableName: international_students
+            columnName: student_entity_id
+        - addNotNullConstraint:
+            tableName: international_students
+            columnName: id
+            columnDataType: ${uuid_type}
+        - addForeignKeyConstraint:
+            baseTableName: international_students
+            baseColumnNames: id
+            constraintName: fk_international_students_students
+            referencedTableName: students
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addColumn:
+            tableName: international_students
+            columns:
+              - column:
+                  name: semester_id
+                  type: ${uuid_type}
