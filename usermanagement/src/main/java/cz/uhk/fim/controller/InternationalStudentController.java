@@ -2,6 +2,7 @@ package cz.uhk.fim.controller;
 
 import cz.uhk.fim.service.InternationalStudentService;
 import cz.uhk.fim.usermanagement.api.InternationalStudentApi;
+import cz.uhk.fim.usermanagement.model.GetAllInternationalStudentsAnonymous200Response;
 import cz.uhk.fim.usermanagement.model.InternationalStudentProfileDetailsResponse;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentRequest;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentResponse;
@@ -33,4 +34,10 @@ public class InternationalStudentController implements InternationalStudentApi {
         internationalStudentService.completeInternationalStudentProfile(internationalStudentId, facultyId, description, emailMarketingChecked, profilePicture, homeUniversity, accommodation);
         return ResponseEntity.ok(new InternationalStudentProfileDetailsResponse().result("OK"));
     }
+
+    @Override
+    public ResponseEntity<GetAllInternationalStudentsAnonymous200Response> getAllInternationalStudentsAnonymous(Integer page, Integer size, UUID semesterId, UUID facultyId, String countryCode) {
+        return ResponseEntity.ok(internationalStudentService.getAllInternationalStudents(page, size, semesterId, facultyId, countryCode));
+    }
+
 }

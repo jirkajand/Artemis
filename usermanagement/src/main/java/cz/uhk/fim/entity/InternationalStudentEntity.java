@@ -12,6 +12,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "international_students")
 @SuperBuilder(toBuilder = true)
@@ -31,5 +33,7 @@ public class InternationalStudentEntity extends StudentEntity {
     private LocalStudentEntity assignedBuddy;
 
     private String accommodation;
+
+    private UUID semesterId;
 
 }

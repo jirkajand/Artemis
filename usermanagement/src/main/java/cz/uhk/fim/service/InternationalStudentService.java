@@ -2,13 +2,19 @@ package cz.uhk.fim.service;
 
 import cz.uhk.fim.entity.InternationalStudentEntity;
 import cz.uhk.fim.mapper.InternationalStudentMapper;
+import cz.uhk.fim.mapper.PageableMapper;
 import cz.uhk.fim.repository.InternationalStudentRepository;
+import cz.uhk.fim.usermanagement.model.GetAllInternationalStudentsAnonymous200Response;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentRequest;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,6 +26,7 @@ public class InternationalStudentService {
 
     private final InternationalStudentRepository internationalStudentRepository;
     private final InternationalStudentMapper internationalStudentMapper;
+    private final PageableMapper pageableMapper;
     private final KeycloakService keycloakService;
     private final ProfilePicturesService profilePicturesService;
 
@@ -76,5 +83,18 @@ public class InternationalStudentService {
 
     public Optional<InternationalStudentEntity> getInternationalStudentById(UUID internationalStudentId) {
         return internationalStudentRepository.findById(internationalStudentId);
+    }
+
+    public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode) {
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode);
+        if (!internationalStudents.isEmpty()) {
+            return new GetAllInternationalStudentsAnonymous200Response()
+                    .students(internationalStudents.stream()
+                            .map(internationalStudentMapper::toInternationalStudentAnonymous)
+                            .toList())
+                    .pageable(pageableMapper.toResponse(internationalStudents));
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No international students found with the provided filters.");
     }
 }

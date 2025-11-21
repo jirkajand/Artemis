@@ -82,6 +82,7 @@ paths:
       summary: registerInternationalStudent
       description: Register a new international student
       operationId: registerInternationalStudent
+      security: [ ]  # no auth required
       requestBody:
         description: International student registration details
         required: true
@@ -130,6 +131,65 @@ paths:
           description: Bad request (invalid data)
         '401':
           description: Unauthorized
+  /international-student/anonymous:
+    get:
+      tags: [ UserManagement ]
+      summary: getAllInternationalStudentsAnonymous
+      description: Retrieve a list of all registered international students
+      operationId: getAllInternationalStudentsAnonymous
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination (default is 0)
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: Number of records per page for pagination (default is 20)
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: semesterId
+          in: query
+          description: Optional semester ID to filter students by semester
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: facultyId
+          in: query
+          description: Optional faculty ID to filter students by faculty
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: countryCode
+          in: query
+          description: Optional country code to filter students by country
+          required: false
+          schema:
+            type: string
+      security:
+        - keycloak_auth: [ TUTOR, ADMIN ]
+      responses:
+        '200':
+          description: A list of international students
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageable:
+                    $ref: '#/components/schemas/PageableResponse'
+                  students:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InternationalStudentAnonymous'
+        '401':
+          description: Unauthorized
 
 components:
   schemas:
@@ -144,6 +204,20 @@ components:
     GenderEnum:
       type: string
       enum: [MALE, FEMALE, OTHER]
+
+    PageableResponse:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        isLast:
+          type: boolean
 
     # Common base schema for students
     StudentBase:
@@ -170,6 +244,23 @@ components:
         emailMarketingChecked:
           type: boolean
 
+    InternationalStudentAnonymous:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        countryCode:
+          type: string
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        homeUniversity:
+          type: string
+        facultyId:
+          type: string
+        bio:
+          type: string
+    
     # Local student registration schema
     RegisterLocalStudentRequest:
       allOf:
