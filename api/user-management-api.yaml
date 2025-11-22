@@ -37,7 +37,7 @@ paths:
   /student/current/navbar:
     get:
       tags: [ UserManagement ]
-      summary: getCurrentStudent
+      summary: getCurrentStudentForNavbar
       description: Retrieve the currently authenticated student's details
       operationId: getCurrentStudentForNavbar
       security:
