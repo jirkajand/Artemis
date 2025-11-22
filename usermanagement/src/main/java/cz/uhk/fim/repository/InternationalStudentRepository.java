@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -21,4 +22,6 @@ public interface InternationalStudentRepository extends JpaRepository<Internatio
                                  (:countryCode is null or student.countryISO = :countryCode)
             """)
     Page<InternationalStudentEntity> findAllByFilters(Pageable pageable, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode);
+
+    Optional<InternationalStudentEntity> findByKeycloakId(UUID keycloakIdUUID);
 }
