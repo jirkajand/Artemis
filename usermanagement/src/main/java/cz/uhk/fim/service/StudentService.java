@@ -61,7 +61,7 @@ public class StudentService {
     private UUID getKeycloakIdUUID(String keycloakId) {
         try {
             return UUID.fromString(keycloakId);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             log.error("Invalid UUID format for keycloakId: {}", keycloakId);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid UUID format for keycloakId: " + keycloakId);
         }
