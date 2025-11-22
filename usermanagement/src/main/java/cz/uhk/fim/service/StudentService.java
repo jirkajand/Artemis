@@ -59,13 +59,11 @@ public class StudentService {
 
 
     private UUID getKeycloakIdUUID(String keycloakId) {
-        UUID keycloakIdUUID;
         try {
-            keycloakIdUUID = UUID.fromString(keycloakId);
+            return UUID.fromString(keycloakId);
         } catch (Exception e) {
             log.error("Invalid UUID format for keycloakId: {}", keycloakId);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid UUID format for keycloakId: " + keycloakId);
         }
-        return keycloakIdUUID;
     }
 }
