@@ -34,6 +34,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseStudentDetail'
+        '400':
+          description: Bad request (invalid UUID format)
+        '401':
+          description: Unauthorized
+        '404':
+          description: Student not found
   /student/current/navbar:
     get:
       tags: [ UserManagement ]
