@@ -42,8 +42,24 @@ public class StudentController implements StudentApi {
     @Override
     public ResponseEntity<Resource> getCurrentStudentProfilePicture(UUID studentId) {
         var resource = profilePicturesService.getProfilePictureResource(studentId);
+        String contentType = "application/octet-stream";
+        String filename = resource.getFilename();
+        if (filename != null) {
+            int idx = filename.lastIndexOf('.');
+            if (idx != -1 && idx < filename.length() - 1) {
+                String ext = filename.substring(idx + 1).toLowerCase();
+                contentType = switch (ext) {
+                    case "png" -> "image/png";
+                    case "jpg", "jpeg" -> "image/jpeg";
+                    case "gif" -> "image/gif";
+                    case "bmp" -> "image/bmp";
+                    case "webp" -> "image/webp";
+                    default -> "application/octet-stream";
+                };
+            }
+        }
         return ResponseEntity.ok()
-                .header("Content-Type", "image/jpeg")
+                .header("Content-Type", contentType)
                 .body(resource);
     }
 }
