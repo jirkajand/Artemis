@@ -3,8 +3,12 @@ package cz.uhk.fim.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,5 +69,21 @@ public class ProfilePicturesService {
             return Optional.empty();
         }
         return Optional.of(fileName);
+    }
+
+    public Resource getProfilePictureResource(UUID studentId) {
+        var fileName = studentId.toString() + "_profilepicture";
+        File uploadDirectory = new File(uploadDir);
+        if (!uploadDirectory.exists() || !uploadDirectory.isDirectory()) {
+            log.warn("Profile pictures upload directory does not exist: {}", uploadDir);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile pictures upload directory does not exist: " + uploadDir);
+        }
+        File[] matchingFiles = uploadDirectory.listFiles((dir, name) -> name.startsWith(fileName + "."));
+        if (matchingFiles != null && matchingFiles.length > 0) {
+            return new FileSystemResource(matchingFiles[0]);
+        } else {
+            log.warn("No profile picture found for studentId: {}", studentId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile picture found for studentId: " + studentId);
+        }
     }
 }
