@@ -35,7 +35,7 @@ jobs:
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
         run: |
           ssh -i ~/.ssh/id_ed25519 -o SendEnv=KEYCLOAK_CLIENT_SECRET -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz << 'EOF'
-            set -euo pipeline
+            set -euo pipefail
             set +x  # disable debug output (protect secrets)
             cd /var/www/artemis2/Artemis
 
