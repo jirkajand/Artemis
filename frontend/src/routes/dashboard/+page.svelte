@@ -1,13 +1,10 @@
 <script lang="ts">
     import TopAppBar, {Row, Section, Title} from "@smui/top-app-bar";
-    import LayoutGrid, {Cell} from "@smui/layout-grid";
     import StudentCard from "$lib/components/StudentCard.svelte";
     import Select, {Option} from "@smui/select";
-    import Tab, {Label} from '@smui/tab';
     import Icon from "@smui/select/icon";
 
     let {data} = $props();
-
 
     const cards = Array(20).fill(0);
 
@@ -54,26 +51,19 @@
                         {/each}
                     </Select>
                 </div>
-
             </Section>
         </Row>
     </TopAppBar>
 
-    <LayoutGrid class="wrap-grid">
+    <!-- Custom Grid -->
+    <div class="card-grid">
         {#each cards as _, i (i)}
-            <Cell span={3} align="middle">
-                <StudentCard/>
-            </Cell>
+            <StudentCard/>
         {/each}
-    </LayoutGrid>
+    </div>
 </div>
 
 <style>
-    .dashboard-container {
-        padding: 1rem;
-        font-size: 16px;
-    }
-
     .controls {
         display: flex;
         gap: 1rem;
@@ -83,15 +73,26 @@
         justify-content: flex-end;
     }
 
-    /* StudentCard sizing */
-    :global(.card-display) {
-        max-width: 300px;
-        width: 100%;
-        margin: 0 auto;
-    }
-
-    /* TopAppBar styling */
     :global(.mdc-top-app-bar__section) {
         padding: 0.5rem 1rem;
     }
+
+    .card-grid {
+        display: grid;
+        gap: 1rem;
+        padding: 2rem 0;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+
+    @media(min-width: 1280px) {
+        .card-grid {
+            padding: 3rem;
+            gap: 2rem;
+        }
+    }
+
+
+
+
 </style>
