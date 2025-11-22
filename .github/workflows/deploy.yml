@@ -34,8 +34,8 @@ jobs:
         env:
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz << 'EOF'
-            set -e
+          ssh -i ~/.ssh/id_ed25519 -o SendEnv=KEYCLOAK_CLIENT_SECRET -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz << 'EOF'
+            set -euo pipefail
             set +x  # disable debug output (protect secrets)
             cd /var/www/artemis2/Artemis
 
@@ -54,5 +54,5 @@ jobs:
             echo "Cleaning up unused images..."
             docker image prune -f --filter until=24h
 
-            echo "✅ Secure deployment complete."
+            echo "Deployment complete."
           EOF
