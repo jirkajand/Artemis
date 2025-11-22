@@ -43,8 +43,8 @@ paths:
     get:
       tags:
         - UserManagement
-      summary: getCurrentStudent
-      description: Retrieve the currently authenticated student's details
+      summary: getCurrentStudentForNavbar
+      description: Retrieve the currently authenticated student's details for navbar display
       operationId: getCurrentStudentForNavbar
       security:
         - keycloak_auth:
