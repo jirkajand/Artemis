@@ -1,77 +1,101 @@
 <script lang="ts">
-    import Card, { Content, PrimaryAction, Media, Actions, ActionButtons } from '@smui/card';
+    import Card, { Content, PrimaryAction, Actions, ActionButtons } from '@smui/card';
     import Button, { Label } from '@smui/button';
     import Badge from '@smui-extra/badge';
-    import type { PageProps } from '../../../.svelte-kit/types/src/routes/$types';
     import Icon from '@smui/select/icon';
+    import ConfirmStudentDialog from '$lib/components/ConfirmStudentDialog.svelte';
 
-    let { data }: PageProps = $props();
+    let open = false;
+    let student = {
+        name: 'Really long student name',
+        faculty: 'Designated faculty',
+        group: 'Group name',
+        bio: '.....',
+        status: 'Assigned',
+        gender: 'Male',
+        country: 'Bikini Bottom'
+    };
 
-    const openCard = () => console.log('Student card opened');
+    const handleConfirm = (studentData: typeof student) => {
+        console.log('Confirmed student:', studentData);
+    };
+
+    const handleClose = () => {
+        console.log('Dialog closed');
+    };
 </script>
 
 <div class="card-display">
     <Card class="custom-card mdc-elevation--z12">
-        <!-- Badges -->
         <div class="badge-container">
             <Badge class="gender-badge" position="inset" align="top-start">♂️</Badge>
             <Badge class="country-badge" position="inset" align="top-end">🏴‍☠️</Badge>
         </div>
 
-        <!-- Main content -->
-        <PrimaryAction on:click={openCard}>
-            <Media
-                    class="card-media"
-                    aspectRatio="16x9"
-                    style="background-image: url('https://i.pinimg.com/736x/6f/36/1f/6f361f08d9837f91fecbd336cd311bce.jpg');"
-            />
+        <div class="avatar-container">
+            <div class="avatar-pic"
+                 style="background-image: url('https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6');">
+            </div>
+        </div>
+
+        <PrimaryAction onclick={() => open = true}>
             <Content class="card-content">
                 <div class="line">
                     <Icon class="material-icons">person</Icon>
-                    <h2 class="card-title">Really long student name</h2>
+                    <h2 class="card-title">{student.name}</h2>
                 </div>
-
                 <div class="line">
                     <Icon class="material-icons">school</Icon>
-                    <h3 class="card-subtitle">Faculty</h3>
+                    <h3 class="faculty-subtitle">{student.faculty}</h3>
                 </div>
-
                 <div class="line">
-                    <Icon class="material-icons">info</Icon>
-                    <div class="bio-wrapper">
-                        <p class="card-bio">Some bio information, hobbies...</p>
-                    </div>
+                    <Icon class="material-icons">group</Icon>
+                    <h3 class="faculty-subtitle">{student.group}</h3>
+                </div>
+                <div class="line">
+                    <Icon class="material-icons">done_outline</Icon>
+                    <h3 class="faculty-subtitle">{student.status}</h3>
                 </div>
             </Content>
         </PrimaryAction>
 
-        <!-- Actions -->
         <Actions class="actions-flex">
             <ActionButtons>
-                <Button variant="raised">
-                    <Label>Assign student</Label>
-                </Button>
+                <Button variant="raised"><Label>Assign student</Label></Button>
             </ActionButtons>
         </Actions>
     </Card>
 </div>
 
+<ConfirmStudentDialog
+        bind:open
+        {student}
+        onConfirm={handleConfirm}
+        onClose={handleClose}
+/>
+
+
+
 <style>
     .card-display {
         max-width: 400px;
-        margin: 1rem auto;
+        margin: 2.5rem 0;
         position: relative;
+        flex: 1;
     }
 
-    /* Card styling */
+    /* Card */
     :global(.custom-card) {
-        position: relative;
         border-radius: 16px;
-        overflow: hidden;
-        background-color: var(--mdc-theme-surface);
-        border: 1px solid var(--mdc-theme-outline, #e0e0e0);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
         z-index: 0;
+        overflow: visible;
+        flex: 1;
+        border: 1px solid #e0e0e0;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        padding-top: 5rem; /* space for floating avatar */
+        position: relative;
     }
 
     :global(.custom-card:hover) {
@@ -79,99 +103,145 @@
         box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
     }
 
-    /* Badges */
-    :global(.smui-badge) {
+    /* FLOATING AVATAR */
+    .avatar-container {
+        position: absolute;
+        top: -50px; /* raise above the top */
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 5;
-        font-size: clamp(20px, 2vw, 28px);
-        padding: 0.4em 0.6em;
-        margin: 0.5vw;
-        background-color: rgba(255, 255, 255, 0.9) !important;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    .avatar-pic {
+        width: 150px;
+        height: 150px;
+        background-size: cover;
+        background-position: center;
         border-radius: 50%;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        color: var(--mdc-theme-on-surface);
+        border: 4px solid white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
     }
 
-    :global(.country-badge) {
-        font-size: clamp(22px, 2.2vw, 30px);
-    }
-
-    /* Card media */
-    :global(.card-media) {
-        height: 200px;
-        object-fit: cover;
-    }
-
-    /* Content styling */
-    .card-content {
+    /* Content */
+    :global(.card-content) {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
-        color: var(--mdc-theme-on-surface);
-        padding: 1rem;
-        width: 100%;
-        padding: 0.5rem 1rem;
+        flex: 1;
+        padding-bottom: 0;
     }
 
     .line {
         display: flex;
-        border-bottom: 1px solid black;
         align-items: center;
-        padding: 0.5rem 0;
-        width: 100%;
-        position: relative; /* needed for absolute positioning of icon */
+        flex: 1;
+        border-bottom: 1px solid #ddd;
     }
 
-    .line Icon {
-        position: absolute;
-        left: 0;          /* stick to the left */
-        flex-shrink: 0;   /* prevent shrinking */
+    :global(.material-icons) {
+        margin: 0 0.5rem;
     }
+
     .line h2,
-    .line h3,
-    .line h4,
-    .line p {
-        margin: 0 auto;   /* centers the text */
-        text-align: center;
-    }
-
-    .card-title {
-        margin: 0;
-        font-weight: 700;
-        color: var(--mdc-theme-on-surface);
-    }
-
-    .card-subtitle {
-        margin: 0;
-        font-weight: 500;
-        color: var(--mdc-theme-on-surface);
-    }
-
-    .card-bio {
-        /* Existing styles... */
-        font-size: 0.875rem;
-        line-height: 1.4;
-        color: var(--mdc-theme-on-surface);
-        margin: 0;
-        max-width: 90%;
+    .line h3 {
+        margin: 0.75rem;
         overflow: hidden;
-        display: -webkit-box; /* Required for multi-line ellipsis */
-        -webkit-line-clamp: 4; /* Limit to 3 lines */
-        -webkit-box-orient: vertical;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
-    /* Actions */
+    .line h2 {
+        font-size: clamp(1.25rem, 1vw + 0.25rem, 1.5rem);
+    }
+
+    .line h3 {
+        font-size: clamp(1.1rem, 0.5vw + 0.65rem, 2rem);
+    }
+
+    .faculty-subtitle {
+        font-weight: 500;
+    }
+
+    /* Badges */
+    :global(.smui-badge) {
+        z-index: 10;
+        font-size: clamp(2.25rem, 1vw + 0.5rem, 3rem);
+        padding: 0.5rem;
+        margin: 0;
+        background-color: transparent !important;
+    }
+
+    :global(.badge-container) {
+        position: absolute;
+        inset: 2rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+    }
+
+
     :global(.actions-flex) {
         display: flex;
         justify-content: center;
-        padding: 0.75rem 0 1rem;
+        padding: 1rem;
     }
 
-    .bio-wrapper {
-        display: flex;
-        align-items: center;    /* vertical center */
-        justify-content: center;/* optional: horizontal center */
-        min-height: 5rem;
-        flex: 1;
+    @media(max-width: 800px) {
+        .card-display {
+            width: 100%;
+            justify-self: center;
+        }
     }
+
+    /* Dialog */
+    :global(.mdc-dialog__surface){
+        width: 600px;
+        height: 70vh;
+        max-width: calc(100vw - 32px);
+        overflow: visible;
+        border-radius: 10%;
+    }
+
+    :global(.mdc-dialog .mdc-dialog__surface) {
+        border-radius: 10%;
+    }
+
+    :global(.mdc-dialog__content){
+        padding: 2rem;
+    }
+
+    :global(.mdc-dialog__title){
+        text-align: center;
+    }
+
+    :global(.mdc-dialog__actions) {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    :global(.dialog-confirm-button) {
+        min-width: 30%;
+    }
+
+    :global(.dialog-close-button) {
+        top: -25px;
+        right: -15px;
+        z-index: 10;
+    }
+
+    .fab-container {
+        position: relative;
+        height: 0;
+        width: 100%;
+        z-index: 1;
+        display: flex;
+    }
+
+
+
+
+
 </style>

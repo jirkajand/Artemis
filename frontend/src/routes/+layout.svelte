@@ -8,13 +8,15 @@
 
 <style>
   main {
-    display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: start;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 1rem;
     width: 100%;
-    max-width: 54rem;
+  }
+
+  *, :root, html {
+	  box-sizing: border-box;
   }
 </style>
