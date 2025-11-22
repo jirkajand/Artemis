@@ -44,7 +44,7 @@ jobs:
             git reset --hard origin/develop
           
             echo "Updating .env with Keycloak secret..."
-            sed -i "s|^KEYCLOAK_CLIENT_SECRET=.*|KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET|" .env
+            sed -i "s|^KEYCLOAK_CLIENT_SECRET=.*|KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}|" .env
 
             echo "Rebuilding containers..."
             docker compose pull
