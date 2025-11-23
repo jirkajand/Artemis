@@ -3,6 +3,7 @@
 
 import { browser } from "$app/environment";
 import Keycloak from "keycloak-js";
+import type { KeycloakOIDCProfile } from "./keycloak-types";
 
 // Create a Keycloak instance
 export const keycloak = new Keycloak({
@@ -18,20 +19,27 @@ export async function initKeycloak() {
     return keycloak;
   }
   if (keycloak.didInitialize) {
-    console.log("🔑 Keycloak already initialized");
     return keycloak;
   }
   try {
     const authenticated = await keycloak.init({
       onLoad: "check-sso",
       pkceMethod: "S256",
-      checkLoginIframe: false,
+      checkLoginIframe: true,
+      silentCheckSsoRedirectUri: `${location.origin}/silent-check-sso.html`,
     });
 
-    console.log("🔐 Keycloak init:", authenticated ? "authenticated" : "not authenticated");
+    keycloak.didInitialize = true;
 
     if (authenticated) {
-      scheduleTokenRefresh();
+      keycloak.onTokenExpired = async () => {
+        try {
+          await keycloak.updateToken(60)
+        } catch(e) {
+          console.error("Failed to refresh token");
+          keycloak.login();
+        };
+      };
     }
 
   } catch (err) {
@@ -41,16 +49,23 @@ export async function initKeycloak() {
   return keycloak;
 }
 
-function scheduleTokenRefresh() {
-  setInterval(async () => {
-    if (keycloak.token && keycloak.isTokenExpired(30)) {
-      try {
-        await keycloak.updateToken(60);
-        console.log("🔄 Token refreshed");
-      } catch (error) {
-        console.error("Failed to refresh token:", error);
-        await keycloak.login();
+export async function getUserInfo(fetchApi: typeof fetch = fetch): Promise<KeycloakOIDCProfile> {
+  // Fetch userinfo using the accessToken
+  if(!keycloak.token) {
+    throw new Error("No token available");
+  }
+  const userInfoUrl = `${import.meta.env.VITE_KEYCLOAK_URL}/realms/${import.meta.env.VITE_KEYCLOAK_REALM}/protocol/openid-connect/userinfo`;
+  const res = await fetchApi(
+    userInfoUrl,
+    {
+      headers: {
+        Authorization: `Bearer ${keycloak.token}`
       }
     }
-  }, 300000);
+  );
+  if (!res.ok) {
+    throw new Error(`Failed to fetch user info: ${res.status}`);
+  }
+  const user: KeycloakOIDCProfile = await res.json();
+  return user;
 }
