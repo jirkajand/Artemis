@@ -4,7 +4,7 @@ import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
 import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
 
-export const prerender = false;
+export const prerender = true;
 export const ssr = false;
 
 export const load: LayoutLoad = async ({ fetch }) => {
