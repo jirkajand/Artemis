@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Card, { Content, PrimaryAction, Actions, ActionButtons } from '@smui/card';
-    import Button, { Label } from '@smui/button';
+    import Card, {Content, PrimaryAction, Actions, ActionButtons} from '@smui/card';
+    import Button, {Label} from '@smui/button';
     import Badge from '@smui-extra/badge';
     import Icon from '@smui/select/icon';
     import ConfirmStudentDialog from '$lib/components/ConfirmStudentDialog.svelte';
@@ -8,9 +8,10 @@
     let open = false;
     let student = {
         name: 'Really long student name',
-        faculty: 'Designated faculty',
+        homeFaculty: 'Home faculty',
+        destinationFaculty: 'Destination faculty',
         group: 'Group name',
-        bio: '.....',
+        bio: 'Ahoy there! I be Patchy the Pirate, the self-appointed President of the SpongeBob SquarePants Fan Club! Residing in Encino, California, I host the show alongside my annoying, prank-loving sidekick, Potty the Parrot. I dedicate me entire life to celebrating the yellow sponge, collecting rare memorabilia from across the seven seas. Whether I\'m losing me hook or fighting with a bird, I never miss an episode of my favorite nautical neighbor. So drop on the deck and flop like a fish, because SpongeBob is number one!',
         status: 'Assigned',
         gender: 'Male',
         country: 'Bikini Bottom'
@@ -25,7 +26,7 @@
     };
 </script>
 
-<div class="card-display">
+<div class="card-display"  onclick={() => open = true}>
     <Card class="custom-card mdc-elevation--z12">
         <div class="badge-container">
             <Badge class="gender-badge" position="inset" align="top-start">♂️</Badge>
@@ -38,7 +39,7 @@
             </div>
         </div>
 
-        <PrimaryAction onclick={() => open = true}>
+        <div class="student-info-container">
             <Content class="card-content">
                 <div class="line">
                     <Icon class="material-icons">person</Icon>
@@ -46,7 +47,7 @@
                 </div>
                 <div class="line">
                     <Icon class="material-icons">school</Icon>
-                    <h3 class="faculty-subtitle">{student.faculty}</h3>
+                    <h3 class="faculty-subtitle">{student.destinationFaculty}</h3>
                 </div>
                 <div class="line">
                     <Icon class="material-icons">group</Icon>
@@ -57,11 +58,13 @@
                     <h3 class="faculty-subtitle">{student.status}</h3>
                 </div>
             </Content>
-        </PrimaryAction>
+        </div>
 
         <Actions class="actions-flex">
             <ActionButtons>
-                <Button variant="raised"><Label>Assign student</Label></Button>
+                <Button variant="raised" onclick={() => open = true}>
+                    <Label>Assign student</Label>
+                </Button>
             </ActionButtons>
         </Actions>
     </Card>
@@ -75,9 +78,9 @@
 />
 
 
-
 <style>
     .card-display {
+        cursor: pointer;
         max-width: 400px;
         margin: 2.5rem 0;
         position: relative;
@@ -98,15 +101,19 @@
         position: relative;
     }
 
+    :global(.student-info-container) {
+
+    }
+
     :global(.custom-card:hover) {
         transform: translateY(-6px) scale(1.02);
         box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+        background-color: var(--mdc-theme-text-hint-on-background);
     }
 
-    /* FLOATING AVATAR */
     .avatar-container {
         position: absolute;
-        top: -50px; /* raise above the top */
+        top: -50px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 5;
@@ -189,59 +196,11 @@
         padding: 1rem;
     }
 
-    @media(max-width: 800px) {
+    @media (max-width: 800px) {
         .card-display {
             width: 100%;
             justify-self: center;
         }
     }
-
-    /* Dialog */
-    :global(.mdc-dialog__surface){
-        width: 600px;
-        height: 70vh;
-        max-width: calc(100vw - 32px);
-        overflow: visible;
-        border-radius: 10%;
-    }
-
-    :global(.mdc-dialog .mdc-dialog__surface) {
-        border-radius: 10%;
-    }
-
-    :global(.mdc-dialog__content){
-        padding: 2rem;
-    }
-
-    :global(.mdc-dialog__title){
-        text-align: center;
-    }
-
-    :global(.mdc-dialog__actions) {
-        justify-content: center;
-        padding: 1rem;
-    }
-
-    :global(.dialog-confirm-button) {
-        min-width: 30%;
-    }
-
-    :global(.dialog-close-button) {
-        top: -25px;
-        right: -15px;
-        z-index: 10;
-    }
-
-    .fab-container {
-        position: relative;
-        height: 0;
-        width: 100%;
-        z-index: 1;
-        display: flex;
-    }
-
-
-
-
 
 </style>

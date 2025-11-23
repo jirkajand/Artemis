@@ -11,6 +11,8 @@
   $error: color-palette.$red-900
 );
 
+@use '@material/theme/styles';
+
 html,
 body {
   background-color: theme.$surface;
