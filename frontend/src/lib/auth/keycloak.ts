@@ -51,7 +51,7 @@ export async function initKeycloak() {
 
 export async function getUserInfo(fetchApi: typeof fetch = fetch): Promise<KeycloakOIDCProfile> {
   // Fetch userinfo using the accessToken
-  if(keycloak.token == null) {
+  if(!keycloak.token) {
     throw new Error("No token available");
   }
   const userInfoUrl = `${import.meta.env.VITE_KEYCLOAK_URL}/realms/${import.meta.env.VITE_KEYCLOAK_REALM}/protocol/openid-connect/userinfo`;
