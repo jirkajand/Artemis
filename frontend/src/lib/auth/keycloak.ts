@@ -32,9 +32,9 @@ export async function initKeycloak() {
     keycloak.didInitialize = true;
 
     if (authenticated) {
-      keycloak.onTokenExpired = () => {
+      keycloak.onTokenExpired = async () => {
         try {
-          keycloak.updateToken(60)
+          await keycloak.updateToken(60)
         } catch(e) {
           console.error("Failed to refresh token");
           keycloak.login();
