@@ -82,7 +82,7 @@
     .card-display {
         cursor: pointer;
         max-width: 400px;
-        margin: 2.5rem 0;
+        margin: 2rem 0;
         position: relative;
         flex: 1;
     }
@@ -99,10 +99,6 @@
         flex-direction: column;
         padding-top: 5rem; /* space for floating avatar */
         position: relative;
-    }
-
-    :global(.student-info-container) {
-
     }
 
     :global(.custom-card:hover) {

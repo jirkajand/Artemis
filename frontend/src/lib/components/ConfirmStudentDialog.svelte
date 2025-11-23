@@ -56,7 +56,7 @@
         return '🌍';
     }
 
-    import { tick } from 'svelte';
+    import {tick} from 'svelte';
 
     $: if (open) {
         resetScroll();
@@ -171,10 +171,10 @@
 
 <style lang="scss">
 
-  :global(.dialog-content-column){
+  :global(.dialog-content-column) {
     display: flex;
     flex-direction: column;
-    padding:  1rem 4rem !important;
+    padding: 1rem 3rem !important;
     gap: 1.5rem;
     height: 100%;
     overflow-y: visible;
@@ -198,8 +198,9 @@
     position: relative;
     height: auto;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
+    flex: 1 1 40%;
   }
 
   .picture-container-sized {
@@ -267,7 +268,6 @@
     color: var(--mdc-theme-primary);
     border-bottom: 2px solid #eee;
     padding-bottom: 0.5rem;
-    padding-top: 1rem;
     font-size: 1.25rem;
     margin: 0;
   }
@@ -313,10 +313,12 @@
 
   .badge-gender {
     border-top-right-radius: 50%;
+    border-bottom-left-radius: 10%;
   }
 
   .badge-country {
     border-top-left-radius: 50%;
+    border-bottom-right-radius: 10%;
   }
 
 
@@ -325,7 +327,7 @@
     transform: translateY(-2px) scale(1.08);
   }
 
-  :global(.mdc-dialog__surface){
+  :global(.mdc-dialog__surface) {
     overflow: visible;
     display: flex;
     flex-direction: column;
@@ -337,7 +339,7 @@
     width: max(850px, 50vw);
   }
 
-  :global(.mdc-dialog__title){
+  :global(.mdc-dialog__title) {
     text-align: center;
     font-size: 1.75rem;
     margin: 0;
@@ -346,18 +348,18 @@
     flex-shrink: 0;
   }
 
-  :global(.mdc-dialog__actions){
+  :global(.mdc-dialog__actions) {
     justify-content: center;
     padding: 1rem;
     flex-shrink: 0;
   }
 
-  :global(.mdc-dialog__actions > .mdc-button){
+  :global(.mdc-dialog__actions > .mdc-button) {
     font-size: 1.25rem;
     min-width: 200px;
   }
 
-  :global(.dialog-close-button){
+  :global(.dialog-close-button) {
     position: absolute;
     top: -20px;
     right: -20px;
@@ -365,7 +367,7 @@
     border-radius: 50%;
   }
 
-  .fab-container{
+  .fab-container {
     position: relative;
     height: 0;
     width: 100%;
