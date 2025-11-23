@@ -18,6 +18,7 @@
     <p>❌ Health check failed: {error.message}</p>
 {/await}
 
-<Button variant="raised" onclick={() => keycloak.register()}>
-    <Label>Go to register</Label>
+
+<Button variant="raised" onclick={() => keycloak.logout()}>
+    <Label>Logout</Label>
 </Button>

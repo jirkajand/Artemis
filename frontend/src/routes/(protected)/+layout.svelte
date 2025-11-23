@@ -12,6 +12,7 @@
 	{#if user}
 		<div>Welcome, {user?.preferred_username}</div>
 		<Button onclick={() => keycloak.logout()}>Logout</Button>
+		<a href="/register">Register</a>
 	{:else}
 		<Button onclick={() => keycloak.login()}>Login</Button>
 	{/if}
