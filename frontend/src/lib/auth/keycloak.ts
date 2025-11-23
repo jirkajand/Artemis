@@ -4,6 +4,7 @@
 import { browser } from "$app/environment";
 import Keycloak from "keycloak-js";
 import type { KeycloakOIDCProfile } from "./keycloak-types";
+import { replaceState } from "$app/navigation";
 
 // Create a Keycloak instance
 export const keycloak = new Keycloak({
@@ -26,7 +27,8 @@ export async function initKeycloak() {
     const authenticated = await keycloak.init({
       onLoad: "check-sso",
       pkceMethod: "S256",
-      checkLoginIframe: false,
+      checkLoginIframe: true,
+      silentCheckSsoRedirectUri: `${location.origin}/silent-check-sso.html`,
     });
 
     keycloak.didInitialize = true;
