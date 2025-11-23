@@ -4,7 +4,6 @@
 import { browser } from "$app/environment";
 import Keycloak from "keycloak-js";
 import type { KeycloakOIDCProfile } from "./keycloak-types";
-import { replaceState } from "$app/navigation";
 
 // Create a Keycloak instance
 export const keycloak = new Keycloak({
@@ -20,7 +19,6 @@ export async function initKeycloak() {
     return keycloak;
   }
   if (keycloak.didInitialize) {
-    console.log("🔑 Keycloak already initialized");
     return keycloak;
   }
   try {
@@ -33,12 +31,9 @@ export async function initKeycloak() {
 
     keycloak.didInitialize = true;
 
-    console.log("🔐 Keycloak init:", authenticated ? "authenticated" : "not authenticated");
-
     if (authenticated) {
       keycloak.onTokenExpired = () => {
         try {
-          console.log("⏳ Keycloak token expired, refreshing...");
           keycloak.updateToken(60)
         } catch(e) {
           console.error("Failed to refresh token");
