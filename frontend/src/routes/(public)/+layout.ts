@@ -2,7 +2,7 @@ import { Configuration, UserManagementApi } from "$lib/api";
 import { initKeycloak, keycloak } from "$lib/auth/keycloak";
 import type { LayoutLoad } from "./$types";
 
-export const prerender = false;
+export const prerender = true;
 export const ssr = false;
 
 export const load: LayoutLoad = async ({ fetch }) => {
