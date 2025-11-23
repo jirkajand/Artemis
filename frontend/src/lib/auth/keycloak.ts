@@ -63,6 +63,9 @@ export async function getUserInfo(fetchApi: typeof fetch = fetch): Promise<Keycl
       }
     }
   );
+  if (!res.ok) {
+    throw new Error(`Failed to fetch user info: ${res.status}`);
+  }
   const user: KeycloakOIDCProfile = await res.json();
   return user;
 }
