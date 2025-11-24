@@ -7,19 +7,19 @@ export const prerender = true;
 export const ssr = false;
 
 export const load: LayoutLoad = async ({ fetch }) => {
-  await initKeycloak();
+	await initKeycloak();
 
-  const config = new Configuration({
-    // skip accessToken
-    accessToken: undefined,
-    fetchApi: fetch,
-    basePath: import.meta.env.VITE_API_BASE_URL
-  });
+	const config = new Configuration({
+		// skip accessToken
+		accessToken: undefined,
+		fetchApi: fetch,
+		basePath: import.meta.env.VITE_API_BASE_URL
+	});
 
-  const clients = {
-    management: new UserManagementApi(config),
-    settings: new SettingsServiceApi(config)
-  };
+	const clients = {
+		management: new UserManagementApi(config),
+		settings: new SettingsServiceApi(config)
+	};
 
-  return { clients };
+	return { clients };
 };
