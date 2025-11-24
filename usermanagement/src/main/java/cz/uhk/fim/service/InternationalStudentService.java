@@ -1,6 +1,7 @@
 package cz.uhk.fim.service;
 
 import cz.uhk.fim.entity.InternationalStudentEntity;
+import cz.uhk.fim.entity.LocalStudentEntity;
 import cz.uhk.fim.mapper.InternationalStudentMapper;
 import cz.uhk.fim.mapper.PageableMapper;
 import cz.uhk.fim.repository.InternationalStudentRepository;
@@ -83,6 +84,15 @@ public class InternationalStudentService {
 
     public Optional<InternationalStudentEntity> getInternationalStudentById(UUID internationalStudentId) {
         return internationalStudentRepository.findById(internationalStudentId);
+    }
+
+
+    public InternationalStudentEntity assignLocalStudentToInternationalStudent(UUID internationalStudentId, LocalStudentEntity localStudentEntity) {
+        var internationalStudent = getInternationalStudentById(internationalStudentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International Student with id " + internationalStudentId + " not found."));
+
+        internationalStudent.setAssignedBuddy(localStudentEntity);
+        return internationalStudentRepository.save(internationalStudent);
     }
 
     public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode) {

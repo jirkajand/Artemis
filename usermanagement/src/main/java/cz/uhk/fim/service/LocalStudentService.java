@@ -8,9 +8,12 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,6 +26,7 @@ public class LocalStudentService {
     private final LocalStudentMapper localStudentMapper;
     private final KeycloakService keycloakService;
     private final ProfilePicturesService profilePicturesService;
+    private final InternationalStudentService internationalStudentService;
 
     @Value("${local-student.default-role}")
     private String defaultRole;
@@ -60,5 +64,31 @@ public class LocalStudentService {
 
     public Optional<LocalStudentEntity> getLocalStudentById(UUID localStudentId) {
         return localStudentRepository.findById(localStudentId);
+    }
+
+    public Optional<LocalStudentEntity> getLocalStudentByKeycloakId(UUID keycloakId) {
+        return localStudentRepository.findByKeycloakId(keycloakId);
+    }
+
+    public void assignInternationalStudentToLocalStudent(UUID localStudentKeycloakId, UUID internationalStudentId) {
+        var localStudent = getLocalStudentByKeycloakId(localStudentKeycloakId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Local Student with keycloakId " + localStudentKeycloakId + " not found."));
+        if (Objects.isNull(localStudent.getAssignedStudentsCapacity())
+                || (Objects.nonNull(localStudent.getAssignedStudents())
+                && !localStudent.getAssignedStudents().isEmpty()
+                && localStudent.getAssignedStudents().size() >= localStudent.getAssignedStudentsCapacity())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Local Student with id " + localStudent.getId() + " has reached the maximum capacity of assigned international students.");
+        }
+        var internationalStudent = internationalStudentService.getInternationalStudentById(internationalStudentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International Student with id " + internationalStudentId + " not found."));
+
+        if (localStudent.getAssignedStudents().contains(internationalStudent)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "International Student with id " + internationalStudentId + " is already assigned to Local Student with id " + localStudent.getId() + ".");
+        }
+        
+        if (Objects.nonNull(internationalStudent.getAssignedBuddy())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "International Student with id " + internationalStudentId + " is already assigned to another Local Student with id " + internationalStudent.getAssignedBuddy().getId() + ".");
+        }
+
+        internationalStudentService.assignLocalStudentToInternationalStudent(internationalStudentId, localStudent);
+
     }
 }
