@@ -1,4 +1,4 @@
-import { Configuration, UserManagementApi } from "$lib/api";
+import { Configuration, SettingsServiceApi, UserManagementApi } from "$lib/api";
 import { initKeycloak, keycloak } from "$lib/auth/keycloak";
 import type { LayoutLoad } from "./$types";
 
@@ -20,7 +20,8 @@ export const load: LayoutLoad = async ({ fetch }) => {
   });
 
   const clients = {
-    management: new UserManagementApi(config)
+    management: new UserManagementApi(config),
+    settings: new SettingsServiceApi(config)
   };
 
   return { clients };

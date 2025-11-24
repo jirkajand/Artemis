@@ -1,15 +1,18 @@
 <script lang="ts">
-	import { GenderEnum, type RegisterLocalStudentRequest } from "$lib/api";
+	import { GenderEnum, type FacultyResponse, type RegisterLocalStudentRequest } from "$lib/api";
 	import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import Select, { Option } from "@smui/select";
   import Checkbox from "@smui/checkbox";
   import FormField from "@smui/form-field";
 	import { goto } from "$app/navigation";
+	import type { PageProps } from "./$types";
+	import { onMount } from "svelte";
 
-  const { data } = $props()
+  const { data }:PageProps = $props()
   const { clients } = data;
   const userManagementClient = clients.management;
+  const settingsClient = clients.settings;
 
   const formInitial: Omit<RegisterLocalStudentRequest, 'dateOfBirth'> & {
     dateOfBirth: string
@@ -29,6 +32,16 @@
   let confirmPassword = $state('');
   let errorMessage = $state<string | null>(null);
   let loading = $state(false);
+
+  let facultyList = $state<FacultyResponse[]>([]);
+
+  onMount(async () => {
+    await loadFaculties();
+  });
+
+  async function loadFaculties() {
+    facultyList = await settingsClient.getAllFaculties();
+  }
 
   async function submit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) {
     event.preventDefault();
@@ -57,7 +70,7 @@
         registerLocalStudentRequest: updatedForm
       });
 
-      await goto('/register/succes');
+      await goto('/register/success');
     } catch (error: any) {
       console.error("Failed to register:", error?.message);
       errorMessage = error?.message || 'An unknown error occurred.';
@@ -84,7 +97,11 @@
       <Option value={GenderEnum.Female}>Female</Option>
       <Option value={GenderEnum.Other}>Other</Option>
     </Select>
-    <Textfield bind:value={form.facultyId} style="width: 100%;" label="Faculty ID" required />
+    <Select bind:value={form.facultyId} label="Faculty" required>
+      {#each facultyList as faculty}
+        <Option value={faculty.id}>{faculty.shortName}</Option>
+      {/each}
+    </Select>
   </section>
 
   <section>
