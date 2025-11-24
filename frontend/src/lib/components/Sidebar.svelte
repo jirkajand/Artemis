@@ -80,7 +80,7 @@
         display: block;
     }
     .sidebar .material-icons {
-        color: var(--menu-bg);
+        color: var(--on-nav-bg);
         margin-right: 0.5rem;
     }
     nav ul {
