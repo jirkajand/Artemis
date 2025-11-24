@@ -1,19 +1,17 @@
 <script lang="ts">
+	import { keycloak } from "$lib/auth/keycloak";
+	import Button from "@smui/button";
 	import type { LayoutProps } from "./$types";
 	import Navbar from "$lib/components/Navbar.svelte";
-	import Sidebar from "$lib/components/Sidebar.svelte";
 
-	let { children, data }: LayoutProps = $props();
-
-	const { user } = data;
+	let { children }: LayoutProps = $props();
 </script>
 
 <header>
-	<Navbar {user} />
+	<Navbar user={null} />
 </header>
 
 <div class="layout">
-	<Sidebar />
 	<main>
 		{@render children?.()}
 	</main>
@@ -33,11 +31,12 @@
 		overflow: hidden;
 	}
 	main {
+		position: relative;
+
 		display: flex;
 		flex-direction: column;
 		align-items: start;
 		justify-content: start;
-		flex: 1;
 		margin: 0 auto;
 		padding: 2rem 1rem;
 		width: 100%;
