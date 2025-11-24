@@ -37,6 +37,7 @@
 		flex-direction: column;
 		align-items: start;
 		justify-content: start;
+		flex: 1;
 		margin: 0 auto;
 		padding: 2rem 1rem;
 		width: 100%;
