@@ -4,9 +4,13 @@
     import Select, {Option} from "@smui/select";
     import Icon from "@smui/select/icon";
     import { Label } from '@smui/common';
-    let {data} = $props();
+    import type { PageProps } from "./$types";
+    import AnonymisedStudentCard from '$lib/components/AnonymisedStudentCard.svelte'
 
-    const cards = Array(20).fill(0);
+    let { data } = $props();
+    let { students } = data;
+    console.log(students);
+     const cards = Array(20).fill(0);
     let dashboardPage = ['Buddy Matching', 'Manage my mentees'];
     let selected = $state(dashboardPage[0]);
     // Select state
@@ -70,7 +74,7 @@
     <!-- Custom Grid -->
     <div class="card-grid">
         {#each cards as _, i (i)}
-            <StudentCard/>
+            <AnonymisedStudentCard/>
         {/each}
     </div>
 </div>
@@ -117,7 +121,7 @@
 
     @media(min-width: 1280px) {
         .card-grid {
-            padding: 3rem;
+            padding: 2.5rem;
             gap: 2rem;
         }
     }

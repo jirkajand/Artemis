@@ -3,7 +3,7 @@
     import Button, {Label} from '@smui/button';
     import Badge from '@smui-extra/badge';
     import Icon from '@smui/select/icon';
-    import ConfirmStudentDialog from '$lib/components/ConfirmStudentDialog.svelte';
+    import StudentInfoDialog from '$lib/components/StudentInfoDialog.svelte';
 
     let open = false;
     let student = {
@@ -43,7 +43,7 @@
             <Content class="card-content">
                 <div class="line">
                     <Icon class="material-icons">person</Icon>
-                    <h2 class="card-title">{student.name}</h2>
+                    <h2 class="card-title"></h2>
                 </div>
                 <div class="line">
                     <Icon class="material-icons">school</Icon>
@@ -70,7 +70,7 @@
     </Card>
 </div>
 
-<ConfirmStudentDialog
+<StudentInfoDialog
         bind:open
         {student}
         onConfirm={handleConfirm}
