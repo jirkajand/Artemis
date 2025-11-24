@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/state";
+	import Button from "@smui/button";
 
     // define list of nav pages
     interface NavPage {
@@ -16,10 +17,14 @@
         { name: "E-mailing", icon: "mail", href: "/emailing" },
     ];
 
+    let isOpen = $state(false);
+
 </script>
 
-
-<aside class="sidebar">
+<Button id="menu-button" onclick={() => isOpen = !isOpen}>
+    <span class="material-icons">menu</span>
+</Button>
+<aside class="sidebar" class:open="{isOpen}">
     <a class="logo" href="/">
         <img  src="/logo/hradec_kralove-logo-colour.png" alt="Logo" />
     </a>
@@ -46,6 +51,11 @@
 </aside>
 
 <style>
+    :global(#menu-button) {
+        position: absolute;
+        display: none;
+        z-index: 1100;
+    }
     .sidebar {
 		display: flex;
 		flex-flow: column;
@@ -111,5 +121,57 @@
         text-align: center;
         padding: 1rem;
         margin-top: auto;
+    }
+
+    @media (max-width: 768px) and (min-width: 481px) {
+        .sidebar {
+            width: 4.5rem;
+            align-items: center;
+        }
+        .sidebar .logo {
+            padding: 0 0.25rem;
+        }
+        .sidebar .logo img {
+            max-width: 50px;
+        }
+        nav ul li {
+            margin-right: 0;
+        }
+        nav ul li a {
+            font-size: 0;
+            padding: 0.5rem 0;
+            border-bottom: none;
+        }
+        nav ul li a .material-icons {
+            margin-right: 0;
+            font-size: 1.5rem;
+        }
+        .semester, .footer {
+            font-size: 0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sidebar {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            padding: 0.5rem;
+
+            z-index: 1000;
+        }
+        .sidebar nav {
+            width: 100%;
+        }
+        .sidebar.open {
+            display: flex;
+        }
+        :global(#menu-button) {
+            display: block;
+        }
     }
 </style>
