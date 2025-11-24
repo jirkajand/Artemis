@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
+    import { keycloak } from "$lib/auth/keycloak";
 	import List, { Item, Separator, Text, Graphic } from "@smui/list";
 	import Menu from "@smui/menu";
 
@@ -31,25 +32,25 @@
         anchorCorner="BOTTOM_LEFT"
     >
         <List class="demo-list" dense>
-            <Item onSMUIAction={() => (console.log('Edit'))}>
+            <Item onSMUIAction={() => (console.log('Profile'))}>
                 <Graphic class="material-icons">person</Graphic>
                 <Text>My Profile</Text>
             </Item>
-            <Item onSMUIAction={() => (console.log('Send'))}>
+            <Item onSMUIAction={() => (console.log('Edit'))}>
                 <Graphic class="material-icons">edit</Graphic>
                 <Text>Edit Profile</Text>
             </Item>
-            <Item onSMUIAction={() => (console.log('Archive'))}>
+            <Item onSMUIAction={() => (console.log('Change Password'))}>
                 <Graphic class="material-icons">key</Graphic>
                 <Text>Change Password</Text>
             </Item>
             <Separator />
-            <Item onSMUIAction={() => (console.log('Archive'))}>
+            <Item onSMUIAction={() => (console.log('Documentation'))}>
                 <Graphic class="material-icons">book</Graphic>
                 <Text>Documentation</Text>
             </Item>
             <Separator />
-            <Item onSMUIAction={() => (console.log('Archive'))}>
+            <Item onSMUIAction={() => (keycloak.logout())}>
                 <Graphic class="material-icons">logout</Graphic>
                 <Text>Log Out</Text>
             </Item>
