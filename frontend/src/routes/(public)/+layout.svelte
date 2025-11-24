@@ -2,15 +2,13 @@
 	import { keycloak } from "$lib/auth/keycloak";
 	import Button from "@smui/button";
 	import type { LayoutProps } from "./$types";
+	import Navbar from "$lib/components/Navbar.svelte";
 
 	let { children }: LayoutProps = $props();
 </script>
 
 <header>
-	<nav class="topbar">
-		<Button onclick={() => keycloak.login()}>Login</Button>
-		<a href="/register">Register</a>
-	</nav>
+	<Navbar user={null} />
 </header>
 
 <div class="layout">	
@@ -25,14 +23,6 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-	}
-	nav.topbar {
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
-		padding: 1rem;
-		background-color: #002533;
-		border-bottom: 1px solid #ddd;
 	}
 	.layout {
 		display: flex;

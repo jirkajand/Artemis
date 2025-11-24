@@ -2,6 +2,7 @@
     import { keycloak } from "$lib/auth/keycloak";
 	import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
     import Button from "@smui/button";
+	import ProfileMenu from "./ProfileMenu.svelte";
 
     let { user = null }: {
         user: KeycloakOIDCProfile | null;
@@ -11,9 +12,11 @@
 
 <nav class="topbar">
     {#if user}
-        <div>Welcome, {user.preferred_username}</div>
-        <Button onclick={() => keycloak.logout()}>Logout</Button>
+        <section>ARTEMIS DEMO</section>
         <a href="/register">Register</a>
+        <section class="last">
+            <ProfileMenu {user} />
+        </section>
     {:else}
         <Button onclick={() => keycloak.login()}>Login</Button>
     {/if}
@@ -24,9 +27,14 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
+        gap: 1rem;
 		padding: 1rem;
 		background-color: var(--nav-bg);
         color: var(--on-nav-bg);
 		border-bottom: 1px solid var(--on-nav-bg);
 	}
+
+    nav.topbar .last {
+        margin-left: auto;
+    }
 </style>
