@@ -11,7 +11,7 @@
 	<Navbar user={null} />
 </header>
 
-<div class="layout">	
+<div class="layout">
 	<main>
 		{@render children?.()}
 	</main>

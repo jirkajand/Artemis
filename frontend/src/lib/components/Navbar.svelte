@@ -3,6 +3,7 @@
 	import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
     import Button from "@smui/button";
 	import ProfileMenu from "./ProfileMenu.svelte";
+	import ThemeSwitch from "./ThemeSwitch.svelte";
 
     let { user = null }: {
         user: KeycloakOIDCProfile | null;
@@ -14,11 +15,13 @@
     {#if user}
         <section>ARTEMIS DEMO</section>
         <a href="/register">Register</a>
+        <ThemeSwitch />
         <section class="last">
             <ProfileMenu {user} />
         </section>
     {:else}
         <Button onclick={() => keycloak.login()}>Login</Button>
+        <ThemeSwitch />
     {/if}
 </nav>
 
