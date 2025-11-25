@@ -1,19 +1,10 @@
 <script lang="ts">
 	import Dialog, { Content, Actions } from '@smui/dialog';
 	import Button, { Label } from '@smui/button';
+	import 'country-flag-icons/3x2/flags.css';
 
-	export let open: boolean;
-	export let student: {
-		homeUniversity: string;
-		destinationFaculty: string;
-		bio: string;
-		gender: string;
-		country: string;
-		avatar?: string;
-	};
-
-	export let onConfirm: () => void;
-	export let onClose: () => void;
+	let { open = $bindable(), student, avatarUrl, onConfirm, onClose } = $props();
+	console.log(student);
 
 	const handleConfirm = () => {
 		onConfirm?.();
@@ -25,13 +16,6 @@
 		open = false;
 	};
 
-	function getGenderIcon(gender: string) {
-		return gender.toLowerCase() === 'male' ? '♂️' : gender.toLowerCase() === 'female' ? '♀️' : '⚧️';
-	}
-
-	function getCountryFlag(country: string) {
-		return '🌍';
-	}
 </script>
 
 <Dialog bind:open on:SMUIDialog:closed={handleClose} surface$class="custom-surface">
@@ -42,17 +26,11 @@
 			<div class="profile-header">
 				<div class="avatar-wrapper">
 					<div class="badge-icon gender" title={student.gender}>
-						{getGenderIcon(student.gender)}
+						{student.genderIcon}
 					</div>
-
-					{#if student.avatar}
-						<div class="avatar" style="background-image: url({student.avatar})"></div>
-					{:else}
-						<div class="avatar placeholder">{student.gender[0]}</div>
-					{/if}
-
-					<div class="badge-icon country" title={student.country}>
-						{getCountryFlag(student.country)}
+					<div class="avatar" style="background-image: url({avatarUrl})"></div>
+					<div class="badge-icon country" title={student.countryCode}>
+						{(student.countryFlag)}
 					</div>
 				</div>
 			</div>
@@ -78,10 +56,10 @@
 		</Content>
 
 		<Actions class="dialog-actions">
-			<Button variant="raised" on:click={handleConfirm} class="confirm-btn action-btn">
+			<Button variant="raised" onclick={handleConfirm} class="confirm-btn action-btn">
 				<Label>Confirm Pick</Label>
 			</Button>
-			<Button on:click={handleClose} class="action-btn">
+			<Button onclick={handleClose} class="action-btn">
 				<Label>Cancel</Label>
 			</Button>
 		</Actions>
@@ -89,13 +67,13 @@
 </Dialog>
 
 <style>
-    /* Surface: Slightly wider max-width */
     :global(.mdc-dialog .mdc-dialog__surface.custom-surface) {
         border-radius: 24px;
         overflow: hidden;
         padding: 0;
         width: 100%;
-        max-width: 440px; /* Increased from 360px */
+        min-width: 50vw;
+        max-width: 700px;
         max-height: 90vh;
         display: flex;
         flex-direction: column;
@@ -132,6 +110,7 @@
         overflow-y: auto;
         scrollbar-width: none;
     }
+
     .dialog-content::-webkit-scrollbar {
         display: none;
     }
@@ -158,7 +137,7 @@
         background-position: center;
         background-color: var(--mdc-theme-text-hint-on-background, #eee);
         border: 5px solid var(--mdc-theme-surface, #fff);
-        box-shadow: 0 5px 18px rgba(0,0,0,0.2);
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.2);
         position: relative;
         z-index: 2;
     }
@@ -168,7 +147,7 @@
         align-items: center;
         justify-content: center;
         font-size: 3rem;
-        color: var(--mdc-theme-text-disabled-on-background, rgba(0,0,0,0.38));
+        color: var(--mdc-theme-text-disabled-on-background, rgba(0, 0, 0, 0.38));
     }
 
     /* Badges: Increased dimensions */
@@ -183,7 +162,7 @@
         align-items: center;
         justify-content: center;
         font-size: clamp(1.5rem, 3vh, 1.8rem);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         z-index: 3;
         border: 4px solid var(--mdc-theme-background, #f7fafc);
         color: var(--mdc-theme-on-surface, #000);
@@ -215,7 +194,7 @@
     }
 
     .arrow {
-        color: var(--mdc-theme-text-disabled-on-background, rgba(0,0,0,0.38));
+        color: var(--mdc-theme-text-disabled-on-background, rgba(0, 0, 0, 0.38));
         font-size: 1.5rem;
     }
 
@@ -223,7 +202,7 @@
         font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 0.75px;
-        color: var(--mdc-theme-text-secondary-on-background, rgba(0,0,0,0.54));
+        color: var(--mdc-theme-text-secondary-on-background, rgba(0, 0, 0, 0.54));
         margin-bottom: 0.35rem;
         font-weight: 700;
     }
@@ -231,14 +210,14 @@
     .value {
         font-size: 1.1rem; /* Increased font size */
         font-weight: 600;
-        color: var(--mdc-theme-text-primary-on-background, rgba(0,0,0,0.87));
+        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
         line-height: 1.25;
     }
 
     .bio-section {
         position: relative;
         text-align: center;
-        color: var(--mdc-theme-text-secondary-on-background, rgba(0,0,0,0.6));
+        color: var(--mdc-theme-text-secondary-on-background, rgba(0, 0, 0, 0.6));
         font-style: italic;
         font-size: 1.05rem; /* Increased font size */
         line-height: 1.6;
@@ -248,7 +227,7 @@
     .quote-icon {
         display: block;
         font-size: 2.2rem;
-        color: var(--mdc-theme-text-hint-on-background, rgba(0,0,0,0.1));
+        color: var(--mdc-theme-text-hint-on-background, rgba(0, 0, 0, 0.1));
         line-height: 1;
         margin-bottom: -5px;
     }
@@ -260,7 +239,7 @@
         gap: 1rem;
         background-color: var(--mdc-theme-surface, #fff);
         z-index: 2;
-        border-top: 1px solid rgba(0,0,0,0.05);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     :global(.action-btn) {

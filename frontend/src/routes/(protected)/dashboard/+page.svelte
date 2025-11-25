@@ -1,24 +1,25 @@
 <script lang="ts">
     import TopAppBar, {Row, Section, Title} from "@smui/top-app-bar";
-    import StudentCard from "$lib/components/StudentCard.svelte";
+    import SegmentedButton, { Segment } from '@smui/segmented-button';
     import Select, {Option} from "@smui/select";
     import Icon from "@smui/select/icon";
     import { Label } from '@smui/common';
-    import type { PageProps } from "./$types";
-    import AnonymisedStudentCard from '$lib/components/AnonymisedStudentCard.svelte'
+    import AnonymisedStudentCard from '$lib/components/AnonymisedStudentCard.svelte';
 
     let { data } = $props();
-    let { students } = data;
-    console.log(students);
-     const cards = Array(20).fill(0);
+
+    let { faculties, management, students } = $derived(data);
     let dashboardPage = ['Buddy Matching', 'Manage my mentees'];
     let selected = $state(dashboardPage[0]);
-    // Select state
+
     const semesters = ['2023/2024', '2024/2025', '2025/2026'];
-    const faculties = ["FIM", "PDF", "PřF"]
-    import SegmentedButton, { Segment } from '@smui/segmented-button';
-    let semesterSelectValue = $state('')
-    let facultySelectValue =  $state('')
+    let semesterSelectValue = $state('');
+    let facultySelectValue =  $state('');
+
+    async function handleBuddyMatch(student: any) {
+        console.log("Processing match for:", student.id);
+        alert(`Matched with ${student.countryName} student!`);
+    }
 </script>
 
 <div class="dashboard-container">
@@ -73,8 +74,8 @@
 
     <!-- Custom Grid -->
     <div class="card-grid">
-        {#each cards as _, i (i)}
-            <AnonymisedStudentCard/>
+        {#each students as student, i (i)}
+            <AnonymisedStudentCard {student} />
         {/each}
     </div>
 </div>

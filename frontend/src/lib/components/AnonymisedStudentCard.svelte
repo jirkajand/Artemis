@@ -4,33 +4,21 @@
 	import Icon from '@smui/select/icon';
 	import ConfirmStudentDialog from '$lib/components/ConfirmStudentPickDialog.svelte';
 
-	let student = {
-		homeUniversity: 'Home faculty',
-		destinationFaculty: 'Destination faculty',
-		bio: 'Ahoy there! I be Patchy the Pirate, the self-appointed President of the SpongeBob SquarePants Fan Club!...',
-		gender: 'Male',
-		country: 'Bikini Bottom',
-		avatar: 'https://media.istockphoto.com/id/1268716253/vector/freshman-black-glyph-icon.jpg?s=612x612&w=0&k=20&c=_0e-sfr9RfJnNRyif6bVMLqc1rR3tBx5lVIjKfUPH2k='
-	};
+	const avatarUrl = 'https://media.istockphoto.com/id/1268716253/vector/freshman-black-glyph-icon.jpg?s=612x612&w=0&k=20&c=_0e-sfr9RfJnNRyif6bVMLqc1rR3tBx5lVIjKfUPH2k='
 
-	let dialogOpen = false;
+	let {student} = $props();
+	let dialogOpen = $state(false);
 
 	const handleOpenDialog = () => dialogOpen = true;
+
 	const handleConfirmPick = () => {
 		console.log('Student picked:', student);
 		dialogOpen = false;
 	};
+
 	const handleCloseDialog = () => {
 		dialogOpen = false;
 	};
-
-	function getGenderIcon(gender: string) {
-		return gender.toLowerCase() === 'male' ? '♂️' : gender.toLowerCase() === 'female' ? '♀️' : '⚧️';
-	}
-
-	function getCountryFlag(country: string) {
-		return '🌍';
-	}
 </script>
 
 <div class="card-display">
@@ -38,36 +26,49 @@
 
 		<div class="avatar-container">
 			<div class="avatar-wrapper">
-
 				<div class="badge-icon gender" title={student.gender}>
-					{getGenderIcon(student.gender)}
+					{student.genderIcon}
 				</div>
 
 				<div
 					class="avatar-pic"
-					style="background-image: url('{student.avatar}')"
+					style={`background-image: url('${avatarUrl}')`}
 				></div>
 
-				<div class="badge-icon country" title={student.country}>
-					{getCountryFlag(student.country)}
+				<div class="badge-icon country" title={student.countryFlag}>
+					{student.countryFlag}
 				</div>
-
 			</div>
 		</div>
 
 		<div class="student-info-container">
 			<Content class="card-content">
+
 				<div class="line">
 					<Icon class="material-icons">school</Icon>
-					<h3 class="faculty-subtitle">{student.destinationFaculty}</h3>
+					<div class="text-wrapper">
+						<h3 class="faculty-subtitle" title={student.destinationFaculty}>
+							{student.destinationFaculty}
+						</h3>
+					</div>
 				</div>
+
 				<div class="line">
 					<Icon class="material-icons">home</Icon>
-					<h3 class="faculty-subtitle">{student.homeUniversity}</h3>
+					<div class="text-wrapper">
+						<h3 class="faculty-subtitle" title={student.homeUniversity}>
+							{student.homeUniversity}
+						</h3>
+					</div>
 				</div>
+
 				<div class="line">
 					<Icon class="material-icons">public</Icon>
-					<h3 class="card-title">{student.country}</h3>
+					<div class="text-wrapper">
+						<h3 class="card-title" title={student.countryName}>
+							{student.countryName}
+						</h3>
+					</div>
 				</div>
 
 				<div class="bio-block">
@@ -79,7 +80,7 @@
 
 		<Actions class="actions-flex">
 			<ActionButtons>
-				<Button variant="raised" onclick={handleOpenDialog}>
+				<Button variant="raised" onclick={handleOpenDialog} class="pick-btn">
 					<Label>Pick Student</Label>
 				</Button>
 			</ActionButtons>
@@ -89,148 +90,149 @@
 	<ConfirmStudentDialog
 		bind:open={dialogOpen}
 		{student}
+		avatarUrl={avatarUrl}
 		onConfirm={handleConfirmPick}
 		onClose={handleCloseDialog}
 	/>
 </div>
 
 <style>
+    /* 1. Slimmer Card Width */
     .card-display {
-        max-width: 400px;
-        margin: 2rem 0;
+        width: 100%;
+        max-width: 340px; /* Reduced from 400px */
+        margin: 2rem auto;
         position: relative;
-        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     :global(.custom-card) {
         border-radius: 16px;
-        z-index: 0;
         overflow: visible;
-        flex: 1;
         border: 1px solid #e0e0e0;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-        display: flex;
-        flex-direction: column;
-        padding-top: 5rem;
-        position: relative;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        padding-top:5rem; /* Reduced padding */
         background-color: var(--mdc-theme-surface, #fff);
-    }
-
-    :global(.mdc-button) {
-        min-width: 200px;
+        height: 100%;
     }
 
     :global(.custom-card:hover) {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
-        background-color: var(--mdc-theme-text-hint-on-background);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     }
 
-    /* Floating Container */
+    /* --- Avatar Area (Resized Smaller) --- */
     .avatar-container {
         position: absolute;
-        top: -50px;
+        top: -40px; /* Adjusted for smaller size */
         left: 0;
         width: 100%;
         z-index: 5;
         display: flex;
         justify-content: center;
-        pointer-events: none; /* Allows clicking through empty space */
+        pointer-events: none;
     }
 
-    /* Wrapper to hold badges relative to avatar */
     .avatar-wrapper {
         position: relative;
-        width: 150px;
-        height: 150px;
+        width: 120px; /* Reduced from 150px */
+        height: 120px;
     }
 
     .avatar-pic {
-        width: 150px;
-        height: 150px;
+        width: 100%;
+        height: 100%;
         background-size: cover;
         background-position: center;
         border-radius: 50%;
         border: 4px solid var(--mdc-theme-surface, #fff);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         position: relative;
         z-index: 2;
     }
 
-    /* Badge Styles */
+    /* --- Badges (Resized Smaller) --- */
     .badge-icon {
         position: absolute;
-        bottom: 0px;
-        width: 3.5rem;
-        height: 3.5rem;
+        bottom: 0;
+        width: 2.5rem; /* Reduced from 3.5rem */
+        height: 2.5rem;
         background-color: var(--mdc-theme-surface, #fff);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.8rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        font-size: 1.5rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         z-index: 3;
         color: var(--mdc-theme-on-surface, #000);
-        pointer-events: auto; /* Re-enable clicks for tooltips */
+        pointer-events: auto;
     }
 
-    .badge-icon.gender {
-        left: -15px;
-    }
+    .badge-icon.gender { left: -10px; }
+    .badge-icon.country { right: -10px; }
 
-    .badge-icon.country {
-        right: -15px;
-    }
-
+    /* --- Content Area --- */
     .student-info-container {
-        display: flex;
         flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     :global(.card-content) {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        padding-bottom: 0;
-        color: var(--mdc-theme-on-surface, #000);
+        padding: 0.5rem 1rem 0;
     }
 
     .line {
         display: flex;
         align-items: center;
-        flex: 1;
         border-bottom: 1px solid var(--mdc-theme-text-hint-on-background, #ddd);
-        padding: 0;
-        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
+        padding: 0.6rem 0;
+        /* CRITICAL FIX: Allows flex child to shrink below content size */
+        min-width: 0;
     }
 
     :global(.material-icons) {
-        margin: 0 0.5rem;
+        font-size: 1.25rem;
+        color: #666;
+        margin-right: 0.75rem;
+        flex-shrink: 0; /* Ensures icon doesn't squash */
     }
 
-    .line h2,
-    .line h3 {
-        margin: 0.75rem;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-    .line h2 {
-        font-size: clamp(1.25rem, 1vw + 0.25rem, 1.5rem);
-        font-weight: 600;
+    /* New wrapper to handle text truncation */
+    .text-wrapper {
+        flex: 1;
+        min-width: 0; /* CRITICAL FIX: Enables ellipsis */
     }
 
     .line h3 {
-        font-size: clamp(1.1rem, 0.5vw + 0.65rem, 2rem);
+        margin: 0;
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
     }
 
+    /* Standardized Font Sizes */
+    .faculty-subtitle {
+        font-size: 0.975rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        font-weight: 600 !important;
+    }
+
+    /* --- Bio --- */
     .bio-block {
-        padding: 1rem 0.5rem;
-        color: var(--mdc-theme-text-secondary-on-background, rgba(0, 0, 0, 0.6));
+        margin-top: 1rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        color: var(--mdc-theme-on-surface);
         font-style: italic;
+        font-size: 0.9rem;
     }
 
     .bio-block p {
@@ -242,16 +244,15 @@
         line-height: 1.4;
     }
 
+    /* --- Actions --- */
     :global(.actions-flex) {
         display: flex;
         justify-content: center;
         padding: 1rem;
+        margin-top: auto;
     }
 
-    @media (max-width: 800px) {
-        .card-display {
-            width: 100%;
-            justify-self: center;
-        }
+    :global(.pick-btn) {
+        width: 100%;
     }
 </style>
