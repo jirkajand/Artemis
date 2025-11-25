@@ -3,6 +3,7 @@ package cz.uhk.fim.service;
 import cz.uhk.fim.entity.LocalStudentEntity;
 import cz.uhk.fim.mapper.LocalStudentMapper;
 import cz.uhk.fim.repository.LocalStudentRepository;
+import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
 import cz.uhk.fim.usermanagement.model.RegisterLocalStudentRequest;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -96,5 +98,13 @@ public class LocalStudentService {
 
         internationalStudentService.assignLocalStudentToInternationalStudent(internationalStudentId, localStudent);
 
+    }
+
+    public List<AssignedInternationalStudent> getAssignedInternationalStudentsForLocalStudent(UUID keycloakId) {
+        var localStudent = getLocalStudentByKeycloakId(keycloakId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Local Student with keycloakId " + keycloakId + " not found."));
+        if (localStudent.getAssignedStudents().isEmpty()) {
+            return List.of();
+        }
+        return internationalStudentService.mapToAssignedStudents(localStudent.getAssignedStudents());
     }
 }
