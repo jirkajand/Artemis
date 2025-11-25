@@ -95,6 +95,7 @@
         flex-direction: column;
     }
     :global(.custom-card) {
+        color: var(--on-background);
         border-radius: 16px;
         z-index: 0;
         overflow: visible;
@@ -103,9 +104,9 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         display: flex;
         flex-direction: column;
-        padding-top: 4rem;
+        padding-top: 5rem;
         position: relative;
-        background-color: var(--mdc-theme-surface, #fff);
+        background-color: var(--neutral-bg);
         height: 100%;
     }
     :global(.custom-card:hover) {
@@ -186,7 +187,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
+        color: var(--on-background);
     }
     .card-title {
         font-size: 1rem;

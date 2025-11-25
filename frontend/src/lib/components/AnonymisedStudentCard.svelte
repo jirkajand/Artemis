@@ -213,7 +213,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
+        color: var(--on-background);
     }
 
     /* Standardized Font Sizes */
