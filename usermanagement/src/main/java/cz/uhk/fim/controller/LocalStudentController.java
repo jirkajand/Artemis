@@ -3,6 +3,7 @@ package cz.uhk.fim.controller;
 import cz.uhk.fim.service.LocalStudentService;
 import cz.uhk.fim.usermanagement.api.LocalStudentApi;
 import cz.uhk.fim.usermanagement.model.AssignInternationalStudentToLocalStudent200Response;
+import cz.uhk.fim.usermanagement.model.GetAssignedInternationalStudentsForLocalStudent200Response;
 import cz.uhk.fim.usermanagement.model.LocalStudentProfileDetailsResponse;
 import cz.uhk.fim.usermanagement.model.RegisterLocalStudentRequest;
 import cz.uhk.fim.usermanagement.model.RegisterLocalStudentResponse;
@@ -42,5 +43,11 @@ public class LocalStudentController implements LocalStudentApi {
     public ResponseEntity<AssignInternationalStudentToLocalStudent200Response> assignInternationalStudentToLocalStudent(UUID internationalStudentId) {
         localStudentService.assignInternationalStudentToLocalStudent(JwtUtils.getIdFromSecurityContext(SecurityContextHolder.getContext()), internationalStudentId);
         return ResponseEntity.ok(new AssignInternationalStudentToLocalStudent200Response().result("OK"));
+    }
+
+    @Override
+    public ResponseEntity<GetAssignedInternationalStudentsForLocalStudent200Response> getAssignedInternationalStudentsForLocalStudent() {
+        return ResponseEntity.ok(new GetAssignedInternationalStudentsForLocalStudent200Response()
+                .students(localStudentService.getAssignedInternationalStudentsForLocalStudent(JwtUtils.getIdFromSecurityContext(SecurityContextHolder.getContext()))));
     }
 }
