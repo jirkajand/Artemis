@@ -1,22 +1,22 @@
 <script lang="ts">
-	let { children } = $props();
+	import type { LayoutProps } from "./$types";
+    import { Theme, theme } from "$lib/stores/theme";
+
+    let { children }: LayoutProps = $props();
+
 </script>
 
-<main>
-	{@render children?.()}
-</main>
+<svelte:head>
+    <!-- SMUI Styles -->
+    {#if $theme == Theme.Default}
+        <link rel="stylesheet" href="/smui.css" media="(prefers-color-scheme: light)" />
+        <link rel="stylesheet" href="/smui-dark.css" media="(prefers-color-scheme: dark)" />
+    {:else if $theme == Theme.Light}
+        <link rel="stylesheet" href="/smui.css" />
+    {:else if $theme == Theme.Dark}
+        <link rel="stylesheet" href="/smui-dark.css" />
+    {/if}
+</svelte:head>
 
-<style>
-  main {
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-    margin: 0 auto;
-    padding: 1rem;
-    width: 100%;
-  }
 
-  *, :root, html {
-	  box-sizing: border-box;
-  }
-</style>
+{@render children?.()}

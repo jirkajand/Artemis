@@ -6,12 +6,39 @@
 @use '@material/theme/index' as theme with (
   $primary: #00aeef,
   $secondary: #676778,
-  $surface: #fff,
-  $background: #fff,
-  $error: color-palette.$red-900
+  $background: #fafafa,
+  $surface: #f3f3f3,
+  $error: color-palette.$red-900,
 );
 
-@use '@material/theme/styles';
+/* --- Expose SMUI theme as CSS variables --- */
+:root {
+  --primary: #{theme.$primary};
+  --on-primary: #{theme.$on-primary};
+  
+  --secondary: #{theme.$secondary};
+  --on-secondary: #{theme.$on-secondary};
+  
+  --background: #{theme.$background};
+  --on-background: #000000;
+
+  --surface: #{theme.$surface};
+  --on-surface: #000000;
+  
+  --error: #{theme.$error};
+  --link-color: #{color.scale(theme.$primary, $lightness: +20%)};
+  --link-visited-color: #{color.scale(theme.$primary, $lightness: -15%)};
+}
+
+/* --- Custom application color variables --- */
+:root {
+  --highlight-bg: #dbdbdb;
+  --menu-bg: #e4e4e4;
+  --neutral-bg: #e9e9e9;
+
+  --nav-bg: #002533;
+  --on-nav-bg: #c4c4c4;
+}
 
 html,
 body {
@@ -20,8 +47,8 @@ body {
 }
 
 a {
-  color: #40b3ff;
+  color: var(--link-color);
 }
 a:visited {
-  color: color.scale(#40b3ff, $lightness: -35%);
+  color: var(--link-visited-color);
 }

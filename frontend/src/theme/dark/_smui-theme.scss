@@ -5,23 +5,50 @@
 // Svelte Colors! (Dark Theme)
 @use '@material/theme/index' as theme with (
   $primary: #00aeef,
-  $secondary: color.scale(#676778, $whiteness: -10%),
-  $surface: color.adjust(color-palette.$grey-900, $blue: +4),
-  $background: #000,
-  $error: color-palette.$red-700
+  $secondary: #8b8b8b,
+  $background: #121212,
+  $surface: #1c1c1c,
+  $error: #cf6679,
 );
 
-@use '@material/theme/styles';
+/* --- Expose SMUI theme as CSS variables --- */
+:root {
+  --primary: #{theme.$primary};
+  --on-primary: #{theme.$on-primary};
+  
+  --secondary: #{theme.$secondary};
+  --on-secondary: #{theme.$on-secondary};
+  
+  --background: #{theme.$background};
+  --on-background: #ffffff;
+
+  --surface: #{theme.$surface};
+  --on-surface: #ffffff;
+  
+  --error: #{theme.$error};
+  --link-color: #{color.scale(theme.$primary, $lightness: +20%)};
+  --link-visited-color: #{color.scale(theme.$primary, $lightness: -15%)};
+}
+
+/* --- Custom application color variables --- */
+:root {
+  --highlight-bg: #2a2a2a;
+  --menu-bg: #242424;
+  --neutral-bg: #2f2f2f;
+
+  --nav-bg: #001a22;
+  --on-nav-bg: #d0d0d0;
+}
 
 html,
 body {
-  background-color: #000;
+  background-color: theme.$surface;
   color: theme.$on-surface;
 }
 
 a {
-  color: #40b3ff;
+  color: var(--link-color);
 }
 a:visited {
-  color: color.scale(#40b3ff, $lightness: -35%);
+  color: var(--link-visited-color);
 }

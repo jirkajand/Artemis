@@ -1,25 +1,28 @@
-import { Configuration, FetchError, SettingsServiceApi, UserManagementApi, type HealthCheckResponse } from "$lib/api";
+import { Configuration, SettingsServiceApi, UserManagementApi } from "$lib/api";
 import { initKeycloak, keycloak } from "$lib/auth/keycloak";
-import { error, redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
 
 export const prerender = true;
 export const ssr = false;
 
 export const load: LayoutLoad = async ({ fetch }) => {
-	await initKeycloak();
 
-	const config = new Configuration({
-		// skip accessToken
-		accessToken: undefined,
-		fetchApi: fetch,
-		basePath: import.meta.env.VITE_API_BASE_URL
-	});
+  // Initialize Keycloak
+  await initKeycloak();
 
-	const clients = {
-		management: new UserManagementApi(config),
-		settings: new SettingsServiceApi(config)
-	};
+  // Setup API clients with access token if authenticated
+  const config = new Configuration({
+    accessToken: keycloak.authenticated 
+      ? () => `Bearer ${keycloak.token}`
+      : undefined,
+    fetchApi: fetch,
+    basePath: import.meta.env.VITE_API_BASE_URL
+  });
 
-	return { clients };
+  const clients = {
+    management: new UserManagementApi(config),
+    settings: new SettingsServiceApi(config)
+  };
+
+  return { clients };
 };
