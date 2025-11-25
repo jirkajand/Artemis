@@ -1,21 +1,26 @@
 <script lang="ts">
     import Card, {Content, PrimaryAction, Actions, ActionButtons} from '@smui/card';
     import Button, {Label} from '@smui/button';
-    import Badge from '@smui-extra/badge';
     import Icon from '@smui/select/icon';
     import StudentInfoDialog from '$lib/components/StudentInfoDialog.svelte';
 
-    let open = false;
+    let open = $state(false);
+
     let student = {
         name: 'Really long student name',
         homeFaculty: 'Home faculty',
         destinationFaculty: 'Destination faculty',
         group: 'Group name',
-        bio: 'Ahoy there! I be Patchy the Pirate, the self-appointed President of the SpongeBob SquarePants Fan Club! Residing in Encino, California, I host the show alongside my annoying, prank-loving sidekick, Potty the Parrot. I dedicate me entire life to celebrating the yellow sponge, collecting rare memorabilia from across the seven seas. Whether I\'m losing me hook or fighting with a bird, I never miss an episode of my favorite nautical neighbor. So drop on the deck and flop like a fish, because SpongeBob is number one!',
+        bio: 'Ahoy there! I be Patchy the Pirate, the self-appointed President of the SpongeBob SquarePants Fan Club!...',
         status: 'Assigned',
         gender: 'Male',
         country: 'Bikini Bottom'
     };
+
+    // Assuming these utilities are available or manually calculated elsewhere
+    const avatarUrl = 'https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6';
+    const genderIcon = student.gender === 'Male' ? '♂️' : '♀️';
+    const countryFlag = '🏴‍☠️';
 
     const handleConfirm = (studentData: typeof student) => {
         console.log('Confirmed student:', studentData);
@@ -24,46 +29,90 @@
     const handleClose = () => {
         console.log('Dialog closed');
     };
+
+    // Prevent event propagation from button click to card click
+    const handleOpenDialog = (e: Event) => {
+        e.stopPropagation();
+        open = true;
+    }
 </script>
 
-<div class="card-display"  onclick={() => open = true}>
+<div class="card-display" onclick={() => open = true}>
     <Card class="custom-card mdc-elevation--z12">
-        <div class="badge-container">
-            <Badge class="gender-badge" position="inset" align="top-start">♂️</Badge>
-            <Badge class="country-badge" position="inset" align="top-end">🏴‍☠️</Badge>
-        </div>
 
+        <!-- Aligned Avatar and Badges (Matching Anonymised structure) -->
         <div class="avatar-container">
-            <div class="avatar-pic"
-                 style="background-image: url('https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6');">
+            <div class="avatar-wrapper">
+
+                <div class="badge-icon gender" title={student.gender}>
+                    {genderIcon}
+                </div>
+
+                <div class="avatar-pic"
+                     style={`background-image: url('${avatarUrl}')`}>
+                </div>
+
+                <div class="badge-icon country" title={student.country}>
+                    {countryFlag}
+                </div>
             </div>
         </div>
 
         <div class="student-info-container">
             <Content class="card-content">
+
+                <!-- 1. Name -->
                 <div class="line">
                     <Icon class="material-icons">person</Icon>
-                    <h2 class="card-title"></h2>
+                    <div class="text-wrapper">
+                        <h2 class="card-title" title={student.name}>
+                            {student.name}
+                        </h2>
+                    </div>
                 </div>
+
+                <!-- 2. Destination Faculty -->
                 <div class="line">
                     <Icon class="material-icons">school</Icon>
-                    <h3 class="faculty-subtitle">{student.destinationFaculty}</h3>
+                    <div class="text-wrapper">
+                        <h3 class="faculty-subtitle" title={student.destinationFaculty}>
+                            {student.destinationFaculty}
+                        </h3>
+                    </div>
                 </div>
+
+                <!-- 3. Home Faculty -->
                 <div class="line">
-                    <Icon class="material-icons">group</Icon>
-                    <h3 class="faculty-subtitle">{student.group}</h3>
+                    <Icon class="material-icons">home</Icon>
+                    <div class="text-wrapper">
+                        <h3 class="faculty-subtitle" title={student.homeFaculty}>
+                            {student.homeFaculty}
+                        </h3>
+                    </div>
                 </div>
+
+                <!-- 4. Status -->
                 <div class="line">
                     <Icon class="material-icons">done_outline</Icon>
-                    <h3 class="faculty-subtitle">{student.status}</h3>
+                    <div class="text-wrapper">
+                        <h3 class="faculty-subtitle status-label" title={student.status}>
+                            {student.status}
+                        </h3>
+                    </div>
                 </div>
+
+                <div class="bio-block">
+                    <p>"{student.bio}"</p>
+                </div>
+
             </Content>
         </div>
 
         <Actions class="actions-flex">
             <ActionButtons>
-                <Button variant="raised" onclick={() => open = true}>
-                    <Label>Assign student</Label>
+                <!-- Use the new handler to prevent card click propagation -->
+                <Button variant="raised" onclick={handleOpenDialog} class="pick-btn">
+                    <Label>View Details</Label>
                 </Button>
             </ActionButtons>
         </Actions>
@@ -71,132 +120,179 @@
 </div>
 
 <StudentInfoDialog
-        bind:open
-        {student}
-        onConfirm={handleConfirm}
-        onClose={handleClose}
+  bind:open
+  {student}
+  onConfirm={handleConfirm}
+  onClose={handleClose}
 />
 
 
 <style>
+    /* 1. Slimmer Card Width */
     .card-display {
-        cursor: pointer;
-        max-width: 400px;
-        margin: 2rem 0;
+        width: 100%;
+        max-width: 340px; /* Matching anonymized card width */
+        margin: 2rem auto;
         position: relative;
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
     }
 
-    /* Card */
     :global(.custom-card) {
         border-radius: 16px;
         z-index: 0;
         overflow: visible;
         flex: 1;
         border: 1px solid #e0e0e0;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         display: flex;
         flex-direction: column;
-        padding-top: 5rem; /* space for floating avatar */
+        padding-top: 4rem; /* Adjusted space for smaller avatar */
         position: relative;
+        background-color: var(--mdc-theme-surface, #fff);
+        height: 100%;
     }
 
     :global(.custom-card:hover) {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
-        background-color: var(--mdc-theme-text-hint-on-background);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     }
 
+    /* --- Avatar Area (Matching Anonymised structure) --- */
     .avatar-container {
         position: absolute;
-        top: -50px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 5;
+        top: -40px; /* Adjusted for smaller size */
+        left: 0;
         width: 100%;
+        z-index: 5;
         display: flex;
         justify-content: center;
         pointer-events: none;
     }
 
+    .avatar-wrapper {
+        position: relative;
+        width: 120px;
+        height: 120px;
+    }
+
     .avatar-pic {
-        width: 150px;
-        height: 150px;
+        width: 100%;
+        height: 100%;
         background-size: cover;
         background-position: center;
         border-radius: 50%;
-        border: 4px solid white;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        border: 4px solid var(--mdc-theme-surface, #fff);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 2;
     }
 
-    /* Content */
-    :global(.card-content) {
+    .badge-icon {
+        position: absolute;
+        bottom: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: var(--mdc-theme-surface, #fff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        z-index: 3;
+        color: var(--mdc-theme-on-surface, #000);
+        pointer-events: auto;
+    }
+
+    .badge-icon.gender { left: -10px; }
+    .badge-icon.country { right: -10px; }
+
+    /* --- Content Area --- */
+    .student-info-container {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        flex: 1;
-        padding-bottom: 0;
+    }
+
+    :global(.card-content) {
+        padding: 0.5rem 1rem 0;
     }
 
     .line {
         display: flex;
         align-items: center;
-        flex: 1;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--mdc-theme-text-hint-on-background, #ddd);
+        padding: 0.6rem 0;
+        min-width: 0;
     }
 
     :global(.material-icons) {
-        margin: 0 0.5rem;
+        font-size: 1.25rem;
+        color: #666;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
     }
 
-    .line h2,
-    .line h3 {
-        margin: 0.75rem;
-        overflow: hidden;
+    .text-wrapper {
+        flex: 1;
+        min-width: 0; /* CRITICAL: Enables ellipsis */
+    }
+
+    .line h2, .line h3 {
+        margin: 0;
         white-space: nowrap;
+        overflow: hidden;
         text-overflow: ellipsis;
+        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
     }
 
-    .line h2 {
-        font-size: clamp(1.25rem, 1vw + 0.25rem, 1.5rem);
-    }
-
-    .line h3 {
-        font-size: clamp(1.1rem, 0.5vw + 0.65rem, 2rem);
+    /* Standardized Font Sizes */
+    .card-title {
+        font-size: 1rem;
+        font-weight: 600 !important;
     }
 
     .faculty-subtitle {
+        font-size: 0.975rem;
         font-weight: 500;
     }
 
-    /* Badges */
-    :global(.smui-badge) {
-        z-index: 10;
-        font-size: clamp(2.25rem, 1vw + 0.5rem, 3rem);
-        padding: 0.5rem;
+    .status-label {
+        font-weight: 600;
+        color: var(--mdc-theme-primary); /* Highlight status */
+    }
+
+    /* --- Bio --- */
+    .bio-block {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        color: var(--mdc-theme-on-surface);
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+
+    .bio-block p {
         margin: 0;
-        background-color: transparent !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
     }
 
-    :global(.badge-container) {
-        position: absolute;
-        inset: 2rem 1rem;
-        display: flex;
-        justify-content: space-between;
-        pointer-events: none;
-    }
-
-
+    /* --- Actions --- */
     :global(.actions-flex) {
         display: flex;
         justify-content: center;
         padding: 1rem;
+        margin-top: auto;
     }
 
-    @media (max-width: 800px) {
-        .card-display {
-            width: 100%;
-            justify-self: center;
-        }
+    :global(.pick-btn) {
+        width: 100%;
     }
-
 </style>

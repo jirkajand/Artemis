@@ -2,6 +2,7 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import countries from "i18n-iso-countries";
 import en from "i18n-iso-countries/langs/en.json";
 import type { PageParentData } from "./$types";
+
 // Register locale once on the server
 countries.registerLocale(en);
 
@@ -20,11 +21,12 @@ function getGenderIcon(gender: string) {
 	return gender.toLowerCase() === 'male' ? '♂️' : gender.toLowerCase() === 'female' ? '♀️' : '⚧️';
 }
 
-export const load = async ({ parent }) => {
+export const load = async ({ parent, depends }) => {
 	const data = await parent() as PageParentData;
 	const { settings,  management } = data.clients
 	const { students } = await management.getAllInternationalStudentsAnonymous({size: 999})
 	const faculties = await settings.getAllFaculties();
+	console.log(students);
 	const studentsTransformed = students?.map((student: any) => {
 		const faculty = faculties.find((f: any) => f.id === student.facultyId);
 

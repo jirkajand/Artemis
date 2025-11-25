@@ -160,11 +160,11 @@
     </DialogContent>
 
     <DialogActions>
-        <Button variant="raised" onclick={handleConfirm}>
+<!--        <Button variant="raised" onclick={handleConfirm}>
             <Label>Confirm</Label>
-        </Button>
+        </Button>-->
         <Button variant="outlined" onclick={handleClose}>
-            <Label>Cancel</Label>
+            <Label>Close</Label>
         </Button>
     </DialogActions>
 </Dialog>
@@ -179,6 +179,10 @@
     height: 100%;
     overflow-y: visible;
   }
+  :global(.mdc-dialog__surface .material-icons) {
+      margin-right: 0;
+  }
+
 
   .details-top-row {
     display: flex;
@@ -365,6 +369,7 @@
     right: -20px;
     z-index: 10;
     border-radius: 50%;
+    margin: 0;
   }
 
   .fab-container {
