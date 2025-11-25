@@ -2,6 +2,7 @@ package cz.uhk.fim.mapper;
 
 import cz.uhk.fim.entity.InternationalStudentEntity;
 import cz.uhk.fim.service.RegisterKeycloakUserDTO;
+import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
 import cz.uhk.fim.usermanagement.model.InternationalStudentAnonymous;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentRequest;
 import org.mapstruct.Mapper;
@@ -16,4 +17,7 @@ public interface InternationalStudentMapper {
 
     @Mapping(target = "countryCode", source = "countryISO")
     InternationalStudentAnonymous toInternationalStudentAnonymous(InternationalStudentEntity entity);
+    
+    @Mapping(target = "countryCode", source = "countryISO")
+    AssignedInternationalStudent toAssignedInternationalStudent(InternationalStudentEntity internationalStudentEntity);
 }

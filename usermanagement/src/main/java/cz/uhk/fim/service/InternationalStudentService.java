@@ -5,6 +5,7 @@ import cz.uhk.fim.entity.LocalStudentEntity;
 import cz.uhk.fim.mapper.InternationalStudentMapper;
 import cz.uhk.fim.mapper.PageableMapper;
 import cz.uhk.fim.repository.InternationalStudentRepository;
+import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
 import cz.uhk.fim.usermanagement.model.GetAllInternationalStudentsAnonymous200Response;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentRequest;
 import jakarta.annotation.Nullable;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -103,5 +106,12 @@ public class InternationalStudentService {
                             .map(internationalStudentMapper::toInternationalStudentAnonymous)
                             .toList())
                     .pageable(pageableMapper.toResponse(internationalStudents));
+    }
+
+
+    public List<AssignedInternationalStudent> mapToAssignedStudents(Set<InternationalStudentEntity> internationalStudentEntities) {
+        return internationalStudentEntities.stream()
+                .map(internationalStudentMapper::toAssignedInternationalStudent)
+                .toList();
     }
 }
