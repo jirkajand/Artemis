@@ -4,6 +4,7 @@ import cz.uhk.fim.entity.LocalStudentEntity;
 import cz.uhk.fim.mapper.LocalStudentMapper;
 import cz.uhk.fim.repository.LocalStudentRepository;
 import cz.uhk.fim.usermanagement.model.RegisterLocalStudentRequest;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +71,7 @@ public class LocalStudentService {
         return localStudentRepository.findByKeycloakId(keycloakId);
     }
 
+    @Transactional
     public void assignInternationalStudentToLocalStudent(UUID localStudentKeycloakId, UUID internationalStudentId) {
         var localStudent = getLocalStudentByKeycloakId(localStudentKeycloakId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Local Student with keycloakId " + localStudentKeycloakId + " not found."));
         if (Objects.isNull(localStudent.getAssignedStudentsCapacity())
@@ -83,7 +85,7 @@ public class LocalStudentService {
         if (localStudent.getAssignedStudents().contains(internationalStudent)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "International Student with id " + internationalStudentId + " is already assigned to Local Student with id " + localStudent.getId() + ".");
         }
-        
+
         if (Objects.nonNull(internationalStudent.getAssignedBuddy())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "International Student with id " + internationalStudentId + " is already assigned to another Local Student with id " + internationalStudent.getAssignedBuddy().getId() + ".");
         }

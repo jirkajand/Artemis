@@ -13,7 +13,19 @@ public class JwtUtils {
     }
 
     public static UUID getIdFromSecurityContext(SecurityContext securityContext) {
-        Jwt jwt = (Jwt) securityContext.getAuthentication().getPrincipal();
+        if (securityContext == null) {
+            throw new IllegalStateException("SecurityContext is null");
+        }
+        if (securityContext.getAuthentication() == null) {
+            throw new IllegalStateException("Authentication is missing in SecurityContext");
+        }
+        Object principal = securityContext.getAuthentication().getPrincipal();
+        if (principal == null) {
+            throw new IllegalStateException("Principal is missing in Authentication");
+        }
+        if (!(principal instanceof Jwt jwt)) {
+            throw new IllegalStateException("Principal is not an instance of Jwt");
+        }
         String idString = getKeycloakIdFromJwt(jwt);
         return UUID.fromString(idString);
     }
