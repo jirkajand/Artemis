@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
@@ -19,7 +20,8 @@ import java.util.UUID;
 @SuperBuilder(toBuilder = true)
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "assignedBuddy")
+@ToString(callSuper = true, exclude = "assignedBuddy")
 public class InternationalStudentEntity extends StudentEntity {
 
     private String homeUniversity;

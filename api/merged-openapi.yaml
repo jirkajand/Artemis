@@ -158,6 +158,45 @@ paths:
           description: Bad request (invalid data)
         '401':
           description: Unauthorized
+  '/user-management/api/local-student/assign-international-student/{internationalStudentId}':
+    post:
+      tags:
+        - UserManagement
+      summary: assignInternationalStudentToLocalStudent
+      description: >-
+        Assign an international student to the currently authenticated local
+        student
+      operationId: assignInternationalStudentToLocalStudent
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      parameters:
+        - name: internationalStudentId
+          in: path
+          description: ID of the international student to be assigned
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: International student assigned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: International student assigned successfully
+        '400':
+          description: Bad request (invalid UUID format)
+        '401':
+          description: Unauthorized
+        '404':
+          description: Local or international student not found
   /user-management/api/international-student/register:
     post:
       tags:
