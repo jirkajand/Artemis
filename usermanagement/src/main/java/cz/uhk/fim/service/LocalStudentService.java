@@ -32,6 +32,9 @@ public class LocalStudentService {
     @Value("${local-student.default-role}")
     private String defaultRole;
 
+    @Value("${local-student.default-assigned-students-capacity}")
+    private Integer defaultAssignedStudentsCapacity;
+
     public LocalStudentEntity registerLocalStudent(RegisterLocalStudentRequest registerLocalStudentRequest) {
         var keycloakId = keycloakService.registerUser(localStudentMapper.toRegisterKeycloakUserDTO(registerLocalStudentRequest), defaultRole);
         if (keycloakId.isEmpty()) {
@@ -40,6 +43,7 @@ public class LocalStudentService {
         }
         var localStudentEntity = localStudentMapper.toLocalStudentEntity(registerLocalStudentRequest);
         localStudentEntity.setKeycloakId(UUID.fromString(keycloakId.get()));
+        localStudentEntity.setAssignedStudentsCapacity(defaultAssignedStudentsCapacity);
         return localStudentRepository.save(localStudentEntity);
     }
 
