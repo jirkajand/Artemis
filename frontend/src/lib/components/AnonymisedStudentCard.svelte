@@ -198,13 +198,13 @@
         font-size: 1.25rem;
         color: #666;
         margin-right: 0.75rem;
-        flex-shrink: 0; /* Ensures icon doesn't squash */
+        flex-shrink: 0;
     }
 
-    /* New wrapper to handle text truncation */
+
     .text-wrapper {
         flex: 1;
-        min-width: 0; /* CRITICAL FIX: Enables ellipsis */
+        min-width: 0;
     }
 
     .line h3 {
