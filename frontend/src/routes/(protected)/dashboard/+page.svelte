@@ -18,7 +18,14 @@
 
     async function handleBuddyMatch(student: any) {
         console.log("Processing match for:", student.id);
-        alert(`Matched with ${student.countryName} student!`);
+        try{
+            await management.assignInternationalStudentToLocalStudent({internationalStudentId: student.id})
+
+            alert(`You are now a buddy for this student from ${student.countryName} coming to ${student.faculty.facultyNameInternational} (${student.faculty.shortName})!`);
+        } catch (e) {
+            alert(`Something went wrong! Cause: ${e}`);
+        }
+
     }
 </script>
 
@@ -75,7 +82,7 @@
     <!-- Custom Grid -->
     <div class="card-grid">
         {#each students as student, i (i)}
-            <AnonymisedStudentCard {student} />
+            <AnonymisedStudentCard {student} onPick="{() => handleBuddyMatch(student)}"/>
         {/each}
     </div>
 </div>

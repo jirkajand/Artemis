@@ -30,7 +30,7 @@ export const load = async ({ parent }) => {
 
 		return {
 			...student,
-			destinationFaculty: faculty?.shortName || 'Unknown',
+			faculty: faculty || {},
 			countryFlag: getCountryFlag(student.countryCode),
 			countryName: getCountryName(student.countryCode),
 			genderIcon: getGenderIcon(student.gender)

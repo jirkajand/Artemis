@@ -43,7 +43,7 @@
 				<div class="arrow">➜</div>
 				<div class="info-item">
 					<span class="label">Destination</span>
-					<span class="value">{student.destinationFaculty}</span>
+					<span class="value">{student.faculty.shortName}</span>
 				</div>
 			</div>
 
@@ -232,11 +232,11 @@
         margin-bottom: -5px;
     }
 
-    .dialog-actions {
+    :global(.dialog-actions) {
+				justify-content: center !important;
         padding: 1rem 2rem 1.5rem;
         display: flex;
-        justify-content: space-between;
-        gap: 1rem;
+        gap: 2.5rem;
         background-color: var(--mdc-theme-surface, #fff);
         z-index: 2;
         border-top: 1px solid rgba(0, 0, 0, 0.05);

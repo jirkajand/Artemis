@@ -6,14 +6,15 @@
 
 	const avatarUrl = 'https://media.istockphoto.com/id/1268716253/vector/freshman-black-glyph-icon.jpg?s=612x612&w=0&k=20&c=_0e-sfr9RfJnNRyif6bVMLqc1rR3tBx5lVIjKfUPH2k='
 
-	let {student} = $props();
+	let {student, onPick} = $props();
 	let dialogOpen = $state(false);
 
 	const handleOpenDialog = () => dialogOpen = true;
 
 	const handleConfirmPick = () => {
+		handleCloseDialog()
 		console.log('Student picked:', student);
-		dialogOpen = false;
+		onPick?.()
 	};
 
 	const handleCloseDialog = () => {
@@ -47,8 +48,8 @@
 				<div class="line">
 					<Icon class="material-icons">school</Icon>
 					<div class="text-wrapper">
-						<h3 class="faculty-subtitle" title={student.destinationFaculty}>
-							{student.destinationFaculty}
+						<h3 class="faculty-subtitle" title={student.faculty.shortName}>
+							{student?.faculty.shortName}
 						</h3>
 					</div>
 				</div>
