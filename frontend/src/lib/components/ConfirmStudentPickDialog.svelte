@@ -94,7 +94,7 @@
     /* Header: Slightly taller max-height */
     .header-bg {
         height: clamp(80px, 15vh, 140px);
-        background: linear-gradient(135deg, var(--mdc-theme-primary, #6200ee) 0%, var(--mdc-theme-secondary, #018786) 100%);
+        background: linear-gradient(135deg, var(--on-nav-bg, #6200ee) 0%, var(--nav-bg, #018786) 100%);
         width: 100%;
         position: absolute;
         top: 0;
