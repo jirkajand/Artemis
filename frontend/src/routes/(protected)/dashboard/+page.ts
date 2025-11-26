@@ -1,45 +1,39 @@
+import { error, redirect } from '@sveltejs/kit';
 import { getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
-import type { PageParentData } from "./$types";
-import { keycloak } from '$lib/auth/keycloak';
+import type { PageLoad } from './$types';
 
-export const load = async ({ parent, depends }) => {
-	const data = await parent() as PageParentData;
-	keycloak.refreshToken
-	const { settings, management } = data.clients;
+export const load: PageLoad = async ({ parent }) => {
+	const { clients } = await parent();
+	const { settings, management } = clients;
 
-	const [
-		{ students: allInternationalStudents },
-		{ students: assignedStudentsArray },
-		faculties
-	] = await Promise.all([
-		management.getAllInternationalStudentsAnonymous({ size: 999 }),
-		management.getAssignedInternationalStudentsForLocalStudent(),
-		settings.getAllFaculties()
-	]);
+	try {
+		const [internationalRes, assignedRes, faculties] = await Promise.all([
+			management.getAllInternationalStudentsAnonymous({ size: 999 }),
+			management.getAssignedInternationalStudentsForLocalStudent(),
+			settings.getAllFaculties()
+		]);
 
-	const existingBuddiesIds = new Set(assignedStudentsArray?.map(({ id }) => (id)));
+		if (!internationalRes?.students || !assignedRes?.students || !faculties) {
+			throw error(500, 'Incomplete data received');
+		}
 
-	const availableStudents = allInternationalStudents?.filter(
-		({ id }) => !existingBuddiesIds.has(id)
-	) || [];
+		const assignedIds = new Set(assignedRes.students.map((s) => s.id));
+		const facultyMap = new Map(faculties.map((f) => [f.id, f]));
 
-	const facultyMap = new Map(faculties.map(f => [f.id, f]));
+		const students = internationalRes.students
+			.filter((s) => !assignedIds.has(s.id))
+			.map((s) => ({
+				...s,
+				faculty: facultyMap.get(s.facultyId) ?? {},
+				countryFlag: getCountryFlag(s.countryCode),
+				countryName: getCountryName(s.countryCode),
+				genderIcon: getGenderIcon(s.gender)
+			}));
 
-	const studentsTransformed = availableStudents.map((student: any) => {
-		const faculty = facultyMap.get(student.facultyId);
+		return { faculties, management, students };
 
-		return {
-			...student,
-			faculty: faculty || {},
-			countryFlag: getCountryFlag(student.countryCode),
-			countryName: getCountryName(student.countryCode),
-			genderIcon: getGenderIcon(student.gender)
-		};
-	});
-
-	return {
-		faculties,
-		management,
-		students: studentsTransformed
-	};
+	} catch (e) {
+		console.error(e);
+		throw redirect(302, '/');
+	}
 };

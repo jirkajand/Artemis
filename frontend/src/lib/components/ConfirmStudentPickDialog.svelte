@@ -157,7 +157,6 @@
         bottom: 0px;
         width: clamp(2.8rem, 6vh, 3.5rem); /* Increased */
         height: clamp(2.8rem, 6vh, 3.5rem);
-        background-color: var(--mdc-theme-surface, #fff);
         border-radius: 50%;
         display: flex;
         align-items: center;

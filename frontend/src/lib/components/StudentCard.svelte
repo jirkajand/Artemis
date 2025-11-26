@@ -140,6 +140,7 @@
         z-index: 2;
     }
     .badge-icon {
+        background-color: var(--on-secondary) !important;
         position: absolute;
         bottom: 0;
         width: 2.5rem;

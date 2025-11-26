@@ -154,6 +154,7 @@
 
     /* --- Badges (Resized Smaller) --- */
     .badge-icon {
+        background-color: var(--on-secondary) !important;
         position: absolute;
         bottom: 0;
         width: 2.5rem; /* Reduced from 3.5rem */
