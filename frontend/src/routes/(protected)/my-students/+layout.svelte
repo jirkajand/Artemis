@@ -13,9 +13,9 @@
 <TopAppBar variant="static">
 	<Row>
 		<Section>
-			<Title>Dashboard</Title>
+			<Title>My students</Title>
 		</Section>
-<!--		<Section class="segment-section">
+		<!--		<Section class="segment-section">
 			<SegmentedButton>
 				{#snippet segment(segment)}
 					<Segment {segment}>
@@ -61,9 +61,9 @@
     }
 
     :global(.mdc-top-app-bar__section) {
+				justify-content: center;
         padding: 0.5rem 1rem;
         flex: 1 !important;
-				justify-content: center;
     }
 
     :global(.mdc-top-app-bar__title) {

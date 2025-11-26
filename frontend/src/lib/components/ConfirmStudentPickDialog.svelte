@@ -68,7 +68,7 @@
 
 <style>
     :global(.mdc-dialog .mdc-dialog__surface.custom-surface) {
-        border-radius: 24px;
+        border-radius: 5% !important;
         overflow: hidden;
         padding: 0;
         width: 100%;
@@ -84,6 +84,7 @@
     .dialog-container {
         position: relative;
         background-color: var(--mdc-theme-surface, #fff);
+        border-radius: 5% !important;
         display: flex;
         flex-direction: column;
         height: 100%;

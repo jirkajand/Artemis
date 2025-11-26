@@ -129,12 +129,12 @@
         height: 120px;
     }
     .avatar-pic {
+        border: 3px solid var(--on-surface);
         width: 100%;
         height: 100%;
         background-size: cover;
         background-position: center;
         border-radius: 50%;
-        border: 4px solid var(--mdc-theme-surface, #fff);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         position: relative;
         z-index: 2;
@@ -144,7 +144,6 @@
         bottom: 0;
         width: 2.5rem;
         height: 2.5rem;
-        background-color: var(--mdc-theme-surface, #fff);
         border-radius: 50%;
         display: flex;
         align-items: center;

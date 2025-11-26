@@ -1,8 +1,10 @@
 import { getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
-import type { PageParentData } from './$types';
+import type { PageParentData } from "./$types";
+import { keycloak } from '$lib/auth/keycloak';
 
 export const load = async ({ parent, depends }) => {
 	const data = await parent() as PageParentData;
+	keycloak.refreshToken
 	const { settings, management } = data.clients;
 
 	const [
