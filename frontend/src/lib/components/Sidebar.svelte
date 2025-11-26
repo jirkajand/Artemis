@@ -9,7 +9,7 @@
         href: string;
     }
     const navPages: NavPage[] = [
-        { name: "Dashboard", icon: "dashboard", href: "/" },
+        { name: "Dashboard", icon: "dashboard", href: "/dashboard" },
         { name: "My Students", icon: "school", href: "/my-students" },
         { name: "Events", icon: "event", href: "/events" },
         { name: "Statistics", icon: "bar_chart", href: "/statistics" },
