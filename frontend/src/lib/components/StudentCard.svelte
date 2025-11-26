@@ -129,13 +129,13 @@
         height: 120px;
     }
     .avatar-pic {
-        border: 3px solid var(--on-surface);
         width: 100%;
         height: 100%;
         background-size: cover;
         background-position: center;
         border-radius: 50%;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 3px solid var(--neutral-bg);
         position: relative;
         z-index: 2;
     }
