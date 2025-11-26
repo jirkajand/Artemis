@@ -25,9 +25,9 @@ export const load: PageLoad = async ({ parent }) => {
 			.map((s) => ({
 				...s,
 				faculty: facultyMap.get(s.facultyId) ?? {},
-				countryFlag: getCountryFlag(s.countryCode),
-				countryName: getCountryName(s.countryCode),
-				genderIcon: getGenderIcon(s.gender)
+				countryFlag: getCountryFlag(s.countryCode ?? ''),
+				countryName: getCountryName(s.countryCode ?? ''),
+				genderIcon: getGenderIcon(s.gender ?? ''),
 			}));
 
 		return { faculties, management, students };
