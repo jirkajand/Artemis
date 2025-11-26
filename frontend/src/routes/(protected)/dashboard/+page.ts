@@ -1,55 +1,61 @@
 import type { PageLoad } from './$types';
 import { getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
 
-export const load: PageLoad = async ({ parent }) => {
+export const load: PageLoad = async ({ parent, url }) => {
 	const { clients } = await parent();
 	const { settings, management } = clients;
 
+	const page = Number(url.searchParams.get('page') ?? 1);
+	const perPage = 20;
+
 	try {
-		// Fetch international students and faculties in parallel
+		// Fetch only the current page of students
 		const [internationalRes, faculties] = await Promise.all([
-			management.getAllInternationalStudentsAnonymous({ size: 999 }),
+			management.getAllInternationalStudentsAnonymous({
+				page: page - 1, // usually zero-based index
+				size: perPage
+			}),
 			settings.getAllFaculties()
 		]);
 
 		const studentsData = internationalRes?.students ?? [];
+		const total = internationalRes?.pageable?.totalElements ?? 0;
+
 		const facultiesData = faculties ?? [];
 		const facultyMap = new Map(facultiesData.map((f) => [f.id, f]));
 
-		// Try fetching assigned students, but ignore failures
+		// Fetch assigned students
 		let assignedIds = new Set<number>();
 		try {
 			const assignedRes = await management.getAssignedInternationalStudentsForLocalStudent();
 			assignedIds = new Set(assignedRes?.students?.map((s) => s.id) ?? []);
-		} catch (e) {
-			console.warn('Failed to fetch assigned students, showing all international students', e);
+		} catch {
+			console.warn('Failed to fetch assigned students');
 		}
 
-		const students = studentsData.map((s) => ({
-			...s,
-			faculty: facultyMap.get(s.facultyId) ?? {},
-			countryFlag: getCountryFlag(s.countryCode ?? ''),
-			countryName: getCountryName(s.countryCode ?? ''),
-			genderIcon: getGenderIcon(s.gender ?? '')
-		}));
-
-		// Filter out assigned only if we successfully fetched them
-		const filteredStudents = assignedIds.size > 0
-			? students.filter((s) => !assignedIds.has(s.id))
-			: students;
+		const filteredStudents = studentsData
+			.filter((s) => !assignedIds.has(s.id))
+			.map((s) => ({
+				...s,
+				faculty: facultyMap.get(s.facultyId) ?? {},
+				countryFlag: getCountryFlag(s.countryCode ?? ''),
+				countryName: getCountryName(s.countryCode ?? ''),
+				genderIcon: getGenderIcon(s.gender ?? '')
+			}));
 
 		return {
 			faculties: facultiesData,
 			management,
-			students: filteredStudents
+			students: filteredStudents,
+			pagination: { page, perPage, total }
 		};
-
 	} catch (e) {
-		console.error('Error loading international students or faculties:', e);
+		console.error('Error loading students or faculties:', e);
 		return {
 			faculties: [],
 			management,
-			students: []
+			students: [],
+			pagination: { page: 1, perPage, total: 0 }
 		};
 	}
 };
