@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { keycloak } from '$lib/auth/keycloak';
+	import SecondaryMemberRegistration from '$lib/components/SecondaryMemberRegistration.svelte';
     import Button, { Label } from '@smui/button';
 
     const { data } = $props()
+    const { clients } = data;
+    const { settings, management } = clients;
 
 </script>
 
@@ -18,7 +21,4 @@
     <p>❌ Health check failed: {error.message}</p>
 {/await}
 
-
-<Button variant="raised" onclick={() => keycloak.logout()}>
-    <Label>Logout</Label>
-</Button>
+<SecondaryMemberRegistration open={true} settingsClient={settings} userManagementClient={management} />

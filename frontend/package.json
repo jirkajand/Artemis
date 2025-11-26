@@ -24,6 +24,7 @@
 		"@smui/button": "^8.0.3",
 		"@smui/card": "^8.0.3",
 		"@smui/checkbox": "^8.0.3",
+		"@smui/dialog": "^8.0.3",
 		"@smui/form-field": "^8.0.3",
 		"@smui/list": "^8.0.3",
 		"@smui/menu": "^8.0.3",
