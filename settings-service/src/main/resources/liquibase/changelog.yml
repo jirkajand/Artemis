@@ -5,3 +5,6 @@ databaseChangeLog:
   - include:
       file: changesets/001-add-table-faculties.yml
       relativeToChangelogFile: true
+  - include:
+      file: changesets/002-add-table-semester.yml
+      relativeToChangelogFile: true

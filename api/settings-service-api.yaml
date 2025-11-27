@@ -129,6 +129,104 @@ paths:
                 $ref: '#/components/schemas/FacultyResponse'
         '404':
           description: Faculty not found
+  /semester:
+    get:
+      tags: [ SettingsService ]
+      summary: getAllSemesters
+      description: getAllSemesters endpoint to retrieve all semesters
+      operationId: getAllSemesters
+      security: [ ]
+      responses:
+        '200':
+          description: List of all semesters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SemesterResponse'
+    post:
+      tags: [ SettingsService ]
+      summary: createSemester
+      description: createSemester endpoint to create a semester by ID
+      operationId: createSemester
+      security:
+        - keycloak_auth: [ ADMIN ]
+      x-security-roles:
+        - ADMIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SemesterCreateRequest'
+      responses:
+        '201':
+          description: Semester created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+  /semester/current:
+    get:
+      tags: [ SettingsService ]
+      summary: getCurrentSemester
+      description: getCurrentSemester endpoint to retrieve the current semester
+      operationId: getCurrentSemester
+      security: [ ]
+      responses:
+        '200':
+          description: Current semester details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+        '404':
+          description: Current semester not found
+  /semester/{id}:
+    get:
+      tags: [ SettingsService ]
+      summary: getSemesterById
+      description: getSemesterById endpoint to retrieve a semester by ID
+      operationId: getSemesterById
+      security: [ ]
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Semester details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+        '404':
+          description: Semester not found
+    put:
+      tags: [ SettingsService ]
+      summary: updateSemester
+      description: updateSemester endpoint to update a semester by ID
+      operationId: updateSemester
+      security:
+        - keycloak_auth: [ ADMIN ]
+      x-security-roles:
+        - ADMIN
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SemesterCreateRequest'
+      responses:
+        '200':
+          description: Semester updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+        '404':
+          description: Semester not found
 
 components:
   parameters:
@@ -182,6 +280,42 @@ components:
         shortName:
           type: string
           example: "FIM"
+    SemesterResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        semesterName:
+          type: string
+          example: "Winter Semester 2023/2024"
+        semesterType:
+          type: string
+          example: "WINTER"
+        year:
+          type: string
+          example: "2023/2024"
+        semesterRegisterOpenDate:
+          type: string
+          format: date
+          example: "2023-08-15"
+    SemesterCreateRequest:
+      type: object
+      properties:
+        semesterName:
+          type: string
+          example: "Winter Semester 2023/2024"
+        semesterType:
+          type: string
+          example: "WINTER"
+        year:
+          type: string
+          example: "2023/2024"
+        semesterRegisterOpenDate:
+          type: string
+          format: date
+          example: "2023-08-15"
 
   securitySchemes:
     keycloak_auth:
