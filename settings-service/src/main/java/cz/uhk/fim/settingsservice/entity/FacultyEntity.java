@@ -2,34 +2,19 @@ package cz.uhk.fim.settingsservice.entity;
 
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "faculty_entity")
-public class FacultyEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class FacultyEntity extends BaseEntity {
 
     private String facultyNameInternational;
 
@@ -38,10 +23,4 @@ public class FacultyEntity {
     private String color;
 
     private String shortName;
-
-    @CreatedDate
-    private OffsetDateTime createdAt;
-
-    @LastModifiedDate
-    private OffsetDateTime lastModifiedAt;
 }

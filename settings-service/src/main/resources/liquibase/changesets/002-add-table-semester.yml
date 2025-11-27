@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-add-table-semester
+      author: Matej Vana
+      changes:
+        - createTable:
+            tableName: semester_entity
+            columns:
+              - column:
+                  name: id
+                  type: ${uuid_type}
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_semester_id
+              - column:
+                  name: semester_name
+                  type: varchar(255)
+              - column:
+                  name: semester_type
+                  type: varchar(255)
+              - column:
+                  name: year
+                  type: varchar(255)
+              - column:
+                  name: semester_register_open_date
+                  type: date
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
