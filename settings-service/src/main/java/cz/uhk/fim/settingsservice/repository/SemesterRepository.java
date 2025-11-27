@@ -12,4 +12,7 @@ import java.util.UUID;
 public interface SemesterRepository extends JpaRepository<SemesterEntity, UUID> {
 
     Optional<SemesterEntity> findFirstBySemesterRegisterOpenDateNotNullAndSemesterRegisterOpenDateBeforeOrderBySemesterRegisterOpenDateDesc(LocalDate date);
+
+
+    Optional<SemesterEntity> findFirstByCreatedAt_YearAndCreatedAt_MonthAndCreatedAt_DayOfMonth(int year, int month, int day);
 }

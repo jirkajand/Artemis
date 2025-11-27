@@ -44,6 +44,12 @@ public class SemesterScheduled {
     @Scheduled(cron = "0 0 0 1 5 *")
     public void startOfWinterSemesterTask() {
         log.info("Starting semester scheduled task");
+
+        if (semesterService.isAnySemesterCreatedToday()) {
+            log.info("Semester for today is already created, skipping creation.");
+            return;
+        }
+
         SemesterEntity semesterEntity = new SemesterEntity();
 
         semesterEntity.setYear(SemesterUtils.generateCurrentYear(LocalDate.now().getYear(), SemesterType.WINTER));
@@ -60,6 +66,12 @@ public class SemesterScheduled {
     @Scheduled(cron = "0 0 0 1 11 *")
     public void startOfSummerSemesterTask() {
         log.info("Starting semester scheduled task");
+
+        if (semesterService.isAnySemesterCreatedToday()) {
+            log.info("Semester for today is already created, skipping creation.");
+            return;
+        }
+        
         SemesterEntity semesterEntity = new SemesterEntity();
 
         semesterEntity.setYear(SemesterUtils.generateCurrentYear(LocalDate.now().getYear(), SemesterType.SUMMER));

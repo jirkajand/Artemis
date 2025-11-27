@@ -46,13 +46,13 @@ public class SemesterService {
 
     public SemesterResponse getSemesterById(UUID id) {
         var semesterEntity = semesterRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found id: " + id));
         return semesterMapper.toResponse(semesterEntity);
     }
 
     public SemesterResponse updateSemester(UUID id, SemesterCreateRequest semesterCreateRequest) {
         var existingSemesterEntity = semesterRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found id: " + id));
 
         var updatedSemesterEntity = semesterMapper.toEntity(semesterCreateRequest);
         updatedSemesterEntity.setId(existingSemesterEntity.getId());
@@ -65,5 +65,14 @@ public class SemesterService {
         var semester = semesterRepository.findFirstBySemesterRegisterOpenDateNotNullAndSemesterRegisterOpenDateBeforeOrderBySemesterRegisterOpenDateDesc(LocalDate.now())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Current semester not found"));
         return semesterMapper.toResponse(semester);
+    }
+
+
+    public boolean isAnySemesterCreatedToday() {
+        LocalDate today = LocalDate.now();
+        return semesterRepository.findFirstByCreatedAt_YearAndCreatedAt_MonthAndCreatedAt_DayOfMonth(
+                today.getYear(),
+                today.getMonthValue(),
+                today.getDayOfMonth()).isPresent();
     }
 }
