@@ -16,8 +16,9 @@ public interface InternationalStudentMapper {
     InternationalStudentEntity toInternationalStudentEntity(RegisterInternationalStudentRequest request);
 
     @Mapping(target = "countryCode", source = "countryISO")
+    @Mapping(target = "isAssigned", expression = "java(entity.getAssignedBuddy() != null)")
     InternationalStudentAnonymous toInternationalStudentAnonymous(InternationalStudentEntity entity);
-    
+
     @Mapping(target = "countryCode", source = "countryISO")
     AssignedInternationalStudent toAssignedInternationalStudent(InternationalStudentEntity internationalStudentEntity);
 }

@@ -98,9 +98,9 @@ public class InternationalStudentService {
         return internationalStudentRepository.save(internationalStudent);
     }
 
-    public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode) {
+    public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode, @Nullable Boolean containAssigned) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode);
+        var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode, containAssigned);
         return new GetAllInternationalStudentsAnonymous200Response()
                     .students(internationalStudents.stream()
                             .map(internationalStudentMapper::toInternationalStudentAnonymous)
