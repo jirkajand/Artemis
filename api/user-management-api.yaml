@@ -294,6 +294,13 @@ paths:
           required: false
           schema:
             type: string
+        - name: containAssigned
+          in: query
+          description: Whether to include students already assigned to local students (default is false)
+          required: false
+          schema:
+            type: boolean
+            default: false
       security:
         - keycloak_auth: [ TUTOR, ADMIN ]
       responses:
@@ -419,6 +426,8 @@ components:
           format: uuid
         bio:
           type: string
+        isAssigned:
+          type: boolean
 
     AssignedInternationalStudent:
       type: object
