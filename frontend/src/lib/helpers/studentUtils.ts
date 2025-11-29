@@ -18,3 +18,8 @@ export function getGenderIcon(gender: string) {
 	return gender?.toLowerCase() === 'male' ? '♂️' :
 		gender?.toLowerCase() === 'female' ? '♀️' : '⚧️';
 }
+
+export function getAllCountryNames(){
+	return countries.getNames("en", {select: "alias"})
+}
+

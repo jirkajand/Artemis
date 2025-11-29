@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types';
-import { getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
+import { getCountryFlag, getCountryName, getGenderIcon, getAllCountryNames } from '$lib/helpers/studentUtils';
 
 export const load: PageLoad = async ({ parent, url }) => {
 	const { clients } = await parent();
@@ -8,54 +8,54 @@ export const load: PageLoad = async ({ parent, url }) => {
 	const page = Number(url.searchParams.get('page') ?? 1);
 	const perPage = 20;
 
+	const country = url.searchParams.get('country') || undefined;
+	const faculty = url.searchParams.get('faculty') || undefined;
+	const semester = url.searchParams.get('semester') || undefined;
+
 	try {
-		// Fetch only the current page of students
 		const [internationalRes, faculties] = await Promise.all([
 			management.getAllInternationalStudentsAnonymous({
-				page: page - 1, // usually zero-based index
-				size: perPage
+				page: page - 1,
+				size: perPage,
+				containAssigned: false,
+				countryCode: country,
+				facultyId: faculty,
+				semesterId: semester
 			}),
 			settings.getAllFaculties()
 		]);
 
-		const studentsData = internationalRes?.students ?? [];
-		const total = internationalRes?.pageable?.totalElements ?? 0;
+		const facultyMap = new Map((faculties ?? []).map(f => [f.id, f]));
+		const students = (internationalRes?.students ?? []).map(s => ({
+			...s,
+			faculty: facultyMap.get(s.facultyId),
+			countryFlag: getCountryFlag(s.countryCode ?? ''),
+			countryName: getCountryName(s.countryCode ?? ''),
+			genderIcon: getGenderIcon(s.gender ?? '')
+		}));
 
-		const facultiesData = faculties ?? [];
-		const facultyMap = new Map(facultiesData.map((f) => [f.id, f]));
-
-		// Fetch assigned students
-		let assignedIds = new Set<number>();
-		try {
-			const assignedRes = await management.getAssignedInternationalStudentsForLocalStudent();
-			assignedIds = new Set(assignedRes?.students?.map((s) => s.id) ?? []);
-		} catch {
-			console.warn('Failed to fetch assigned students');
-		}
-
-		const filteredStudents = studentsData
-			.filter((s) => !assignedIds.has(s.id))
-			.map((s) => ({
-				...s,
-				faculty: facultyMap.get(s.facultyId) ?? {},
-				countryFlag: getCountryFlag(s.countryCode ?? ''),
-				countryName: getCountryName(s.countryCode ?? ''),
-				genderIcon: getGenderIcon(s.gender ?? '')
-			}));
+		const countries = Object.entries(getAllCountryNames()).map(([code, name]) => ({ value: code, label: name }));
 
 		return {
-			faculties: facultiesData,
-			management,
-			students: filteredStudents,
-			pagination: { page, perPage, total }
+			students,
+			faculties: faculties ?? [],
+			filterValues: {
+				countries,
+				destinationFaculties: (faculties ?? []).map(f => ({ id: f.id, label: f.shortName }))
+			},
+			activeFilters: { country: country ?? '', faculty: faculty ?? '', semester: semester ?? '' },
+			pagination: { page, perPage, total: internationalRes?.pageable?.totalElements ?? 0 },
+			management
 		};
-	} catch (e) {
-		console.error('Error loading students or faculties:', e);
+	} catch (error) {
+		console.error(error);
 		return {
-			faculties: [],
-			management,
 			students: [],
-			pagination: { page: 1, perPage, total: 0 }
+			faculties: [],
+			filterValues: { countries: [], destinationFaculties: [] },
+			activeFilters: { country: '', faculty: '', semester: '' },
+			pagination: { page: 1, perPage: 0, total: 0 },
+			management
 		};
 	}
 };
