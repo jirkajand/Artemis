@@ -1,5 +1,6 @@
 package cz.uhk.fim.service;
 
+import cz.uhk.fim.entity.StudentEntity;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,5 +63,38 @@ public class KeycloakService {
             log.error("Error during user registration", e);
             return Optional.empty();
         }
+    }
+
+    public void updateKeycloakUserAttributes(StudentEntity studentEntity, String email, String firstName, String lastName) {
+        try {
+            UserRepresentation user = keycloakUsersResource.get(studentEntity.getKeycloakId().toString()).toRepresentation();
+
+            boolean isUpdated = false;
+
+            if (email != null && !email.equals(user.getEmail())) {
+                user.setEmail(email);
+                isUpdated = true;
+            }
+            if (firstName != null && !firstName.equals(user.getFirstName())) {
+                user.setFirstName(firstName);
+                isUpdated = true;
+            }
+            if (lastName != null && !lastName.equals(user.getLastName())) {
+                user.setLastName(lastName);
+                isUpdated = true;
+            }
+
+            if (isUpdated) {
+                keycloakUsersResource.get(studentEntity.getKeycloakId().toString()).update(user);
+                log.info("User attributes updated successfully for userId: {}", studentEntity.getKeycloakId());
+            } else {
+                log.info("No changes detected for userId: {}", studentEntity.getKeycloakId());
+            }
+
+
+        } catch (Exception e) {
+            log.error("Error updating user attributes for userId: {}", studentEntity.getKeycloakId(), e);
+        }
+
     }
 }

@@ -1,6 +1,8 @@
 package cz.uhk.fim.entity;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -36,6 +39,12 @@ public class InternationalStudentEntity extends StudentEntity {
 
     private String accommodation;
 
-    private UUID semesterId;
+    @ElementCollection
+    @CollectionTable(
+            name = "international_student_semesters",
+            joinColumns = @JoinColumn(name = "student_id")
+    )
+    @Column(name = "semester_id")
+    private List<UUID> semesterIds;
 
 }

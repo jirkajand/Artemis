@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-change-semester-to-semesters
+      author: Matej Vana
+      changes:
+        - createTable:
+            tableName: international_student_semesters
+            columns:
+              - column:
+                  name: student_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: semester_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            columnNames: student_id,semester_id
+            constraintName: pk_international_student_semesters
+            tableName: international_student_semesters
+        - addForeignKeyConstraint:
+            baseTableName: international_student_semesters
+            baseColumnNames: student_id
+            referencedTableName: international_students
+            referencedColumnNames: id
+            constraintName: fk_iss_student
+            onDelete: CASCADE
+        - createIndex:
+            tableName: international_student_semesters
+            indexName: idx_iss_student_id
+            columns:
+              - column:
+                  name: student_id
+        - createIndex:
+            tableName: international_student_semesters
+            indexName: idx_iss_semester_id
+            columns:
+              - column:
+                  name: semester_id
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              INSERT INTO international_student_semesters (student_id, semester_id)
+              SELECT id AS student_id, semester_id
+              FROM international_students
+              WHERE semester_id IS NOT NULL;
+        - dropColumn:
+            tableName: international_students
+            columnName: semester_id
+
+      rollback:
+        - addColumn:
+            tableName: international_students
+            columns:
+              - column:
+                  name: semester_id
+                  type: uuid
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              UPDATE international_students t
+              SET semester_id = s.semester_id
+              FROM (
+                SELECT student_id, semester_id,
+                       ROW_NUMBER() OVER (PARTITION BY student_id ORDER BY semester_id) rn
+                FROM international_student_semesters
+              ) s
+              WHERE s.student_id = t.id AND s.rn = 1;
+        - dropTable:
+            tableName: international_student_semesters
+            cascadeConstraints: true
