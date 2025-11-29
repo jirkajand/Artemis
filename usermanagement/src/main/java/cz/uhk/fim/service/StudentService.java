@@ -66,4 +66,17 @@ public class StudentService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid UUID format for keycloakId: " + keycloakId);
         }
     }
+
+    public UUID getStudentIdByKeycloakId(UUID loggedUserKeycloakId) {
+        var internationalStudentOpt = internationalStudentRepository.findByKeycloakId(loggedUserKeycloakId);
+        if (internationalStudentOpt.isPresent()) {
+            return internationalStudentOpt.get().getId();
+        }
+        var localStudentOpt = localStudentRepository.findByKeycloakId(loggedUserKeycloakId);
+        if (localStudentOpt.isPresent()) {
+            return localStudentOpt.get().getId();
+        }
+        log.error("No student found with keycloakId: {}", loggedUserKeycloakId);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No student found with keycloakId: " + loggedUserKeycloakId);
+    }
 }

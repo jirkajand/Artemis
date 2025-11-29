@@ -7,7 +7,10 @@ import cz.uhk.fim.mapper.PageableMapper;
 import cz.uhk.fim.repository.InternationalStudentRepository;
 import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
 import cz.uhk.fim.usermanagement.model.GetAllInternationalStudentsAnonymous200Response;
+import cz.uhk.fim.usermanagement.model.InternationalStudentProfile;
+import cz.uhk.fim.usermanagement.model.InternationalStudentProfileEditRequest;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentRequest;
+import cz.uhk.fim.utils.KeycloakUtils;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +92,14 @@ public class InternationalStudentService {
         return internationalStudentRepository.findById(internationalStudentId);
     }
 
+    public InternationalStudentProfile getInternationalStudentProfile(UUID internationalStudentId) {
+        var internationalStudentOpt = getInternationalStudentById(internationalStudentId);
+        if (internationalStudentOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "International student not found with id: " + internationalStudentId);
+        }
+        return internationalStudentMapper.toInternationalStudentProfile(internationalStudentOpt.get());
+    }
+
 
     public InternationalStudentEntity assignLocalStudentToInternationalStudent(UUID internationalStudentId, LocalStudentEntity localStudentEntity) {
         var internationalStudent = getInternationalStudentById(internationalStudentId)
@@ -114,4 +125,29 @@ public class InternationalStudentService {
                 .map(internationalStudentMapper::toAssignedInternationalStudent)
                 .toList();
     }
+
+    public InternationalStudentProfile updateInternationalStudentById(UUID internationalStudentId, InternationalStudentProfileEditRequest internationalStudentProfileEditRequest) {
+        var internationalStudent = getInternationalStudentById(internationalStudentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International student not found with id: " + internationalStudentId));
+        var needToUpdateKeycloak = KeycloakUtils.isChangedKeycloakAttribute(internationalStudentProfileEditRequest, internationalStudent);
+        internationalStudentMapper.updateInternationalStudentFromEditRequest(internationalStudentProfileEditRequest, internationalStudent);
+        internationalStudentRepository.save(internationalStudent);
+        if (needToUpdateKeycloak) {
+            keycloakService.updateKeycloakUserAttributes(internationalStudent,
+                    internationalStudentProfileEditRequest.getEmail(), internationalStudentProfileEditRequest.getFirstName(), internationalStudentProfileEditRequest.getLastName());
+        }
+        return internationalStudentMapper.toInternationalStudentProfile(internationalStudent);
+    }
+
+
+    public boolean isInternationalStudentPickedByStudent(UUID internationalStudentId, UUID localStudentId) {
+        var internationalStudentOpt = getInternationalStudentById(internationalStudentId);
+        if (internationalStudentOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "International student not found with id: " + internationalStudentId);
+        }
+        return internationalStudentOpt.get().getAssignedBuddy() != null &&
+                internationalStudentOpt.get().getAssignedBuddy().getId().equals(localStudentId);
+    }
+
+
 }
