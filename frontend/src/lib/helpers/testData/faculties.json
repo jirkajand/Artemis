@@ -1,0 +1,74 @@
+[
+  {
+    "facultyNameInternational": "Faculty of Technology",
+    "facultyNameLocal": "Fakulta Technologie",
+    "shortName": "FTE",
+    "color": "#ABCDEF"
+  },
+  {
+    "facultyNameInternational": "Faculty of Design",
+    "facultyNameLocal": "Fakulta Designu",
+    "shortName": "FDN",
+    "color": "#FFAACC"
+  },
+  {
+    "facultyNameInternational": "Faculty of Business",
+    "facultyNameLocal": "Fakulta Podnikání",
+    "shortName": "FBZ",
+    "color": "#44CC88"
+  },
+  {
+    "facultyNameInternational": "Faculty of Informatics",
+    "facultyNameLocal": "Fakulta Informatiky",
+    "shortName": "FIN",
+    "color": "#55AFFF"
+  },
+  {
+    "facultyNameInternational": "Faculty of Humanities",
+    "facultyNameLocal": "Fakulta Humanitních Studií",
+    "shortName": "FHS",
+    "color": "#DD6688"
+  },
+  {
+    "facultyNameInternational": "Faculty of Economics",
+    "facultyNameLocal": "Fakulta Ekonomie",
+    "shortName": "FEC",
+    "color": "#66CCAA"
+  },
+  {
+    "facultyNameInternational": "Faculty of Medicine",
+    "facultyNameLocal": "Lékařská Fakulta",
+    "shortName": "MED",
+    "color": "#CC4444"
+  },
+  {
+    "facultyNameInternational": "Faculty of Science",
+    "facultyNameLocal": "Přírodovědecká Fakulta",
+    "shortName": "PSC",
+    "color": "#88BB44"
+  },
+  {
+    "facultyNameInternational": "Faculty of Architecture",
+    "facultyNameLocal": "Fakulta Architektury",
+    "shortName": "FAR",
+    "color": "#EEBB55"
+  },
+  {
+    "facultyNameInternational": "Faculty of Education",
+    "facultyNameLocal": "Pedagogická Fakulta",
+    "shortName": "PED",
+    "color": "#6699FF"
+  },
+  {
+    "facultyNameInternational": "Faculty of Social Studies",
+    "facultyNameLocal": "Fakulta Sociálních Studií",
+    "shortName": "FSS",
+    "color": "#BB88DD"
+  },
+  {
+    "facultyNameInternational": "Faculty of Law",
+    "facultyNameLocal": "Právnická Fakulta",
+    "shortName": "LAW",
+    "color": "#222222"
+  }
+]

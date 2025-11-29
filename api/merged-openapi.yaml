@@ -120,6 +120,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterLocalStudentResponse'
+  '/user-management/api/local-student/{localStudentId}':
+    parameters:
+      - name: localStudentId
+        in: path
+        description: ID of the local student
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - UserManagement
+      summary: getLocalStudentById
+      operationId: getLocalStudentById
+      description: Retrieve local student details by their ID
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      responses:
+        '200':
+          description: Local student details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocalStudentProfile'
+        '400':
+          description: Bad request (invalid UUID format)
+        '401':
+          description: Unauthorized
+        '404':
+          description: Local student not found
+    put:
+      tags:
+        - UserManagement
+      summary: updateLocalStudentById
+      operationId: updateLocalStudentById
+      description: Update local student details by their ID
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      requestBody:
+        description: Local student details to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocalStudentProfileEditRequest'
+      responses:
+        '200':
+          description: Local student details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocalStudentProfile'
+        '400':
+          description: Bad request (invalid data)
+        '401':
+          description: Unauthorized
+        '404':
+          description: Local student not found
   '/user-management/api/local-student/{localStudentId}/profile-details':
     parameters:
       - name: localStudentId
@@ -288,6 +352,70 @@ paths:
           description: Bad request (invalid data)
         '401':
           description: Unauthorized
+  '/user-management/api/international-student/{internationalStudentId}':
+    parameters:
+      - name: internationalStudentId
+        in: path
+        description: ID of the international student
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - UserManagement
+      summary: getInternationalStudentById
+      operationId: getInternationalStudentById
+      description: Retrieve international student details by their ID
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      responses:
+        '200':
+          description: International student details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternationalStudentProfile'
+        '400':
+          description: Bad request (invalid UUID format)
+        '401':
+          description: Unauthorized
+        '404':
+          description: International student not found
+    put:
+      tags:
+        - UserManagement
+      summary: updateInternationalStudentById
+      operationId: updateInternationalStudentById
+      description: Update international student details by their ID
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      requestBody:
+        description: International student details to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternationalStudentProfileEditRequest'
+      responses:
+        '200':
+          description: International student details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternationalStudentProfile'
+        '400':
+          description: Bad request (invalid data)
+        '401':
+          description: Unauthorized
+        '404':
+          description: International student not found
   /user-management/api/international-student/anonymous:
     get:
       tags:
@@ -330,6 +458,15 @@ paths:
           required: false
           schema:
             type: string
+        - name: containAssigned
+          in: query
+          description: >-
+            Whether to include students already assigned to local students
+            (default is false)
+          required: false
+          schema:
+            type: boolean
+            default: false
       security:
         - keycloak_auth:
             - TUTOR
@@ -485,6 +622,111 @@ paths:
                 $ref: '#/components/schemas/FacultyResponse'
         '404':
           description: Faculty not found
+  /settings/api/semester:
+    get:
+      tags:
+        - SettingsService
+      summary: getAllSemesters
+      description: getAllSemesters endpoint to retrieve all semesters
+      operationId: getAllSemesters
+      security: []
+      responses:
+        '200':
+          description: List of all semesters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SemesterResponse'
+    post:
+      tags:
+        - SettingsService
+      summary: createSemester
+      description: createSemester endpoint to create a semester by ID
+      operationId: createSemester
+      security:
+        - keycloak_auth:
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SemesterCreateRequest'
+      responses:
+        '201':
+          description: Semester created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+  /settings/api/semester/current:
+    get:
+      tags:
+        - SettingsService
+      summary: getCurrentSemester
+      description: getCurrentSemester endpoint to retrieve the current semester
+      operationId: getCurrentSemester
+      security: []
+      responses:
+        '200':
+          description: Current semester details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+        '404':
+          description: Current semester not found
+  '/settings/api/semester/{id}':
+    get:
+      tags:
+        - SettingsService
+      summary: getSemesterById
+      description: getSemesterById endpoint to retrieve a semester by ID
+      operationId: getSemesterById
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Semester details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+        '404':
+          description: Semester not found
+    put:
+      tags:
+        - SettingsService
+      summary: updateSemester
+      description: updateSemester endpoint to update a semester by ID
+      operationId: updateSemester
+      security:
+        - keycloak_auth:
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SemesterCreateRequest'
+      responses:
+        '200':
+          description: Semester updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemesterResponse'
+        '404':
+          description: Semester not found
 components:
   schemas:
     HealthCheckResponse:
@@ -566,6 +808,115 @@ components:
           type: string
         lastName:
           type: string
+        type:
+          $ref: '#/components/schemas/StudentType'
+    StudentType:
+      type: string
+      enum:
+        - LOCAL
+        - INTERNATIONAL
+    StudentProfileBase:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        bio:
+          type: string
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        dateOfBirth:
+          type: string
+          format: date
+        facultyId:
+          type: string
+          format: uuid
+        emailMarketingChecked:
+          type: boolean
+        termsAndConditionsChecked:
+          type: boolean
+        favouriteActivities:
+          type: array
+          items:
+            type: string
+    LocalStudentProfile:
+      allOf:
+        - $ref: '#/components/schemas/StudentProfileBase'
+        - type: object
+          properties:
+            assignedInternationalStudents:
+              type: array
+              items:
+                $ref: '#/components/schemas/AssignedInternationalStudent'
+            assignedStudentsCapacity:
+              type: integer
+    InternationalStudentProfile:
+      allOf:
+        - $ref: '#/components/schemas/StudentProfileBase'
+        - type: object
+          properties:
+            homeUniversity:
+              type: string
+            countryCode:
+              type: string
+            assignedBuddy:
+              $ref: '#/components/schemas/ResponseStudentDetail'
+            semesterIds:
+              type: array
+              items:
+                type: string
+                format: uuid
+    StudentEditBaseRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        bio:
+          type: string
+        favouriteActivities:
+          type: array
+          items:
+            type: string
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        facultyId:
+          type: string
+          format: uuid
+        emailMarketingChecked:
+          type: boolean
+        dateOfBirth:
+          type: string
+          format: date
+    LocalStudentProfileEditRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentEditBaseRequest'
+    InternationalStudentProfileEditRequest:
+      allOf:
+        - $ref: '#/components/schemas/StudentEditBaseRequest'
+        - type: object
+          properties:
+            homeUniversity:
+              type: string
+            countryCode:
+              type: string
+            accommodation:
+              type: string
     InternationalStudentAnonymous:
       type: object
       properties:
@@ -581,11 +932,15 @@ components:
         facultyId:
           type: string
           format: uuid
-        semesterId:
-          type: string
-          format: uuid
+        semesterIds:
+          type: array
+          items:
+            type: string
+            format: uuid
         bio:
           type: string
+        isAssigned:
+          type: boolean
     AssignedInternationalStudent:
       type: object
       properties:
@@ -776,6 +1131,42 @@ components:
         shortName:
           type: string
           example: FIM
+    SemesterResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        semesterName:
+          type: string
+          example: Winter Semester 2023/2024
+        semesterType:
+          type: string
+          example: WINTER
+        year:
+          type: string
+          example: 2023/2024
+        semesterRegisterOpenDate:
+          type: string
+          format: date
+          example: '2023-08-15'
+    SemesterCreateRequest:
+      type: object
+      properties:
+        semesterName:
+          type: string
+          example: Winter Semester 2023/2024
+        semesterType:
+          type: string
+          example: WINTER
+        year:
+          type: string
+          example: 2023/2024
+        semesterRegisterOpenDate:
+          type: string
+          format: date
+          example: '2023-08-15'
   securitySchemes:
     keycloak_auth:
       type: oauth2

@@ -7,7 +7,9 @@
 
 <p>Use your company account to access Artemis.</p>
 
-<Button onclick={() => keycloak.login({ redirectUri: window.location.origin })}>
+<Button onclick={() => keycloak.login({
+  redirectUri: `${window.location.origin}/dashboard`
+})}>
   <Label>Login with Keycloak</Label>
 </Button>
 <br/>
