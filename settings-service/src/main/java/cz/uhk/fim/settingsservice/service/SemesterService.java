@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,10 +71,9 @@ public class SemesterService {
 
 
     public boolean isAnySemesterCreatedToday() {
-        LocalDate today = LocalDate.now();
-        return semesterRepository.findFirstByCreatedAt_YearAndCreatedAt_MonthAndCreatedAt_DayOfMonth(
-                today.getYear(),
-                today.getMonthValue(),
-                today.getDayOfMonth()).isPresent();
+        ZoneId zone = ZoneId.systemDefault();
+        OffsetDateTime start = LocalDate.now(zone).atStartOfDay(zone).toOffsetDateTime();
+        OffsetDateTime end = start.plusDays(1);
+        return semesterRepository.findFirstByCreatedAtBetweenOrderByCreatedAtDesc(start, end).isPresent();
     }
 }
