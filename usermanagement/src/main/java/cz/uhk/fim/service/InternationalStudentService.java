@@ -85,6 +85,8 @@ public class InternationalStudentService {
         var profilePicturePath = profilePicturesService.storeProfilePicture(internationalStudentId, profilePicture);
         profilePicturePath.ifPresent(internationalStudent::setProfilePicturePath);
 
+        internationalStudent.setHasSecondaryRegistrationDone(true);
+
         internationalStudentRepository.save(internationalStudent);
     }
 

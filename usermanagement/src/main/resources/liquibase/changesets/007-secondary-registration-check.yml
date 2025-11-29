@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-secondary-registration-check
+      author: Matej Vana
+      changes:
+        - addColumn:
+            tableName: students
+            columns:
+              - column:
+                  name: has_secondary_registration_done
+                  type: boolean
+        - sql:
+            comment: Set has_secondary_registration_done to true for students who have already completed secondary registration
+            sql: |
+              UPDATE students
+              SET has_secondary_registration_done = FALSE
+              WHERE has_secondary_registration_done IS NULL;
