@@ -68,6 +68,8 @@ public class LocalStudentService {
         profilePicturePath.ifPresent(localStudent::setProfilePicturePath);
         //todo handle state if profile picture upload fails what should happen??
 
+        localStudent.setHasSecondaryRegistrationDone(true);
+
         localStudentRepository.save(localStudent);
     }
 

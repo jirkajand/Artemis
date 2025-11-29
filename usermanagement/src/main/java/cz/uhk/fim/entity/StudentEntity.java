@@ -77,14 +77,14 @@ public abstract class StudentEntity {
     @Column(name = "activity")
     private Set<String> favouriteActivities = new HashSet<>();
 
-
     private Boolean isActive;
-
 
     private Boolean emailMarketingChecked;
 
-
     private Boolean termsAndConditionsChecked;
+
+    @Builder.Default
+    private Boolean hasSecondaryRegistrationDone = false;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
