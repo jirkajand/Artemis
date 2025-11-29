@@ -13,11 +13,13 @@ import cz.uhk.fim.usermanagement.model.RegisterLocalStudentResponse;
 import cz.uhk.fim.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -62,7 +64,7 @@ public class LocalStudentController implements LocalStudentApi {
         if (loggedInUserId.equals(localStudentId) || localStudentService.isLocalStudentBuddyOfInternationalStudent(localStudentId, loggedInUserId)) {
             return ResponseEntity.ok(localStudentService.getLocalStudentProfile(localStudentId));
         }
-        return ResponseEntity.status(403).build();
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied. You can only view your own profile or if you are assigned as a buddy.");
     }
 
     @Override
@@ -73,6 +75,6 @@ public class LocalStudentController implements LocalStudentApi {
         if (loggedInUserId.equals(localStudentId)) {
             return ResponseEntity.ok(localStudentService.updateLocalStudentById(localStudentId, localStudentProfileEditRequest));
         }
-        return ResponseEntity.status(403).build();
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied. You can only update your own profile.");
     }
 }

@@ -870,7 +870,7 @@ components:
               type: string
             assignedBuddy:
               $ref: '#/components/schemas/ResponseStudentDetail'
-            semestersIds:
+            semesterIds:
               type: array
               items:
                 type: string

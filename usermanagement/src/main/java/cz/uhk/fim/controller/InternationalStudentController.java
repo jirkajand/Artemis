@@ -12,11 +12,13 @@ import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentResponse;
 import cz.uhk.fim.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -53,7 +55,7 @@ public class InternationalStudentController implements InternationalStudentApi {
         if (loggedInUserId.equals(internationalStudentId) || internationalStudentService.isInternationalStudentPickedByStudent(internationalStudentId, loggedInUserId)) {
             return ResponseEntity.ok(internationalStudentService.getInternationalStudentProfile(internationalStudentId));
         }
-        return ResponseEntity.status(403).build();
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied. You can only view your own profile or if you are assigned as a buddy.");
     }
 
     @Override
@@ -64,6 +66,6 @@ public class InternationalStudentController implements InternationalStudentApi {
         if (loggedInUserId.equals(internationalStudentId)) {
             return ResponseEntity.ok(internationalStudentService.updateInternationalStudentById(internationalStudentId, internationalStudentProfileEditRequest));
         }
-        return ResponseEntity.status(403).build();
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied. You can only update your own profile.");
     }
 }
