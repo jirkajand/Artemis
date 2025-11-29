@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 004-secondary-registration-check
+      id: 007-secondary-registration-check
       author: Matej Vana
       changes:
         - addColumn:
