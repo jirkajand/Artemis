@@ -4,7 +4,10 @@ import cz.uhk.fim.entity.LocalStudentEntity;
 import cz.uhk.fim.mapper.LocalStudentMapper;
 import cz.uhk.fim.repository.LocalStudentRepository;
 import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
+import cz.uhk.fim.usermanagement.model.LocalStudentProfile;
+import cz.uhk.fim.usermanagement.model.LocalStudentProfileEditRequest;
 import cz.uhk.fim.usermanagement.model.RegisterLocalStudentRequest;
+import cz.uhk.fim.utils.KeycloakUtils;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -106,5 +109,34 @@ public class LocalStudentService {
             return List.of();
         }
         return internationalStudentService.mapToAssignedStudents(localStudent.getAssignedStudents());
+    }
+
+    public boolean isLocalStudentBuddyOfInternationalStudent(UUID localStudentId, UUID loggedInUserId) {
+        var localStudent = getLocalStudentById(localStudentId);
+        if (localStudent.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Local Student with id " + localStudentId + " not found.");
+        }
+        return localStudent.get().getAssignedStudents().stream()
+                .anyMatch(internationalStudent -> internationalStudent.getId().equals(loggedInUserId));
+    }
+
+    public LocalStudentProfile getLocalStudentProfile(UUID localStudentId) {
+        var localStudent = getLocalStudentById(localStudentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Local Student with id " + localStudentId + " not found."));
+        var response = localStudentMapper.toLocalStudentProfile(localStudent);
+        response.setAssignedInternationalStudents(internationalStudentService.mapToAssignedStudents(localStudent.getAssignedStudents()));
+        return response;
+    }
+
+    public LocalStudentProfile updateLocalStudentById(UUID localStudentId, LocalStudentProfileEditRequest localStudentProfileEditRequest) {
+        var localStudent = getLocalStudentById(localStudentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Local student not found with id: " + localStudentId));
+        var needToUpdateKeycloak = KeycloakUtils.isChangedKeycloakAttribute(localStudentProfileEditRequest, localStudent);
+        localStudentMapper.updateLocalStudentFromEditRequest(localStudentProfileEditRequest, localStudent);
+        localStudentRepository.save(localStudent);
+        if (needToUpdateKeycloak) {
+            keycloakService.updateKeycloakUserAttributes(localStudent,
+                    localStudentProfileEditRequest.getEmail(), localStudentProfileEditRequest.getFirstName(), localStudentProfileEditRequest.getLastName());
+        }
+        return localStudentMapper.toLocalStudentProfile(localStudent);
     }
 }

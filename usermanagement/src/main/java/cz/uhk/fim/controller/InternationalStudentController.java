@@ -1,14 +1,19 @@
 package cz.uhk.fim.controller;
 
 import cz.uhk.fim.service.InternationalStudentService;
+import cz.uhk.fim.service.StudentService;
 import cz.uhk.fim.usermanagement.api.InternationalStudentApi;
 import cz.uhk.fim.usermanagement.model.GetAllInternationalStudentsAnonymous200Response;
+import cz.uhk.fim.usermanagement.model.InternationalStudentProfile;
 import cz.uhk.fim.usermanagement.model.InternationalStudentProfileDetailsResponse;
+import cz.uhk.fim.usermanagement.model.InternationalStudentProfileEditRequest;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentRequest;
 import cz.uhk.fim.usermanagement.model.RegisterInternationalStudentResponse;
+import cz.uhk.fim.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +27,7 @@ import java.util.UUID;
 public class InternationalStudentController implements InternationalStudentApi {
 
     private final InternationalStudentService internationalStudentService;
+    private final StudentService studentService;
 
     @Override
     public ResponseEntity<RegisterInternationalStudentResponse> registerInternationalStudent(RegisterInternationalStudentRequest registerInternationalStudentRequest) {
@@ -40,4 +46,24 @@ public class InternationalStudentController implements InternationalStudentApi {
         return ResponseEntity.ok(internationalStudentService.getAllInternationalStudents(page, size, semesterId, facultyId, countryCode, containAssigned));
     }
 
+    @Override
+    public ResponseEntity<InternationalStudentProfile> getInternationalStudentById(UUID internationalStudentId) {
+        var loggedUserKeycloakId = JwtUtils.getIdFromSecurityContext(SecurityContextHolder.getContext());
+        var loggedInUserId = studentService.getStudentIdByKeycloakId(loggedUserKeycloakId);
+        if (loggedInUserId.equals(internationalStudentId) || internationalStudentService.isInternationalStudentPickedByStudent(internationalStudentId, loggedInUserId)) {
+            return ResponseEntity.ok(internationalStudentService.getInternationalStudentProfile(internationalStudentId));
+        }
+        return ResponseEntity.status(403).build();
+    }
+
+    @Override
+    public ResponseEntity<InternationalStudentProfile> updateInternationalStudentById(UUID internationalStudentId, InternationalStudentProfileEditRequest internationalStudentProfileEditRequest) {
+        var loggedUserKeycloakId = JwtUtils.getIdFromSecurityContext(SecurityContextHolder.getContext());
+        var loggedInUserId = studentService.getStudentIdByKeycloakId(loggedUserKeycloakId);
+        //There could be added validation if logged user is admin then can also update another user's profile
+        if (loggedInUserId.equals(internationalStudentId)) {
+            return ResponseEntity.ok(internationalStudentService.updateInternationalStudentById(internationalStudentId, internationalStudentProfileEditRequest));
+        }
+        return ResponseEntity.status(403).build();
+    }
 }

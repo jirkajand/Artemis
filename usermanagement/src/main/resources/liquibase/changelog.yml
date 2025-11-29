@@ -20,3 +20,6 @@ databaseChangeLog:
   - include:
       file: changesets/005-edit-international-students.yml
       relativeToChangelogFile: true
+  - include:
+      file: changesets/006-change-semester-to-semesters.yml
+      relativeToChangelogFile: true
