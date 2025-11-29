@@ -519,6 +519,8 @@ components:
           type: string
         lastName:
           type: string
+        hasSecondaryRegistrationDone:
+          type: boolean
         type:
           $ref: '#/components/schemas/StudentType'
 
