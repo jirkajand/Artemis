@@ -366,91 +366,7 @@ paths:
           description: Unauthorized
         '404':
           description: International student not found
-    delete:
-      tags: [ UserManagement ]
-      summary: deleteInternationalStudentById
-      operationId: deleteInternationalStudentById
-      description: Delete an international student by their ID
-      security:
-        - keycloak_auth: [ ADMIN ]
-      responses:
-        '200':
-          description: International student deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: string
-                    example: International student deleted successfully
-        '400':
-          description: Bad request (invalid UUID format)
-        '401':
-          description: Unauthorized
-        '404':
-          description: International student not found
 
-  /international-student/{internationalStudentId}/anonymize:
-    post:
-      tags: [ UserManagement ]
-      summary: anonymizeInternationalStudentById
-      operationId: anonymizeInternationalStudentById
-      description: Anonymize an international student by their ID
-      security:
-        - keycloak_auth: [ ADMIN ]
-      parameters:
-        - in: path
-          name: internationalStudentId
-          description: ID of the international student to be anonymized
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: International student anonymized successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: string
-                    example: International student anonymized successfully
-        '400':
-          description: Bad request (invalid UUID format)
-        '401':
-          description: Unauthorized
-        '404':
-          description: International student not found
-  /international-student/anonymize:
-    post:
-      tags: [ UserManagement ]
-      summary: anonymizeInternationalStudentsBulk
-      operationId: anonymizeInternationalStudentsBulk
-      description: Anonymize multiple international students in bulk
-      security:
-        - keycloak_auth: [ ADMIN ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InternationalStudentAnonymizeBulkRequest'
-      responses:
-        '200':
-          description: International students anonymized successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: string
-                    example: International students anonymized successfully
-        '401':
-          description: Unauthorized
   /international-student/anonymous:
     get:
       tags: [ UserManagement ]
@@ -603,8 +519,6 @@ components:
           type: string
         lastName:
           type: string
-        hasSecondaryRegistrationDone:
-          type: boolean
         type:
           $ref: '#/components/schemas/StudentType'
 
@@ -744,15 +658,6 @@ components:
           type: string
         isAssigned:
           type: boolean
-
-    InternationalStudentAnonymizeBulkRequest:
-      type: object
-      properties:
-        internationalStudentIds:
-          type: array
-          items:
-            type: string
-            format: uuid
 
     AssignedInternationalStudent:
       type: object

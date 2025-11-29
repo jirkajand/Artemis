@@ -23,9 +23,3 @@ databaseChangeLog:
   - include:
       file: changesets/006-change-semester-to-semesters.yml
       relativeToChangelogFile: true
-  - include:
-      file: changesets/007-secondary-registration-check.yml
-      relativeToChangelogFile: true
-  - include:
-      file: changesets/008-add-anonymized-data.yml
-      relativeToChangelogFile: true

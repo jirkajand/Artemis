@@ -18,13 +18,12 @@ public interface InternationalStudentRepository extends JpaRepository<Internatio
     @Query("""
             select student from InternationalStudentEntity student
             left join student.semesterIds semesterids
-            where (student.isActive = :activeOnly) and
-                  (:facultyId is null or student.facultyId = :facultyId) and
+            where (:facultyId is null or student.facultyId = :facultyId) and
                   (:semesterId is null or semesterids = :semesterId) and
                   (:countryCode is null or student.countryISO = :countryCode) and
                   (:containAssigned is null or (:containAssigned = true and student.assignedBuddy is not null) or (:containAssigned = false and student.assignedBuddy is null))
             """)
-    Page<InternationalStudentEntity> findAllByFilters(Pageable pageable, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode, @Nullable Boolean containAssigned, Boolean activeOnly);
+    Page<InternationalStudentEntity> findAllByFilters(Pageable pageable, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode, @Nullable Boolean containAssigned);
 
     Optional<InternationalStudentEntity> findByKeycloakId(UUID keycloakIdUUID);
 }
