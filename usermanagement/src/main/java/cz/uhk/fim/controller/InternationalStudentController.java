@@ -86,10 +86,13 @@ public class InternationalStudentController implements InternationalStudentApi {
     @Secured("ROLE_ADMIN")
     @Override
     public ResponseEntity<AnonymizeInternationalStudentsBulk200Response> anonymizeInternationalStudentsBulk(InternationalStudentAnonymizeBulkRequest internationalStudentAnonymizeBulkRequest) {
+        if (internationalStudentAnonymizeBulkRequest.getInternationalStudentIds() == null || internationalStudentAnonymizeBulkRequest.getInternationalStudentIds().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "List of international student IDs must not be null or empty.");
+        }
         anonymizationProcessor.anonymizeInternationalStudentsBulk(internationalStudentAnonymizeBulkRequest.getInternationalStudentIds());
         return ResponseEntity.ok(new AnonymizeInternationalStudentsBulk200Response().result("OK"));
     }
-
+    
     @Secured("ROLE_ADMIN")
     @Override
     public ResponseEntity<DeleteInternationalStudentById200Response> deleteInternationalStudentById(UUID internationalStudentId) {
