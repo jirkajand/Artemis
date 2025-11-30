@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -37,4 +39,20 @@ public class AnonymizationProcessor {
         internationalStudentService.save(internationalStudentEntity);
     }
 
+    public void anonymizeInternationalStudentsBulk(@Valid List<UUID> internationalStudentIds) {
+        List<String> failures = new java.util.ArrayList<>();
+        for (UUID studentId : internationalStudentIds) {
+            try {
+                anonymizeInternationalStudent(studentId);
+            } catch (Exception e) {
+                log.error("Failed to anonymize student with ID {}: {}", studentId, e.getMessage());
+                failures.add("ID: " + studentId + " - " + e.getMessage());
+            }
+        }
+        if (!failures.isEmpty()) {
+            String errorMsg = "Bulk anonymization completed with failures: " + String.join("; ", failures);
+            log.warn(errorMsg);
+            throw new ResponseStatusException(HttpStatus.MULTI_STATUS, errorMsg);
+        }
+    }
 }
