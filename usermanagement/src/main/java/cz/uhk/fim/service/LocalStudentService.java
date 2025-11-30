@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -92,7 +91,7 @@ public class LocalStudentService {
                 && !localStudent.getAssignedStudents().isEmpty()
                 && localStudent.getAssignedStudents()
                 .stream().filter(StudentEntity::getIsActive)
-                .collect(Collectors.toSet()).size() >= localStudent.getAssignedStudentsCapacity())) {
+                .count() >= localStudent.getAssignedStudentsCapacity())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Local Student with id " + localStudent.getId() + " has reached the maximum capacity of assigned international students.");
         }
         var internationalStudent = internationalStudentService.getInternationalStudentById(internationalStudentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International Student with id " + internationalStudentId + " not found."));

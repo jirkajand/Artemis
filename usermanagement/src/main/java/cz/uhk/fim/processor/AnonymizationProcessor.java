@@ -30,11 +30,7 @@ public class AnonymizationProcessor {
 
     public void anonymizeInternationalStudent(InternationalStudentEntity internationalStudentEntity) {
         log.info("Anonymizing international student data...");
-        var deleteKeycloakSuccess = keycloakService.deleteUser(internationalStudentEntity.getKeycloakId());
-        if (!deleteKeycloakSuccess) {
-            log.error("Failed to delete keycloak id: {}", internationalStudentEntity.getKeycloakId());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete Keycloak user with ID " + internationalStudentEntity.getKeycloakId());
-        }
+        keycloakService.deleteUser(internationalStudentEntity.getKeycloakId());
 
         internationalStudentEntity = anonymizationMapper.anonymizeInternationalStudent(internationalStudentEntity);
 

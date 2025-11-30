@@ -99,15 +99,9 @@ public class KeycloakService {
 
     }
 
-    public boolean deleteUser(UUID keycloakId) {
-        try {
-            keycloakUsersResource.get(keycloakId.toString()).remove();
-            log.info("User deleted successfully: {}", keycloakId);
-            return true;
-        } catch (Exception e) {
-            log.error("Error deleting user: {}", keycloakId, e);
-            return false;
-        }
+    public void deleteUser(UUID keycloakId) {
+        keycloakUsersResource.get(keycloakId.toString()).remove();
+        log.info("User deleted successfully: {}", keycloakId);
     }
 //
 //    public boolean isReadyToAnonymize(UUID keycloakId) {
