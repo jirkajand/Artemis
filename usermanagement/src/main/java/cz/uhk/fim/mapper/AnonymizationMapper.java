@@ -17,7 +17,7 @@ public interface AnonymizationMapper {
     @Mapping(target = "keycloakId", qualifiedByName = "setAsNull")
     @Mapping(target = "firstName", constant = "ANONYMIZED")
     @Mapping(target = "lastName", constant = "ANONYMIZED")
-    @Mapping(target = "email", source = ".", qualifiedByName = "setAnonymizedEmail")
+    @Mapping(target = "email", qualifiedByName = "setAsNull")
     @Mapping(target = "phoneNumber", qualifiedByName = "setAsNull")
     @Mapping(target = "accountStatus", qualifiedByName = "setAccountStatusAnonymized")
     @Mapping(target = "bio", constant = "ANONYMIZED")
@@ -31,12 +31,6 @@ public interface AnonymizationMapper {
     @Named("setAsNull")
     default String setAsNull(String value) {
         return null;
-    }
-
-    @Named("setAnonymizedEmail")
-    default String setAnonymizedEmail(InternationalStudentEntity student) {
-        return "ANONYMIZED_" + student.getId();
-
     }
 
     @Named("setAsNull")

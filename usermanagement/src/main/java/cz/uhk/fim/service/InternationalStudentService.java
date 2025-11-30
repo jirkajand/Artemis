@@ -2,6 +2,7 @@ package cz.uhk.fim.service;
 
 import cz.uhk.fim.entity.InternationalStudentEntity;
 import cz.uhk.fim.entity.LocalStudentEntity;
+import cz.uhk.fim.entity.StudentEntity;
 import cz.uhk.fim.mapper.InternationalStudentMapper;
 import cz.uhk.fim.mapper.PageableMapper;
 import cz.uhk.fim.repository.InternationalStudentRepository;
@@ -124,6 +125,7 @@ public class InternationalStudentService {
 
     public List<AssignedInternationalStudent> mapToAssignedStudents(Set<InternationalStudentEntity> internationalStudentEntities) {
         return internationalStudentEntities.stream()
+                .filter(StudentEntity::getIsActive)
                 .map(internationalStudentMapper::toAssignedInternationalStudent)
                 .toList();
     }
@@ -149,6 +151,10 @@ public class InternationalStudentService {
         }
         return internationalStudentOpt.get().getAssignedBuddy() != null &&
                 internationalStudentOpt.get().getAssignedBuddy().getId().equals(localStudentId);
+    }
+
+    public InternationalStudentEntity save(InternationalStudentEntity internationalStudentEntity) {
+        return internationalStudentRepository.save(internationalStudentEntity);
     }
 
 
