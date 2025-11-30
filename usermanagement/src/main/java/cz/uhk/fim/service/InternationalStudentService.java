@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -114,7 +115,7 @@ public class InternationalStudentService {
 
     public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode, @Nullable Boolean containAssigned) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode, containAssigned);
+        var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode, containAssigned, true);
         return new GetAllInternationalStudentsAnonymous200Response()
                     .students(internationalStudents.stream()
                             .map(internationalStudentMapper::toInternationalStudentAnonymous)
@@ -158,4 +159,13 @@ public class InternationalStudentService {
     }
 
 
+    public void deleteInternationalStudentById(UUID internationalStudentId) {
+        var internationalStudent = getInternationalStudentById(internationalStudentId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International student not found with id: " + internationalStudentId)
+        );
+        if (Objects.nonNull(internationalStudent.getKeycloakId())) {
+            keycloakService.deleteUser(internationalStudent.getKeycloakId());
+        }
+        internationalStudentRepository.delete(internationalStudent);
+    }
 }

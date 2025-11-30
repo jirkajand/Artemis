@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -37,4 +39,7 @@ public class AnonymizationProcessor {
         internationalStudentService.save(internationalStudentEntity);
     }
 
+    public void anonymizeInternationalStudentsBulk(@Valid List<UUID> internationalStudentIds) {
+        internationalStudentIds.forEach(this::anonymizeInternationalStudent);
+    }
 }
