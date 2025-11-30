@@ -29,6 +29,8 @@
     }
 
     :global(.mdc-top-app-bar__section) {
+				gap: 1rem;
+				display: flex;
         padding: 0.5rem 1rem;
         flex: 1 !important;
         justify-content: center !important;

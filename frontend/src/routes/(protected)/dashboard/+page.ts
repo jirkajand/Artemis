@@ -2,10 +2,9 @@ import type { PageLoad } from './$types';
 import { getCountryFlag, getCountryName, getGenderIcon, getAllCountryNames } from '$lib/helpers/studentUtils';
 
 export const load: PageLoad = async ({ parent, url }) => {
-	const { clients } = await parent();
-	const { settings, management } = clients;
+	const { clients: { settings, management } } = await parent();
 
-	const page = Number(url.searchParams.get('page') ?? 1);
+	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
 	const perPage = 20;
 
 	const country = url.searchParams.get('country') || undefined;
@@ -13,7 +12,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 	const semester = url.searchParams.get('semester') || undefined;
 
 	try {
-		const [internationalRes, faculties] = await Promise.all([
+		const [internationalRes, faculties, semesters] = await Promise.all([
 			management.getAllInternationalStudentsAnonymous({
 				page: page - 1,
 				size: perPage,
@@ -22,10 +21,12 @@ export const load: PageLoad = async ({ parent, url }) => {
 				facultyId: faculty,
 				semesterId: semester
 			}),
-			settings.getAllFaculties()
+			settings.getAllFaculties().then(res => res ?? []),
+			settings.getAllSemesters().then(res => res ?? [])
 		]);
 
-		const facultyMap = new Map((faculties ?? []).map(f => [f.id, f]));
+		const facultyMap = new Map(faculties.map(f => [f.id, f]));
+
 		const students = (internationalRes?.students ?? []).map(s => ({
 			...s,
 			faculty: facultyMap.get(s.facultyId),
@@ -34,25 +35,27 @@ export const load: PageLoad = async ({ parent, url }) => {
 			genderIcon: getGenderIcon(s.gender ?? '')
 		}));
 
-		const countries = Object.entries(getAllCountryNames()).map(([code, name]) => ({ value: code, label: name }));
+		const countries = Object.entries(getAllCountryNames()).map(([value, label]) => ({ value, label }));
 
 		return {
 			students,
-			faculties: faculties ?? [],
+			faculties,
 			filterValues: {
 				countries,
-				destinationFaculties: (faculties ?? []).map(f => ({ id: f.id, label: f.shortName }))
+				destinationFaculties: faculties.map(({ id, shortName }) => ({ id, label: shortName })),
+				semesters: semesters.map(({ id, semesterName }) => ({ id, label: semesterName }))
 			},
 			activeFilters: { country: country ?? '', faculty: faculty ?? '', semester: semester ?? '' },
 			pagination: { page, perPage, total: internationalRes?.pageable?.totalElements ?? 0 },
 			management
 		};
-	} catch (error) {
-		console.error(error);
+
+	} catch (e) {
+		console.error(e);
 		return {
 			students: [],
 			faculties: [],
-			filterValues: { countries: [], destinationFaculties: [] },
+			filterValues: { countries: [], destinationFaculties: [], semesters: [] },
 			activeFilters: { country: '', faculty: '', semester: '' },
 			pagination: { page: 1, perPage: 0, total: 0 },
 			management

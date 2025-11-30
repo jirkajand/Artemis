@@ -5,7 +5,7 @@ import type { PageParentData } from "./$types";
 export const load: Load = async ({ parent }) => {
     const parentData = await parent() as PageParentData;
 
-    const { management } = parentData.clients;
+    const { management, settings } = parentData.clients;
 
     try {
         const health = management.getHealthCheck();

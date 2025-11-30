@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import TopAppBar, { Row, Section } from '@smui/top-app-bar';
 	import Autocomplete from '@smui-extra/autocomplete';
 	import Select, { Option } from '@smui/select';
@@ -10,9 +9,7 @@
 
 	let { data } = $props();
 	let { students, management, filterValues, pagination, activeFilters } = $derived(data);
-	let { countries, destinationFaculties } = $derived(filterValues);
-
-	let semesters = ['Spring', 'Summer', 'Fall', 'Winter'];
+	let { countries, destinationFaculties, semesters } = $derived(filterValues);
 
 	let filters = $state({
 		country: activeFilters.country,
@@ -82,7 +79,7 @@
 				/>
 			</div>
 
-			<Select variant="outlined" bind:value={filters.faculty} label="Destination">
+			<Select variant="outlined" bind:value={filters.faculty} label="Faculty">
 				<Option value=""></Option>
 				{#each destinationFaculties as f}
 					<Option value={f.id}>{f.label}</Option>
@@ -92,7 +89,7 @@
 			<Select variant="outlined" bind:value={filters.semester} label="Semester">
 				<Option value=""></Option>
 				{#each semesters as s}
-					<Option value={s}>{s}</Option>
+					<Option value={s.id}>{s.label}</Option>
 				{/each}
 			</Select>
 		</Section>
