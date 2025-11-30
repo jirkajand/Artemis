@@ -47,4 +47,6 @@ public class InternationalStudentEntity extends StudentEntity {
     @Column(name = "semester_id")
     private List<UUID> semesterIds;
 
+
+    private Boolean anonymizedHasBuddy;
 }

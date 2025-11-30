@@ -2,6 +2,7 @@ package cz.uhk.fim.service;
 
 import cz.uhk.fim.entity.InternationalStudentEntity;
 import cz.uhk.fim.entity.LocalStudentEntity;
+import cz.uhk.fim.entity.StudentEntity;
 import cz.uhk.fim.mapper.InternationalStudentMapper;
 import cz.uhk.fim.mapper.PageableMapper;
 import cz.uhk.fim.repository.InternationalStudentRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -85,6 +87,8 @@ public class InternationalStudentService {
         var profilePicturePath = profilePicturesService.storeProfilePicture(internationalStudentId, profilePicture);
         profilePicturePath.ifPresent(internationalStudent::setProfilePicturePath);
 
+        internationalStudent.setHasSecondaryRegistrationDone(true);
+
         internationalStudentRepository.save(internationalStudent);
     }
 
@@ -111,7 +115,7 @@ public class InternationalStudentService {
 
     public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode, @Nullable Boolean containAssigned) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode, containAssigned);
+        var internationalStudents = internationalStudentRepository.findAllByFilters(pageable, semesterId, facultyId, countryCode, containAssigned, true);
         return new GetAllInternationalStudentsAnonymous200Response()
                     .students(internationalStudents.stream()
                             .map(internationalStudentMapper::toInternationalStudentAnonymous)
@@ -122,6 +126,7 @@ public class InternationalStudentService {
 
     public List<AssignedInternationalStudent> mapToAssignedStudents(Set<InternationalStudentEntity> internationalStudentEntities) {
         return internationalStudentEntities.stream()
+                .filter(StudentEntity::getIsActive)
                 .map(internationalStudentMapper::toAssignedInternationalStudent)
                 .toList();
     }
@@ -149,5 +154,18 @@ public class InternationalStudentService {
                 internationalStudentOpt.get().getAssignedBuddy().getId().equals(localStudentId);
     }
 
+    public InternationalStudentEntity save(InternationalStudentEntity internationalStudentEntity) {
+        return internationalStudentRepository.save(internationalStudentEntity);
+    }
 
+
+    public void deleteInternationalStudentById(UUID internationalStudentId) {
+        var internationalStudent = getInternationalStudentById(internationalStudentId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International student not found with id: " + internationalStudentId)
+        );
+        if (Objects.nonNull(internationalStudent.getKeycloakId())) {
+            keycloakService.deleteUser(internationalStudent.getKeycloakId());
+        }
+        internationalStudentRepository.delete(internationalStudent);
+    }
 }

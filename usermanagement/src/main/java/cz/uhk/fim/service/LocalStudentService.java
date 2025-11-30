@@ -1,6 +1,7 @@
 package cz.uhk.fim.service;
 
 import cz.uhk.fim.entity.LocalStudentEntity;
+import cz.uhk.fim.entity.StudentEntity;
 import cz.uhk.fim.mapper.LocalStudentMapper;
 import cz.uhk.fim.repository.LocalStudentRepository;
 import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
@@ -68,6 +69,8 @@ public class LocalStudentService {
         profilePicturePath.ifPresent(localStudent::setProfilePicturePath);
         //todo handle state if profile picture upload fails what should happen??
 
+        localStudent.setHasSecondaryRegistrationDone(true);
+
         localStudentRepository.save(localStudent);
     }
 
@@ -86,7 +89,9 @@ public class LocalStudentService {
         if (Objects.isNull(localStudent.getAssignedStudentsCapacity())
                 || (Objects.nonNull(localStudent.getAssignedStudents())
                 && !localStudent.getAssignedStudents().isEmpty()
-                && localStudent.getAssignedStudents().size() >= localStudent.getAssignedStudentsCapacity())) {
+                && localStudent.getAssignedStudents()
+                .stream().filter(StudentEntity::getIsActive)
+                .count() >= localStudent.getAssignedStudentsCapacity())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Local Student with id " + localStudent.getId() + " has reached the maximum capacity of assigned international students.");
         }
         var internationalStudent = internationalStudentService.getInternationalStudentById(internationalStudentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International Student with id " + internationalStudentId + " not found."));
