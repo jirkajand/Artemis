@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-add-anonymized-data
+      author: Matej Vana
+      changes:
+        - addColumn:
+            tableName: international_students
+            columns:
+              - column:
+                  name: anonymized_has_buddy
+                  type: boolean
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              UPDATE students set is_active = true WHERE is_active IS NULL;
