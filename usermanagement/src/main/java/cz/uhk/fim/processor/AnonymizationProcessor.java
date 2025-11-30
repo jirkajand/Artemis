@@ -1,0 +1,44 @@
+package cz.uhk.fim.processor;
+
+import cz.uhk.fim.entity.InternationalStudentEntity;
+import cz.uhk.fim.mapper.AnonymizationMapper;
+import cz.uhk.fim.service.InternationalStudentService;
+import cz.uhk.fim.service.KeycloakService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class AnonymizationProcessor {
+
+    private final AnonymizationMapper anonymizationMapper;
+    private final KeycloakService keycloakService;
+
+    private final InternationalStudentService internationalStudentService;
+
+    public void anonymizeInternationalStudent(UUID studentId) {
+        log.info("Anonymizing international student data for student ID: {}", studentId);
+        anonymizeInternationalStudent(internationalStudentService.getInternationalStudentById(studentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International student with ID " + studentId + " not found.")));
+    }
+
+    public void anonymizeInternationalStudent(InternationalStudentEntity internationalStudentEntity) {
+        log.info("Anonymizing international student data...");
+        var deleteKeycloakSuccess = keycloakService.deleteUser(internationalStudentEntity.getKeycloakId());
+        if (!deleteKeycloakSuccess) {
+            log.error("Failed to delete keycloak id: {}", internationalStudentEntity.getKeycloakId());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete Keycloak user with ID " + internationalStudentEntity.getKeycloakId());
+        }
+
+        internationalStudentEntity = anonymizationMapper.anonymizeInternationalStudent(internationalStudentEntity);
+
+        internationalStudentService.save(internationalStudentEntity);
+    }
+
+}

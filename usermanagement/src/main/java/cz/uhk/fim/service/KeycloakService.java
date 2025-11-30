@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -97,4 +98,28 @@ public class KeycloakService {
         }
 
     }
+
+    public boolean deleteUser(UUID keycloakId) {
+        try {
+            keycloakUsersResource.get(keycloakId.toString()).remove();
+            log.info("User deleted successfully: {}", keycloakId);
+            return true;
+        } catch (Exception e) {
+            log.error("Error deleting user: {}", keycloakId, e);
+            return false;
+        }
+    }
+//
+//    public boolean isReadyToAnonymize(UUID keycloakId) {
+//        try {
+//            UserRepresentation user = keycloakUsersResource.get(keycloakId.toString()).toRepresentation();
+//            var attribute = user.getAttributes().get("lastLogin");
+//            log.info("User attribute lastLogin: {}", attribute);
+//            return user != null;
+//        } catch (Exception e) {
+//            log.error("Error checking user for anonymization: {}", keycloakId, e);
+//            return false;
+//        }
+//
+//    }
 }

@@ -77,7 +77,8 @@ public abstract class StudentEntity {
     @Column(name = "activity")
     private Set<String> favouriteActivities = new HashSet<>();
 
-    private Boolean isActive;
+    @Builder.Default
+    private Boolean isActive = true;
 
     private Boolean emailMarketingChecked;
 

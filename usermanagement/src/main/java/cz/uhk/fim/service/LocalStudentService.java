@@ -1,6 +1,7 @@
 package cz.uhk.fim.service;
 
 import cz.uhk.fim.entity.LocalStudentEntity;
+import cz.uhk.fim.entity.StudentEntity;
 import cz.uhk.fim.mapper.LocalStudentMapper;
 import cz.uhk.fim.repository.LocalStudentRepository;
 import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -88,7 +90,9 @@ public class LocalStudentService {
         if (Objects.isNull(localStudent.getAssignedStudentsCapacity())
                 || (Objects.nonNull(localStudent.getAssignedStudents())
                 && !localStudent.getAssignedStudents().isEmpty()
-                && localStudent.getAssignedStudents().size() >= localStudent.getAssignedStudentsCapacity())) {
+                && localStudent.getAssignedStudents()
+                .stream().filter(StudentEntity::getIsActive)
+                .collect(Collectors.toSet()).size() >= localStudent.getAssignedStudentsCapacity())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Local Student with id " + localStudent.getId() + " has reached the maximum capacity of assigned international students.");
         }
         var internationalStudent = internationalStudentService.getInternationalStudentById(internationalStudentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International Student with id " + internationalStudentId + " not found."));
