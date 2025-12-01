@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { keycloak } from '$lib/auth/keycloak';
-	import SecondaryMemberRegistration from '$lib/components/SecondaryMemberRegistration.svelte';
     import Button, { Label } from '@smui/button';
 
     const { data } = $props()
@@ -20,5 +19,3 @@
 {:catch error}
     <p>❌ Health check failed: {error.message}</p>
 {/await}
-
-<SecondaryMemberRegistration open={true} settingsClient={settings} userManagementClient={management} />
