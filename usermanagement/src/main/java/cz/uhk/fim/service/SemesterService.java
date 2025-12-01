@@ -1,5 +1,6 @@
 package cz.uhk.fim.service;
 
+import cz.uhk.fim.entity.SemesterEntity;
 import cz.uhk.fim.mapper.SemesterMapper;
 import cz.uhk.fim.repository.SemesterRepository;
 import cz.uhk.fim.usermanagement.kafka.model.SemesterMessage;
@@ -32,16 +33,29 @@ public class SemesterService {
             entity.setDefaultRegistration(semesterMessage.getDefaultRegistration());
             // If defaultRegistration is being set to true, unset it for others
             if (Boolean.TRUE.equals(entity.getDefaultRegistration())) {
-                var existingDefault = semesterRepository.findAllByDefaultRegistrationTrue().stream()
-                        .filter(sem -> !sem.getId().equals(entity.getId()))
-                        .findFirst();
-                existingDefault.ifPresent(sem -> {
-                    sem.setDefaultRegistration(false);
-                    semesterRepository.save(sem);
-                });
+                unsetOtherDefaultSemesters(entity);
             }
             semesterRepository.save(entity);
+            return;
         }
+        var newEntity = semesterMapper.toEntity(semesterMessage);
+        // If defaultRegistration is being set to true, unset it for others
+        if (Boolean.TRUE.equals(newEntity.getDefaultRegistration())) {
+            unsetOtherDefaultSemesters(newEntity);
+        }
+        semesterRepository.save(newEntity);
+
+    }
+
+    private void unsetOtherDefaultSemesters(SemesterEntity entity) {
+        var existingDefault = semesterRepository.findAllByDefaultRegistrationTrue().stream()
+                .filter(sem -> !sem.getId().equals(entity.getId()))
+                .findFirst();
+        existingDefault.ifPresent(sem -> {
+            sem.setDefaultRegistration(false);
+            semesterRepository.save(sem);
+        });
+
     }
 
     public Optional<UUID> getSemesterIdForRegistration() {
