@@ -3,6 +3,8 @@
     import Button, { Label } from '@smui/button';
 
     const { data } = $props()
+    const { clients } = data;
+    const { settings, management } = clients;
 
 </script>
 
@@ -17,8 +19,3 @@
 {:catch error}
     <p>❌ Health check failed: {error.message}</p>
 {/await}
-
-
-<Button variant="raised" onclick={() => keycloak.logout()}>
-    <Label>Logout</Label>
-</Button>
