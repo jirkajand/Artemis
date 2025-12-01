@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NotificationSendMessage",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "recipient": {
+      "type": "string",
+      "format": "email"
+    },
+    "type": {
+      "$ref": "#/definitions/NotificationType"
+    },
+    "recipientFullName": {
+      "type": "string"
+    },
+    "languageCode": {
+      "type": "string"
+    },
+    "assignerFullName": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "NotificationType": {
+      "type": "string",
+      "enum": [
+        "ASSIGNED_BY_LOCAL_STUDENT",
+        "INTERNATIONAL_STUDENT_ANONYMIZED"
+      ]
+    }
+  },
+  "required": [
+    "recipient",
+    "type"
+  ]
+}
