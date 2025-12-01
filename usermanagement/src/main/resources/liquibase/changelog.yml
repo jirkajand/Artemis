@@ -29,3 +29,6 @@ databaseChangeLog:
   - include:
       file: changesets/008-add-anonymized-data.yml
       relativeToChangelogFile: true
+  - include:
+      file: changesets/009-add-semesters.yml
+      relativeToChangelogFile: true

@@ -1,0 +1,24 @@
+spring:
+  cloud:
+    function:
+      definition: settingsSemester
+    stream:
+      bindings:
+        settingsSemester-in-0:
+          destination: settings.semester
+          group: user-management.settings.semester
+      kafka:
+        binder:
+          auto-add-partitions: true
+          enable-observation: true
+          autoCreateTopics: false
+          configuration:
+            # need to set the group here to be loaded
+            group-id: user-management.settings.semester
+            auto-offset-reset: earliest
+            key:
+              serializer: org.apache.kafka.common.serialization.StringSerializer
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          brokers: ${INTERNAL_KAFKA_HOST:localhost}:${INTERNAL_KAFKA_PORT:29093}
