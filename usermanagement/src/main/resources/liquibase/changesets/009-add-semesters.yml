@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-add-semesters
+      author: Matej Vana
+      changes:
+        - createTable:
+            tableName: semesters
+            columns:
+              - column:
+                  name: id
+                  type: ${uuid_type}
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: semester_name
+                  type: VARCHAR(255)
+              - column:
+                  name: year
+                  type: VARCHAR(50)
+              - column:
+                  name: default_registration
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE

@@ -1,5 +1,6 @@
 package cz.uhk.fim.kafka;
 
+import cz.uhk.fim.service.SemesterService;
 import cz.uhk.fim.usermanagement.kafka.model.SemesterMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class InternalKafkaConsumer {
 
+    private final SemesterService semesterService;
+
     @Bean
     public Consumer<Message<SemesterMessage>> settingsSemester() {
         return this::processSettingsSemestersMessage;
@@ -24,5 +27,6 @@ public class InternalKafkaConsumer {
         var semesterMessage = semesterMessageMessage.getPayload();
         log.info("Received semester message: {}", semesterMessage);
         log.info("Received semester message with key: {}", semesterMessageMessage.getHeaders().get(KafkaHeaders.RECEIVED_KEY, String.class));
+        semesterService.consumeSemesterMessage(semesterMessage);
     }
 }
