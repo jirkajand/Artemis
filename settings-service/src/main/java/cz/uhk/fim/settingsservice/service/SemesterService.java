@@ -34,9 +34,7 @@ public class SemesterService {
 
     public SemesterResponse createSemester(SemesterCreateRequest semesterCreateRequest) {
         var semesterEntity = semesterMapper.toEntity(semesterCreateRequest);
-        semesterEntity.setId(null);
-        var savedEntity = semesterRepository.save(semesterEntity);
-        return semesterMapper.toResponse(savedEntity);
+        return semesterMapper.toResponse(createSemester(semesterEntity).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to create semester")));
     }
 
     public Optional<SemesterEntity> createSemester(SemesterEntity semesterEntity) {
