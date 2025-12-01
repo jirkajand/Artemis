@@ -50,6 +50,7 @@ jobs:
           
           
           # Hotfix - infinite building
+            docker compose down --remove-orphans
             docker container prune -f
             docker image prune -a -f
             docker network prune -f
