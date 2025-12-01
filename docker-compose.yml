@@ -119,16 +119,16 @@ services:
       - kafka-data:/var/lib/kafka/data
 
   #### DEVELOPMENT TOOLS - Do not push to prod ####
-  #  kafka-ui:
-  #    image: provectuslabs/kafka-ui:latest
-  #    depends_on:
-  #      - kafkaInternal
-  #    ports:
-  #      - 8100:8080
-  #    environment:
-  #      KAFKA_CLUSTERS_0_NAME: local
-  #      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafkaInternal:${INTERNAL_KAFKA_PORT}
-  #      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    depends_on:
+      - kafkaInternal
+    ports:
+      - 8100:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafkaInternal:${INTERNAL_KAFKA_PORT}
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
 
   kafka-init-topics:
     image: confluentinc/cp-kafka:7.8.0
