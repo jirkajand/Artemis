@@ -2,7 +2,6 @@
 	import { countryPhoneCodes, type CountryPhoneCode } from "$lib/assets/country-phone-codes";
 	import Autocomplete from "@smui-extra/autocomplete";
 	import Textfield from "@smui/textfield";
-    import HelperText from '@smui/textfield/helper-text';
 
     let { value = $bindable(), ...rest } = $props();
 
@@ -13,6 +12,8 @@
     $effect(() => {
         if (selectedPhoneCodeObj && selectedPhoneNumber) {
             value = `${selectedPhoneCodeObj.dial_code} ${selectedPhoneNumber}`;
+        } else {
+            value = '';
         }
     });
 

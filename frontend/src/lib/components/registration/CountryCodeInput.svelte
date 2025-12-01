@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Autocomplete from "@smui-extra/autocomplete";
     import { countryIsoCodes } from "$lib/assets/country-iso-codes";
 

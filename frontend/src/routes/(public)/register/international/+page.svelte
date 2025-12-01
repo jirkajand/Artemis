@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GenderEnum, type FacultyResponse, type RegisterInternationalStudentRequest, type RegisterLocalStudentRequest } from "$lib/api";
+	import { GenderEnum, type FacultyResponse, type RegisterInternationalStudentRequest } from "$lib/api";
 	import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import Select, { Option } from "@smui/select";
@@ -138,7 +138,7 @@
       {/snippet}
   </FormField>
   <p>
-    After signing up you will have a possibility to set your <strong>arrival information</strong> - you can change it whenever you want in case you don't know it now..
+    After signing up you will have a possibility to set your <strong>arrival information</strong> - you can change it whenever you want in case you don't know it now.
   </p>
 
   <Button type="submit" disabled={loading} variant="outlined">
