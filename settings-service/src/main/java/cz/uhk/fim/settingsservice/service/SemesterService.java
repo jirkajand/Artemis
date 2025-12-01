@@ -7,6 +7,7 @@ import cz.uhk.fim.settingsservice.mapper.SemesterMapper;
 import cz.uhk.fim.settingsservice.model.SemesterCreateRequest;
 import cz.uhk.fim.settingsservice.model.SemesterResponse;
 import cz.uhk.fim.settingsservice.repository.SemesterRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -37,6 +38,7 @@ public class SemesterService {
         return semesterMapper.toResponse(createSemester(semesterEntity).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to create semester")));
     }
 
+    @Transactional
     public Optional<SemesterEntity> createSemester(SemesterEntity semesterEntity) {
         semesterEntity.setId(null);
         var saved = Optional.of(semesterRepository.save(semesterEntity));
@@ -58,7 +60,8 @@ public class SemesterService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found id: " + id));
         return semesterMapper.toResponse(semesterEntity);
     }
-
+    
+    @Transactional
     public SemesterResponse updateSemester(UUID id, SemesterCreateRequest semesterCreateRequest) {
         var existingSemesterEntity = semesterRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found id: " + id));
