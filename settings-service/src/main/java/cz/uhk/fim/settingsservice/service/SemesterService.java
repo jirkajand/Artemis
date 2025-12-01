@@ -1,18 +1,18 @@
 package cz.uhk.fim.settingsservice.service;
 
 import cz.uhk.fim.settingsservice.entity.SemesterEntity;
-import cz.uhk.fim.settingsservice.events.PushSemesterToKafka;
+import cz.uhk.fim.settingsservice.kafka.SemesterProducer;
 import cz.uhk.fim.settingsservice.kafka.model.SemesterMessage;
 import cz.uhk.fim.settingsservice.mapper.SemesterMapper;
 import cz.uhk.fim.settingsservice.model.SemesterCreateRequest;
 import cz.uhk.fim.settingsservice.model.SemesterResponse;
 import cz.uhk.fim.settingsservice.repository.SemesterRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -32,6 +32,8 @@ public class SemesterService {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    private final SemesterProducer semesterProducer;
+
 
     public SemesterResponse createSemester(SemesterCreateRequest semesterCreateRequest) {
         var semesterEntity = semesterMapper.toEntity(semesterCreateRequest);
@@ -40,10 +42,13 @@ public class SemesterService {
 
     @Transactional
     public Optional<SemesterEntity> createSemester(SemesterEntity semesterEntity) {
+        log.info("Creating new semester: {}", semesterEntity);
         semesterEntity.setId(null);
         var saved = Optional.of(semesterRepository.save(semesterEntity));
 
-        eventPublisher.publishEvent(new PushSemesterToKafka(saved.get().getId()));
+        //eventPublisher.publishEvent(new PushSemesterToKafka(saved.get().getId()));
+        //log.info("SemesterCreate event for publish to Kafka is sent for semester id: {}", saved.get().getId());
+        semesterProducer.pushSemesterEntityToKafka(getSemesterMessage(semesterEntity));
 
         return saved;
     }
@@ -60,7 +65,7 @@ public class SemesterService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found id: " + id));
         return semesterMapper.toResponse(semesterEntity);
     }
-    
+
     @Transactional
     public SemesterResponse updateSemester(UUID id, SemesterCreateRequest semesterCreateRequest) {
         var existingSemesterEntity = semesterRepository.findById(id)
@@ -71,7 +76,8 @@ public class SemesterService {
 
         var savedEntity = semesterRepository.save(updatedSemesterEntity);
 
-        eventPublisher.publishEvent(new PushSemesterToKafka(savedEntity.getId()));
+        //eventPublisher.publishEvent(new PushSemesterToKafka(savedEntity.getId()));
+        semesterProducer.pushSemesterEntityToKafka(getSemesterMessage(savedEntity));
 
         return semesterMapper.toResponse(savedEntity);
     }
