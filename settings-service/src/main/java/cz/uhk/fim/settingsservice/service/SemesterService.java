@@ -71,10 +71,10 @@ public class SemesterService {
         var existingSemesterEntity = semesterRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found id: " + id));
 
-        var updatedSemesterEntity = semesterMapper.toEntity(semesterCreateRequest);
-        updatedSemesterEntity.setId(existingSemesterEntity.getId());
 
-        var savedEntity = semesterRepository.save(updatedSemesterEntity);
+        semesterMapper.updateEntityFromDto(semesterCreateRequest, existingSemesterEntity);
+
+        var savedEntity = semesterRepository.save(existingSemesterEntity);
 
         //eventPublisher.publishEvent(new PushSemesterToKafka(savedEntity.getId()));
         semesterProducer.pushSemesterEntityToKafka(getSemesterMessage(savedEntity));
@@ -98,7 +98,14 @@ public class SemesterService {
 
     public SemesterMessage getSemesterMessage(SemesterEntity entity) {
         var message = semesterMapper.toMessage(entity);
-        message.setDefaultRegistration(getCurrentSemester().getId().equals(entity.getId()));
+        var currentSemester = semesterRepository.findFirstBySemesterRegisterOpenDateNotNullAndSemesterRegisterOpenDateBeforeOrderBySemesterRegisterOpenDateDesc(LocalDate.now());
+        message.setDefaultRegistration(currentSemester.isPresent()
+                ? currentSemester.get().getId().equals(entity.getId())
+                : entity.getSemesterRegisterOpenDate() != null
+                && (
+                entity.getSemesterRegisterOpenDate().isBefore(LocalDate.now())
+                        || entity.getSemesterRegisterOpenDate().isEqual(LocalDate.now()))
+        );
         return message;
     }
 
