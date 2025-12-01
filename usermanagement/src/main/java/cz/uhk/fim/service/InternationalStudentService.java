@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class InternationalStudentService {
     private final PageableMapper pageableMapper;
     private final KeycloakService keycloakService;
     private final ProfilePicturesService profilePicturesService;
+    private final SemesterService semesterService;
 
     @Value("${international-student.default-role}")
     private String defaultRole;
@@ -57,7 +59,9 @@ public class InternationalStudentService {
         // Map request to entity
         var internationalStudentEntity = internationalStudentMapper.toInternationalStudentEntity(request);
         internationalStudentEntity.setKeycloakId(UUID.fromString(keycloakId.get()));
+        var currentSemesterId = semesterService.getSemesterIdForRegistration();
 
+        currentSemesterId.ifPresent(uuid -> internationalStudentEntity.setSemesterIds(new ArrayList<>(List.of(uuid))));
         // Possibly extra logic: e.g., validate country, home university, accommodation, etc.
 
         // Save to DB
