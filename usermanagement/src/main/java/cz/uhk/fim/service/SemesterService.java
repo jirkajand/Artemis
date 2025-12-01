@@ -1,6 +1,5 @@
 package cz.uhk.fim.service;
 
-import cz.uhk.fim.entity.SemesterEntity;
 import cz.uhk.fim.mapper.SemesterMapper;
 import cz.uhk.fim.repository.SemesterRepository;
 import cz.uhk.fim.usermanagement.kafka.model.SemesterMessage;
@@ -24,11 +23,17 @@ public class SemesterService {
     public void consumeSemesterMessage(SemesterMessage semesterMessage) {
         log.info("Consuming semester message");
 
-        if (semesterRepository.existsById(semesterMessage.getId())) {
-            var entity = semesterMapper.toEntity(semesterMessage);
+        var existingEntityOpt = semesterRepository.findById(semesterMessage.getId());
+        if (existingEntityOpt.isPresent()) {
+            var entity = existingEntityOpt.get();
+            // Update fields from semesterMessage
+            entity.setSemesterName(semesterMessage.getSemesterName());
+            entity.setYear(semesterMessage.getYear());
+            entity.setDefaultRegistration(semesterMessage.getDefaultRegistration());
+            // If defaultRegistration is being set to true, unset it for others
             if (Boolean.TRUE.equals(entity.getDefaultRegistration())) {
-                var existingDefault = semesterRepository.findAll().stream()
-                        .filter(SemesterEntity::getDefaultRegistration)
+                var existingDefault = semesterRepository.findAllByDefaultRegistrationTrue().stream()
+                        .filter(sem -> !sem.getId().equals(entity.getId()))
                         .findFirst();
                 existingDefault.ifPresent(sem -> {
                     sem.setDefaultRegistration(false);
@@ -36,16 +41,11 @@ public class SemesterService {
                 });
             }
             semesterRepository.save(entity);
-            return;
         }
-        var entity = semesterMapper.toEntity(semesterMessage);
-        semesterRepository.save(entity);
     }
 
     public Optional<UUID> getSemesterIdForRegistration() {
-        var currentSemester = semesterRepository.findAll().stream()
-                .filter(SemesterEntity::getDefaultRegistration)
-                .findFirst();
+        var currentSemester = semesterRepository.findFirstByDefaultRegistrationTrue();
         if (currentSemester.isEmpty()) {
             log.error("No current semester found");
             return Optional.empty();

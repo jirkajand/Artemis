@@ -139,7 +139,7 @@ services:
       sleep 5;
       
       kafka-topics --bootstrap-server kafkaInternal:${INTERNAL_KAFKA_PORT} --create --topic settings.semester --partitions 3 --replication-factor 1 --config cleanup.policy=compact --if-not-exists;
-      echo 'Created kafka topics:  setting.semester';
+      echo 'Created kafka topics:  settings.semester';
       "
 
 volumes:
