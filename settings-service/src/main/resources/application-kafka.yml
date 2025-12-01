@@ -6,12 +6,7 @@ spring:
       bindings:
         settingsSemester-out-0:
           destination: settings.semester
-          # group setting from here does not work - spring cloud bug
           group: settings.semesters
-      #        settingsSemesters-in-0:
-      #          destination: settings.semesters
-      #          # group setting from here does not work - spring cloud bug
-      #          group: settings.semesters
       kafka:
         binder:
           auto-add-partitions: true
