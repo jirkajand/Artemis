@@ -14,7 +14,7 @@ spring:
           autoCreateTopics: false
           configuration:
             # need to set the group here to be loaded
-            group-id: settings.semesters
+            group-id: user-management.settings.semester
             auto-offset-reset: earliest
             key:
               serializer: org.apache.kafka.common.serialization.StringSerializer
