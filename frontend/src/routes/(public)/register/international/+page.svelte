@@ -51,14 +51,6 @@
   async function submit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) {
     event.preventDefault();
 
-    // 0) Set optional fields to undefined if empty
-    if (form.countryISO === '') {
-      form.countryISO = undefined;
-    }
-    if (form.facultyId === '') {
-      form.facultyId = undefined;
-    }
-
     // 1) Basic validation
     errorMessage = null;
     if (form.password !== confirmPassword) {
@@ -73,11 +65,15 @@
     // 2) Submit the form
     try {
       loading = true;
-      const updatedForm = {
+
+      const updatedForm: RegisterInternationalStudentRequest = {
         ...form,
         dateOfBirth: new Date(form.dateOfBirth),
-        gender: form.gender as GenderEnum
+        // set Set optional fields to undefined if empty
+        facultyId: form.facultyId || undefined,
+        countryISO: form.countryISO || undefined
       }
+
 
       const res = await userManagementClient.registerInternationalStudent({
         registerInternationalStudentRequest: updatedForm

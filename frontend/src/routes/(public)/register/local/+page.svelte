@@ -49,8 +49,6 @@
   async function submit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) {
     event.preventDefault();
 
-    // 0) Set optional fields to undefined if empty
-
     // 1) Basic validation
     errorMessage = null;
     if (form.password !== confirmPassword) {
@@ -65,10 +63,9 @@
     // 2) Submit the form
     try {
       loading = true;
-      const updatedForm = {
+      const updatedForm: RegisterLocalStudentRequest = {
         ...form,
         dateOfBirth: new Date(form.dateOfBirth),
-        gender: form.gender as GenderEnum
       }
 
       const res = await userManagementClient.registerLocalStudent({
