@@ -13,7 +13,7 @@
     }
 </script>
 
-<span class={`dragBox ${dragging? "draging": ""}`} >
+<span class={`dragBox ${dragging? "dragging": ""}`} >
     {#if fileNames.length > 0}
         {fileNames.join(', ')}
     {:else}
@@ -47,7 +47,7 @@
 .dragBox:hover{
     border-color: var(--primary);
 }
-.draging{
+.dragging {
     transform: scale(1.1);
     border-color: var(--primary);
     background: var(--secondary);

@@ -21,10 +21,6 @@
     let form = $state<CompleteLocalStudentProfileRequest>();
 
     function closeHandler(e: CustomEvent<{ action: string }>) {
-        switch (e.detail.action) {
-            case 'close':
-            break;
-        }
     }
 
     async function submit() { 
@@ -39,16 +35,16 @@
       errorMessage = "Profile picture is required.";
       return;
     }
+    if (!form.profilePicture) {
+      errorMessage = "Profile picture is required.";
+      return;
+    }
     if (!form.facultyId) {
       errorMessage = "Faculty is required.";
       return;
     }
     if (!form.description || form.description.trim().length === 0) {
       errorMessage = "Description is required.";
-      return;
-    }
-    if (!form.profilePicture) {
-      errorMessage = "Profile picture is required.";
       return;
     }
 
