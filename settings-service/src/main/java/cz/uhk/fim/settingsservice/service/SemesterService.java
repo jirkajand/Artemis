@@ -44,13 +44,13 @@ public class SemesterService {
     public Optional<SemesterEntity> createSemester(SemesterEntity semesterEntity) {
         log.info("Creating new semester: {}", semesterEntity);
         semesterEntity.setId(null);
-        var saved = Optional.of(semesterRepository.save(semesterEntity));
+        var saved = semesterRepository.save(semesterEntity);
 
         //eventPublisher.publishEvent(new PushSemesterToKafka(saved.get().getId()));
         //log.info("SemesterCreate event for publish to Kafka is sent for semester id: {}", saved.get().getId());
-        semesterProducer.pushSemesterEntityToKafka(getSemesterMessage(semesterEntity));
+        semesterProducer.pushSemesterEntityToKafka(getSemesterMessage(saved));
 
-        return saved;
+        return Optional.of(saved);
     }
 
     public List<SemesterResponse> getAllSemesters() {
