@@ -164,7 +164,6 @@
 
     <build>
         <plugins>
-            <!-- file: pom.xml (přidej tento plugin do sekce <build><plugins>) -->
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
