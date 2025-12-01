@@ -80,8 +80,70 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - INTERNAL_KAFKA_HOST=kafkaInternal
+      - INTERNAL_KAFKA_PORT=${INTERNAL_KAFKA_PORT}
     depends_on:
       - artemis-database
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    restart: unless-stopped
+    #    ports:
+    #      - 22181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+
+  kafkaInternal:
+    image: confluentinc/cp-kafka
+    container_name: kafkaInternal
+    depends_on:
+      - zookeeper
+    #    ports:
+    #      - 29093:29093
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafkaInternal:${INTERNAL_KAFKA_PORT},PLAINTEXT_HOST://localhost:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+  #### DEVELOPMENT TOOLS - Do not push to prod ####
+  #  kafka-ui:
+  #    image: provectuslabs/kafka-ui:latest
+  #    depends_on:
+  #      - kafkaInternal
+  #    ports:
+  #      - 8100:8080
+  #    environment:
+  #      KAFKA_CLUSTERS_0_NAME: local
+  #      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafkaInternal:${INTERNAL_KAFKA_PORT}
+  #      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
+  kafka-init-topics:
+    image: confluentinc/cp-kafka
+    container_name: kafka-init-topics
+    depends_on:
+      - kafkaInternal
+    entrypoint: [ "/bin/bash", "-c" ]
+    command: |
+      "
+      echo 'Waiting for Kafka to be ready...';
+      sleep 5;
+      
+      kafka-topics --bootstrap-server kafkaInternal:${INTERNAL_KAFKA_PORT} --create --topic settings.semester --partitions 3 --replication-factor 1 --config cleanup.policy=compact --if-not-exists;
+      echo 'Created kafka topics:  settings.semester';
+      "
+
 volumes:
   db-data:
+  kafka-data:
+  zookeeper-data:
+  zookeeper-log:

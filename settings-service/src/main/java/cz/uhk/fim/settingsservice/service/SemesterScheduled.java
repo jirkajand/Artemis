@@ -3,7 +3,6 @@ package cz.uhk.fim.settingsservice.service;
 import cz.uhk.fim.settingsservice.entity.SemesterEntity;
 import cz.uhk.fim.settingsservice.entity.enums.SemesterType;
 import cz.uhk.fim.settingsservice.utils.SemesterUtils;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,7 +17,7 @@ public class SemesterScheduled {
 
     private final SemesterService semesterService;
 
-    @PostConstruct
+    @Scheduled(initialDelay = 1000, fixedRate = Integer.MAX_VALUE)
     public void init() {
         log.info("Check if there is any semester");
         if (semesterService.getAllSemesters().isEmpty()) {
