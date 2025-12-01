@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SemesterMessage",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "semesterName": {
+      "type": "string"
+    },
+    "year": {
+      "type": "string"
+    },
+    "defaultRegistration": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "defaultRegistration"
+  ]
+}

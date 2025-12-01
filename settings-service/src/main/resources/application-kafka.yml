@@ -1,0 +1,55 @@
+#spring:
+#  kafka:
+#    bootstrap-servers: ${INTERNAL_KAFKA_HOST:localhost}:${INTERNAL_KAFKA_PORT:29092}
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#    consumer:
+#      group-id: settings.service
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#
+#  cloud:
+#    function:
+#      definition: semesterOut
+#    stream:
+#      bindings:
+#        semester-out:
+#          destination: setting.semester
+#          content-type: application/json
+#      kafka:
+#        binder:
+#          brokers: ${INTERNAL_KAFKA_HOST:localhost}:${INTERNAL_KAFKA_PORT:29093}
+#          auto-create-topics: false
+#          auto-add-partitions: true
+
+spring:
+  cloud:
+    function:
+      definition: #settingsSemesters
+    stream:
+      bindings:
+        settingsSemester-out-0:
+          destination: settings.semester
+          # group setting from here does not work - spring cloud bug
+          group: settings.semesters
+      #        settingsSemesters-in-0:
+      #          destination: settings.semesters
+      #          # group setting from here does not work - spring cloud bug
+      #          group: settings.semesters
+      kafka:
+        binder:
+          auto-add-partitions: true
+          enable-observation: true
+          autoCreateTopics: false
+          configuration:
+            # need to set the group here to be loaded
+            group-id: settings.semesters
+            auto-offset-reset: earliest
+            key:
+              serializer: org.apache.kafka.common.serialization.StringSerializer
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          brokers: ${INTERNAL_KAFKA_HOST:localhost}:${INTERNAL_KAFKA_PORT:29093}
