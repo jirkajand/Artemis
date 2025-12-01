@@ -36,5 +36,8 @@ export const load: LayoutLoad = async ({ fetch }) => {
     settings: new SettingsServiceApi(config)
   };
 
-  return { user, clients };
+  // Fetch user navbar data for pop-up registration
+  const userNavbarData = clients.management.getCurrentStudentForNavbar();
+
+  return { user, clients, userNavbarData };
 };
