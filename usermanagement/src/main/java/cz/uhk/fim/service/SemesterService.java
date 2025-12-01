@@ -48,13 +48,12 @@ public class SemesterService {
     }
 
     private void unsetOtherDefaultSemesters(SemesterEntity entity) {
-        var existingDefault = semesterRepository.findAllByDefaultRegistrationTrue().stream()
+        semesterRepository.findAllByDefaultRegistrationTrue().stream()
                 .filter(sem -> !sem.getId().equals(entity.getId()))
-                .findFirst();
-        existingDefault.ifPresent(sem -> {
-            sem.setDefaultRegistration(false);
-            semesterRepository.save(sem);
-        });
+                .forEach(sem -> {
+                    sem.setDefaultRegistration(false);
+                    semesterRepository.save(sem);
+                });
 
     }
 
