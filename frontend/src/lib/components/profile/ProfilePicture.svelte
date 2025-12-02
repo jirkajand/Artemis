@@ -14,7 +14,7 @@
   .image-wrapper {
     position: relative;
     width: 100%;
-    max-width: 350px;
+    max-width: 300px;
   }
 
   .student-photo {

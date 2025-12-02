@@ -30,7 +30,7 @@
     border: none;
     color: var(--on-surface) !important;
     border-radius: 6px;
-    font-size: 1.1rem !important;
+    font-size: 1rem !important;
     padding: 1.5rem !important;
     cursor: pointer;
     transition: all 0.2s ease;

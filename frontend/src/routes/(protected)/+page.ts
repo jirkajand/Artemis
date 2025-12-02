@@ -10,7 +10,7 @@ export const load: Load = async ({ parent }) => {
     try {
         const studentDetail = await management.getCurrentStudentDetail()
         const [managementHealth, settingsHealth] = await Promise.all([management.getHealthCheck(), settings.getHealthCheck1()]);
-        return { settingsHealth, managementHealth, studentDetail};
+        return { settingsHealth, managementHealth, studentDetail, management, settings};
     } catch (err: any) {
         const status = err.status ?? err.response?.status ?? 500;
         const errorMessage = err.body?.message ?? err.message ?? "Unknown error";

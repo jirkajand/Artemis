@@ -47,7 +47,7 @@
   }
 
   .sheet-content {
-    padding: 0.5rem 7.5%;
+    padding: 0 7.5%;
 
     @media (max-width: 768px) {
       padding: 1.5rem;

@@ -6,7 +6,10 @@
 	} from '@smui/dialog';
 	import Button from '@smui/button';
 
-	let { open = $bindable(false), onClose = () => {} } = $props();
+	let {
+		open = $bindable(false), onClose = () => {
+		}
+	} = $props();
 </script>
 
 <Dialog bind:open onclosed={onClose}>
@@ -22,3 +25,24 @@
 		</Button>
 	</DialogActions>
 </Dialog>
+
+<style>
+
+    :global(.mdc-dialog) {
+        width: max(350px, 25vw);
+    }
+
+		:global(.mdc-dialog__surface){
+			border-radius: 20px !important;
+		}
+
+		:global(.mdc-dialog__actions) {
+				justify-content: center !important;
+		}
+
+    :global(.mdc-dialog__container) {
+        text-align: center;
+    }
+
+
+</style>

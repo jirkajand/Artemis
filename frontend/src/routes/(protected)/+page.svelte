@@ -24,12 +24,8 @@
         </div>
     </header>
 
-    <!-- Section Title -->
     <h2 class="section-title">System Health & Services</h2>
-
-    <!-- Services Grid -->
     <div class="services-grid">
-        <!-- Management Service Card -->
         <Card class="service-card">
             <Content>
                 <div class="card-header">

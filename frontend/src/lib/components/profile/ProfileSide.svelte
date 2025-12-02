@@ -24,6 +24,10 @@
 </div>
 
 <style lang="scss">
+	.section-header {
+		margin-top: 0;
+	}
+
   .image-column {
     flex: 1;
     display: flex;
@@ -57,6 +61,7 @@
     resize: vertical;
     min-height: 120px;
     box-sizing: border-box;
+		text-align: center;
 
     &:focus {
       border-color: var(--primary);
