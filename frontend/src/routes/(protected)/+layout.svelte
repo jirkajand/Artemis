@@ -2,12 +2,11 @@
 	import type { LayoutProps } from "./$types";
 	import Navbar from "$lib/components/Navbar.svelte";
 	import Sidebar from "$lib/components/Sidebar.svelte";
-	import SecondaryMemberRegistrationPopup from "$lib/components/registration/SecondaryMemberRegistrationPopup.svelte";
+	import SecondaryRegistrationPopup from "$lib/components/registration/SecondaryRegistrationPopup.svelte";
 
 	let { children, data }: LayoutProps = $props();
 
 	const { user, clients, userNavbarData } = data;
-	const { settings, management } = clients;
 </script>
 
 <header>
@@ -17,15 +16,7 @@
 <div class="layout">
 	<Sidebar />
 	<main>
-		{#await userNavbarData then userNavbarDataSync}
-			{#if userNavbarDataSync.type == "LOCAL"}
-			<SecondaryMemberRegistrationPopup
-				settingsClient={settings}
-				userManagementClient={management}
-				navbarData={userNavbarDataSync}
-			/>
-			{/if}
-		{/await}
+		<SecondaryRegistrationPopup {clients} {userNavbarData} />
 		{@render children?.()}
 	</main>
 </div>

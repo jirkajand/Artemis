@@ -4,18 +4,20 @@
   import Checkbox from "@smui/checkbox";
   import FormField from "@smui/form-field";
 	import Textfield from '@smui/textfield';
-	import type { FacultyResponse, SettingsServiceApi, UserManagementApi, CompleteLocalStudentProfileRequest } from '$lib/api';
+	import type { FacultyResponse, SettingsServiceApi, CompleteInternationalStudentProfileRequest } from '$lib/api';
 	import FileInput from '$lib/components/FileInput.svelte';
 	import { onMount } from 'svelte';
 
-  const formInitial: Omit<CompleteLocalStudentProfileRequest, 'profilePicture'> & {
-    profilePicture: CompleteLocalStudentProfileRequest['profilePicture'] | null
+  const formInitial: Omit<CompleteInternationalStudentProfileRequest, 'profilePicture'> & {
+    profilePicture: CompleteInternationalStudentProfileRequest['profilePicture'] | null
   } = {
-    localStudentId: '',
+    internationalStudentId: '',
     facultyId: '',
     description: '',
     emailMarketingChecked: false,
-    profilePicture: null
+    profilePicture: null,
+    homeUniversity: '',
+    accommodation: ''
   };
 
   let { 
@@ -23,7 +25,7 @@
     form = $bindable()
   }: {
     settingsClient: SettingsServiceApi;
-    form: CompleteLocalStudentProfileRequest | undefined;
+    form: CompleteInternationalStudentProfileRequest | undefined;
   } = $props();
 
   let unprocessedForm = $state(formInitial);
@@ -67,6 +69,14 @@
         <Option value={faculty.id}>{faculty.shortName}</Option>
       {/each}
   </Select>
+  <Textfield
+    bind:value={unprocessedForm.homeUniversity}
+    label="Home University"
+  />
+  <Textfield
+    bind:value={unprocessedForm.accommodation}
+    label="Accommodation"
+  />
   <Textfield
     bind:value={unprocessedForm.description}
     label="Description"
