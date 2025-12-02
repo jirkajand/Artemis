@@ -1,24 +1,76 @@
 <script lang="ts">
-	import ProfileLocal from './ProfileLocal.svelte';
-	import ProfileInternational from './ProfileInternational.svelte';
-	let {student} = $props()
+	import ProfilePicture from '$lib/components/profile/ProfilePicture.svelte';
+	import Bio from '$lib/components/profile/Bio.svelte';
+
+	let { student } = $props();
 </script>
 
-<div class="page-background">
-	<div class="paper-sheet">
-		<div class="sheet-header">
-			<h2>{student.role} Student Details</h2>
-		</div>
-
-		<div class="sheet-content">
-			{#if student.role === 'local'}
-				<ProfileLocal {student} />
-			{:else if student.role === 'international'}
-				<ProfileInternational {student} />
-			{:else}
-				<p>Unknown student type</p>
+<div class="split-layout">
+	<div class="data-column">
+		<table class="details-table">
+			<thead>
+			<tr>
+				<th colspan="2" class="section-header">Personal Information</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td class="label">First name:</td>
+				<td class="value">{student.firstName}</td>
+			</tr>
+			<tr>
+				<td class="label">Last name:</td>
+				<td class="value">{student.lastName}</td>
+			</tr>
+			<tr>
+				<td class="label">Email:</td>
+				<td class="value">{student.email}</td>
+			</tr>
+			<tr>
+				<td class="label">Phone number:</td>
+				<td class="value">{student.phoneNumber}</td>
+			</tr>
+			<tr>
+				<td class="label">Faculty:</td>
+				<td class="value">{student.faculty.facultyNameInternational}</td>
+			</tr>
+			<tr>
+				<td class="label">Gender:</td>
+				<td class="value">{student.gender}</td>
+			</tr>
+			</tbody>
+			{#if student.type === 'INTERNATIONAL'}
+				<thead>
+				<tr>
+					<th colspan="2" class="section-header">International Student Info</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td class="label">Gender:</td>
+					<td class="value">{student.gender}</td>
+				</tr>
+				<tr>
+					<td class="label">Home university:</td>
+					<td class="value">{student.homeUniversity}</td>
+				</tr>
+				<tr>
+					<td class="label">Country:</td>
+					<td class="value">{student.countryName}</td>
+				</tr>
+				</tbody>
 			{/if}
-		</div>
+		</table>
+	</div>
+
+	<div class="image-column">
+		<ProfilePicture
+			profilePicture={student.profilePicture}
+			genderIcon={student.genderIcon}
+			countryFlag={student.countryFlag} />
+		{#if student.type === 'INTERNATIONAL'}
+			<Bio bio={student.bio}></Bio>
+		{/if}
 	</div>
 </div>
 
@@ -35,7 +87,7 @@
   .paper-sheet {
     background-color: var(--surface);
     width: 100%;
-    max-width: 900px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -55,6 +107,84 @@
   }
 
   .sheet-content {
-    padding: 2rem 3rem;
+    padding: 2rem 12%;
+  }
+
+  .split-layout {
+		padding: 2rem 10%;
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .data-column {
+    flex: 1.5;
+  }
+
+  .image-column {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+		flex-direction: column;
+    align-items: center;
+  }
+
+  .details-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .section-header {
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid #eee;
+    padding: 0.5rem 0;
+    text-align: center;
+  }
+
+  .details-table td {
+    padding: 0.6rem 0;
+    border-bottom: 2px dotted var(--on-background);
+    font-size: 1.1rem;
+  }
+
+  .details-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .label {
+    font-weight: 700;
+    white-space: nowrap;
+    width: 30%;
+    padding-right: 1.5rem;
+    vertical-align: top;
+  }
+
+  .value {
+    line-height: 1.4;
+  }
+
+
+  /* --- Responsive (Mobile) --- */
+  @media (max-width: 850px) {
+    .split-layout {
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Move Image to top on Mobile */
+    .image-column {
+      order: -1;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .image-wrapper {
+      max-width: 260px; /* Slightly smaller on phone */
+    }
+
+    .details-table td {
+      padding: 0.5rem 0;
+    }
   }
 </style>

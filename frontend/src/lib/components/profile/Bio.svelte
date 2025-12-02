@@ -1,23 +1,22 @@
 <script lang="ts">
-	export let bio: string;
+	let { bio } = $props()
 </script>
 
-{#if bio}
 	<div class="bio-section">
 		<h4 class="section-header">About Me</h4>
 		<p class="bio-text">{bio}</p>
 	</div>
-{/if}
 
 <style lang="scss">
   .bio-section {
     margin-top: 1rem;
+		width: 100%;
+		text-align: center;
   }
 
   .bio-text {
-    text-align: center;
-    font-style: italic;
-    color: #555;
+		font-style: italic;
+    color: var(--on-background);
     line-height: 1.6;
     margin-top: 1rem;
     padding: 0 1rem;
