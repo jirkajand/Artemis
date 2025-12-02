@@ -89,7 +89,7 @@
   }
 </script>
 
-<TabBar tabs={['Member/Buddy', 'International Student']} active={'International Student'}>
+<TabBar tabs={['International Student', 'Member/Buddy']} active={'International Student'}>
     {#snippet tab(tab)}
       <Tab {tab} onclick={() => goto(tab === 'Member/Buddy' ? '/register/local' : '/register/international')}>
         <Label>{tab}</Label>
