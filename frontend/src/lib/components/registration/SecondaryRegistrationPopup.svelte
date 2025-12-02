@@ -8,7 +8,7 @@
         settings: SettingsServiceApi;
         management: UserManagementApi;
     };
-    userNavbarData: ResponseStudentNavbar;
+    userNavbarData: Promise<ResponseStudentNavbar>;
     } = $props();
 	const { settings, management } = clients;
 </script>
