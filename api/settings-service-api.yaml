@@ -135,7 +135,12 @@ paths:
       summary: getAllSemesters
       description: getAllSemesters endpoint to retrieve all semesters
       operationId: getAllSemesters
-      security: [ ]
+      security:
+      - keycloak_auth: [ USER, TUTOR, ADMIN ]
+      x-security-roles:
+        - ADMIN
+        - TUTOR
+        - USER
       responses:
         '200':
           description: List of all semesters

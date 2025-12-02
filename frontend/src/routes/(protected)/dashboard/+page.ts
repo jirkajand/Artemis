@@ -1,61 +1,78 @@
 import type { PageLoad } from './$types';
-import { getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
+import { getCountryFlag, getCountryName, getGenderIcon, getAllCountryNames } from '$lib/helpers/studentUtils';
+
+const PER_PAGE = 20;
+
+// Centralized empty state to prevent drift between success/fail shapes
+const getEmptyState = (management: any) => ({
+	students: [],
+	faculties: [],
+	filterValues: { countries: [], destinationFaculties: [], semesters: [] },
+	activeFilters: { country: '', faculty: '', semester: '' },
+	pagination: { page: 1, perPage: 0, total: 0 },
+	management
+});
 
 export const load: PageLoad = async ({ parent, url }) => {
-	const { clients } = await parent();
-	const { settings, management } = clients;
+	const { clients: { settings, management } } = await parent();
 
-	const page = Number(url.searchParams.get('page') ?? 1);
-	const perPage = 20;
+	// Parse params once
+	const page = Math.max(1, Number(url.searchParams.get('page')) || 1);
+	const filters = {
+		countryCode: url.searchParams.get('country') || undefined,
+		facultyId: url.searchParams.get('faculty') || undefined,
+		semesterId: url.searchParams.get('semester') || undefined
+	};
 
 	try {
-		// Fetch only the current page of students
-		const [internationalRes, faculties] = await Promise.all([
+		const [studentRes, faculties, semesters] = await Promise.all([
 			management.getAllInternationalStudentsAnonymous({
-				page: page - 1, // usually zero-based index
-				size: perPage
+				page: page - 1,
+				size: PER_PAGE,
+				containAssigned: false,
+				...filters
 			}),
-			settings.getAllFaculties()
+			settings.getAllFaculties().then(res => res ?? []),
+			settings.getAllSemesters().then(res => res ?? [])
 		]);
 
-		const studentsData = internationalRes?.students ?? [];
-		const total = internationalRes?.pageable?.totalElements ?? 0;
+		const facultyMap = new Map(faculties.map(f => [f.id, f]));
 
-		const facultiesData = faculties ?? [];
-		const facultyMap = new Map(facultiesData.map((f) => [f.id, f]));
+		// Mapper function to keep the return statement clean
+		const students = (studentRes?.students ?? []).map(s => ({
+			...s,
+			faculty: facultyMap.get(s.facultyId),
+			countryFlag: getCountryFlag(s.countryCode ?? ''),
+			countryName: getCountryName(s.countryCode ?? ''),
+			genderIcon: getGenderIcon(s.gender ?? '')
+		}));
 
-		// Fetch assigned students
-		let assignedIds = new Set<number>();
-		try {
-			const assignedRes = await management.getAssignedInternationalStudentsForLocalStudent();
-			assignedIds = new Set(assignedRes?.students?.map((s) => s.id) ?? []);
-		} catch {
-			console.warn('Failed to fetch assigned students');
-		}
-
-		const filteredStudents = studentsData
-			.filter((s) => !assignedIds.has(s.id))
-			.map((s) => ({
-				...s,
-				faculty: facultyMap.get(s.facultyId) ?? {},
-				countryFlag: getCountryFlag(s.countryCode ?? ''),
-				countryName: getCountryName(s.countryCode ?? ''),
-				genderIcon: getGenderIcon(s.gender ?? '')
-			}));
+		// Build filter options
+		const filterValues = {
+			countries: Object.entries(getAllCountryNames()).map(([value, label]) => ({ value, label })),
+			destinationFaculties: faculties.map(f => ({ id: f.id, label: f.shortName })),
+			semesters: semesters.map(s => ({ id: s.id, label: s.semesterName }))
+		};
 
 		return {
-			faculties: facultiesData,
-			management,
-			students: filteredStudents,
-			pagination: { page, perPage, total }
+			students,
+			faculties,
+			filterValues,
+			activeFilters: {
+				country: filters.countryCode,
+				faculty: filters.facultyId,
+				semester: filters.semesterId
+			},
+			pagination: {
+				page,
+				perPage: PER_PAGE,
+				total: studentRes?.pageable?.totalElements ?? 0
+			},
+			management
 		};
+
 	} catch (e) {
-		console.error('Error loading students or faculties:', e);
-		return {
-			faculties: [],
-			management,
-			students: [],
-			pagination: { page: 1, perPage, total: 0 }
-		};
+		console.error('Data load failed:', e);
+		return getEmptyState(management);
 	}
 };

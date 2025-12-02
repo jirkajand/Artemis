@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
 	import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
-	import SegmentedButton, { Segment } from '@smui/segmented-button';
-	import { Label } from '@smui/common';
+
 
 	type DashboardPage = { label: string; path: string };
 	let { children } = $props();
@@ -15,15 +12,6 @@
 		<Section>
 			<Title>My students</Title>
 		</Section>
-		<!--		<Section class="segment-section">
-			<SegmentedButton>
-				{#snippet segment(segment)}
-					<Segment {segment}>
-						<Label>{segment.label}</Label>
-					</Segment>
-				{/snippet}
-			</SegmentedButton>
-		</Section>-->
 	</Row>
 </TopAppBar>
 
@@ -56,18 +44,25 @@
     }
 
     :global(.mdc-top-app-bar) {
-        border-radius: 10px;
+        border-radius: 20px;
         background-color: var(--menu-bg) !important;
     }
 
+    :global(.mdc-top-app-bar__row) {
+        background-color: var(--surface);
+        border: 2px solid var(--neutral-bg);
+        border-radius: 20px;
+        height: 70px !important;
+    }
+
     :global(.mdc-top-app-bar__section) {
-				justify-content: center;
+        justify-content: center;
         padding: 0.5rem 1rem;
         flex: 1 !important;
     }
 
     :global(.mdc-top-app-bar__title) {
-				color: var(--on-background);
+        color: var(--on-background);
         font-size: 1.75rem;
     }
 
@@ -105,8 +100,17 @@
     }
 
     @keyframes subtle-pulse {
-        0% { transform: scale(1.005); box-shadow: 0 0 4px rgba(0, 0, 0, 0.08); }
-        50% { transform: scale(1.03); box-shadow: 0 10px 16px rgba(0, 0, 0, 0.16); }
-        100% { transform: scale(1); box-shadow: 0 0 4px rgba(0, 0, 0, 0.08); }
+        0% {
+            transform: scale(1.005);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+        }
+        50% {
+            transform: scale(1.03);
+            box-shadow: 0 10px 16px rgba(0, 0, 0, 0.16);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+        }
     }
 </style>
