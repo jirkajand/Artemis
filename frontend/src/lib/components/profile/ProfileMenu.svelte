@@ -3,6 +3,7 @@
     import { keycloak } from "$lib/auth/keycloak";
 	import List, { Item, Separator, Text, Graphic } from "@smui/list";
 	import Menu from "@smui/menu";
+  import { goto } from '$app/navigation';
 
     const { user = null }: { user: KeycloakOIDCProfile | null; } = $props();
 
@@ -32,13 +33,9 @@
         anchorCorner="BOTTOM_LEFT"
     >
         <List class="demo-list" dense>
-            <Item onSMUIAction={() => (console.log('Profile'))}>
+            <Item onSMUIAction={() => goto('/student-profile')}>
                 <Graphic class="material-icons">person</Graphic>
                 <Text>My Profile</Text>
-            </Item>
-            <Item onSMUIAction={() => (console.log('Edit'))}>
-                <Graphic class="material-icons">edit</Graphic>
-                <Text>Edit Profile</Text>
             </Item>
             <Item onSMUIAction={() => (console.log('Change Password'))}>
                 <Graphic class="material-icons">key</Graphic>

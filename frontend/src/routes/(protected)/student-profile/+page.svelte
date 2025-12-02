@@ -1,77 +1,56 @@
 <script lang="ts">
-	import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
-	import IconButton from '@smui/icon-button';
 	import Profile from '$lib/components/profile/Profile.svelte';
 
 	let { data } = $props();
-	let { student } = data;
+	let student = $derived(data.student);
+	let faculties = $derived(data.faculties);
+	let { management } = data
 </script>
+
 <div class="page-background">
 	<div class="paper-sheet">
-		<div class="sheet-header">
-			<h2>{student.type} STUDENT DETAILS</h2>
+		<div class="sheet-content">
+			<Profile student={student} faculties={faculties} management={management}/>
 		</div>
-		<Profile {student}>
-		</Profile>
 	</div>
 </div>
 
 <style lang="scss">
+  :global(body) {
+    margin: 0;
+    padding: 0;
+  }
 
   :global(main) {
-    max-width: unset !important;
+    height: 100vh;
+    width: 100vw;
+    overflow-y: auto;
     padding: 0 !important;
+    max-width: unset !important;
   }
 
-  :global(.profile-top-bar) {
-    background-color: var(--on-background);
-    color: #333 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-  }
-
-  /* --- Page Structure --- */
   .page-background {
-    width: 100%;
-    background-color: var(--background);
-    min-height: 100vh;
+		width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    box-sizing: border-box;
   }
 
   .paper-sheet {
-    background-color: var(--surface);
+    background-color: var(--surface, #ffffff);
     width: 100%;
-    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-
-  }
-
-  .sheet-header {
-    border-bottom: 2px solid var(--neutral-bg);
-    padding: 1.5rem;
-    text-align: center;
-  }
-
-  .sheet-header h2 {
-    margin: 0;
-    font-size: 2rem;
-    color: var(--on-surface);
-    font-weight: 700;
   }
 
   .sheet-content {
-    height: 100%;
-    align-content: flex-start;
-    padding: calc(1rem + 2vw) calc(2rem + 5vw);
-  }
+    padding: 0.5rem 7.5%;
 
-  /* --- Responsive (Mobile) --- */
-  @media (max-width: 850px) {
-    .sheet-content {
-      padding: 1rem;
+    @media (max-width: 768px) {
+      padding: 1.5rem;
     }
   }
 </style>

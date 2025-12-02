@@ -1,10 +1,9 @@
 <script lang="ts">
 	let {profilePicture, genderIcon, countryFlag } = $props()
-	const displayPicture = profilePicture ?? 'https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6';
 </script>
 
 <div class="image-wrapper">
-	<img src={displayPicture} class="student-photo" alt="Student" />
+	<img src={profilePicture} class="student-photo" alt="Student" />
 	<div class="badges-overlay">
 		<span class="badge gender-badge" title="Gender">{genderIcon}</span>
 		<span class="badge country-badge" title="Country">{countryFlag}</span>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidate } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import TopAppBar, { Row, Section } from '@smui/top-app-bar';
 	import Autocomplete from '@smui-extra/autocomplete';
 	import Select, { Option } from '@smui/select';
@@ -59,7 +59,7 @@
 		try {
 			await management.assignInternationalStudentToLocalStudent({ internationalStudentId: student.id });
 			alert(`You are now a buddy for this student from ${student.countryName}!`);
-			await invalidate();
+			await invalidateAll();
 		} catch (e) {
 			alert('Something went wrong!');
 		}
@@ -68,19 +68,19 @@
 
 <TopAppBar variant="static">
 	<Row>
-		<Section class="filter-panel">
-			<div class="country-select">
-				<Autocomplete
-					textfield$variant="outlined"
-					options={countries}
-					bind:value={selectedCountry}
-					label="Country"
-					getOptionLabel={(option) => option?.label || ''}
-				/>
-			</div>
+				<Section class="filter-panel">
+					<div class="country-select">
+						<Autocomplete
+							textfield$variant="outlined"
+							options={countries}
+							bind:value={selectedCountry}
+							label="Country"
+							getOptionLabel={(option) => option?.label || ''}
+						/>
+					</div>
 
-			<Select variant="outlined" bind:value={filters.faculty} label="Faculty">
-				<Option value=""></Option>
+					<Select variant="outlined" bind:value={filters.faculty} label="Faculty">
+						<Option value=""></Option>
 				{#each destinationFaculties as f}
 					<Option value={f.id}>{f.label}</Option>
 				{/each}

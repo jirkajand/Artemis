@@ -52,17 +52,17 @@
         background-color: var(--surface);
         border: 2px solid var(--neutral-bg);
         border-radius: 20px;
-				height: auto;
+        height: 70px !important;
     }
 
     :global(.mdc-top-app-bar__section) {
-				justify-content: center;
+        justify-content: center;
         padding: 0.5rem 1rem;
         flex: 1 !important;
     }
 
     :global(.mdc-top-app-bar__title) {
-				color: var(--on-background);
+        color: var(--on-background);
         font-size: 1.75rem;
     }
 
@@ -100,8 +100,17 @@
     }
 
     @keyframes subtle-pulse {
-        0% { transform: scale(1.005); box-shadow: 0 0 4px rgba(0, 0, 0, 0.08); }
-        50% { transform: scale(1.03); box-shadow: 0 10px 16px rgba(0, 0, 0, 0.16); }
-        100% { transform: scale(1); box-shadow: 0 0 4px rgba(0, 0, 0, 0.08); }
+        0% {
+            transform: scale(1.005);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+        }
+        50% {
+            transform: scale(1.03);
+            box-shadow: 0 10px 16px rgba(0, 0, 0, 0.16);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+        }
     }
 </style>

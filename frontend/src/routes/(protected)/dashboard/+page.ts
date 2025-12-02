@@ -1,25 +1,36 @@
 import type { PageLoad } from './$types';
 import { getCountryFlag, getCountryName, getGenderIcon, getAllCountryNames } from '$lib/helpers/studentUtils';
 
+const PER_PAGE = 20;
+
+// Centralized empty state to prevent drift between success/fail shapes
+const getEmptyState = (management: any) => ({
+	students: [],
+	faculties: [],
+	filterValues: { countries: [], destinationFaculties: [], semesters: [] },
+	activeFilters: { country: '', faculty: '', semester: '' },
+	pagination: { page: 1, perPage: 0, total: 0 },
+	management
+});
+
 export const load: PageLoad = async ({ parent, url }) => {
 	const { clients: { settings, management } } = await parent();
 
-	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
-	const perPage = 20;
-
-	const country = url.searchParams.get('country') || undefined;
-	const faculty = url.searchParams.get('faculty') || undefined;
-	const semester = url.searchParams.get('semester') || undefined;
+	// Parse params once
+	const page = Math.max(1, Number(url.searchParams.get('page')) || 1);
+	const filters = {
+		countryCode: url.searchParams.get('country') || undefined,
+		facultyId: url.searchParams.get('faculty') || undefined,
+		semesterId: url.searchParams.get('semester') || undefined
+	};
 
 	try {
-		const [internationalRes, faculties, semesters] = await Promise.all([
+		const [studentRes, faculties, semesters] = await Promise.all([
 			management.getAllInternationalStudentsAnonymous({
 				page: page - 1,
-				size: perPage,
+				size: PER_PAGE,
 				containAssigned: false,
-				countryCode: country,
-				facultyId: faculty,
-				semesterId: semester
+				...filters
 			}),
 			settings.getAllFaculties().then(res => res ?? []),
 			settings.getAllSemesters().then(res => res ?? [])
@@ -27,7 +38,8 @@ export const load: PageLoad = async ({ parent, url }) => {
 
 		const facultyMap = new Map(faculties.map(f => [f.id, f]));
 
-		const students = (internationalRes?.students ?? []).map(s => ({
+		// Mapper function to keep the return statement clean
+		const students = (studentRes?.students ?? []).map(s => ({
 			...s,
 			faculty: facultyMap.get(s.facultyId),
 			countryFlag: getCountryFlag(s.countryCode ?? ''),
@@ -35,30 +47,32 @@ export const load: PageLoad = async ({ parent, url }) => {
 			genderIcon: getGenderIcon(s.gender ?? '')
 		}));
 
-		const countries = Object.entries(getAllCountryNames()).map(([value, label]) => ({ value, label }));
+		// Build filter options
+		const filterValues = {
+			countries: Object.entries(getAllCountryNames()).map(([value, label]) => ({ value, label })),
+			destinationFaculties: faculties.map(f => ({ id: f.id, label: f.shortName })),
+			semesters: semesters.map(s => ({ id: s.id, label: s.semesterName }))
+		};
 
 		return {
 			students,
 			faculties,
-			filterValues: {
-				countries,
-				destinationFaculties: faculties.map(({ id, shortName }) => ({ id, label: shortName })),
-				semesters: semesters.map(({ id, semesterName }) => ({ id, label: semesterName }))
+			filterValues,
+			activeFilters: {
+				country: filters.countryCode,
+				faculty: filters.facultyId,
+				semester: filters.semesterId
 			},
-			activeFilters: { country: country ?? '', faculty: faculty ?? '', semester: semester ?? '' },
-			pagination: { page, perPage, total: internationalRes?.pageable?.totalElements ?? 0 },
+			pagination: {
+				page,
+				perPage: PER_PAGE,
+				total: studentRes?.pageable?.totalElements ?? 0
+			},
 			management
 		};
 
 	} catch (e) {
-		console.error(e);
-		return {
-			students: [],
-			faculties: [],
-			filterValues: { countries: [], destinationFaculties: [], semesters: [] },
-			activeFilters: { country: '', faculty: '', semester: '' },
-			pagination: { page: 1, perPage: 0, total: 0 },
-			management
-		};
+		console.error('Data load failed:', e);
+		return getEmptyState(management);
 	}
 };
