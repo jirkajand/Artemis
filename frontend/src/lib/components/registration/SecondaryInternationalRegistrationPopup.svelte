@@ -27,7 +27,7 @@
     errorMessage = null;
 
     // 1) Basic validation
-    if(navbarData.id == undefined || navbarData.id === null) {
+    if (navbarData.id == null) {
       errorMessage = "Unable to get user ID.";
       return;
     }
