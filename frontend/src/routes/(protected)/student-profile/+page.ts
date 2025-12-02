@@ -1,6 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
 import type { PageParentData } from './$types';
+import { fetchBlob } from '$lib/helpers/studentUtils'; // import your helper
 
 const formatBuddyInfo = (buddy: any) =>
 	buddy
@@ -14,11 +15,7 @@ export const load = async ({ parent }) => {
 	try {
 		const { type, id } = await management.getCurrentStudentForNavbar();
 
-		const profilePicturePromise = management.getCurrentStudentProfilePicture({ studentId: id })
-			.catch(err => {
-				console.warn('Profile picture fetch failed, using placeholder', err);
-				return 'https://icons.veryicon.com/png/o/education-technology/alibaba-cloud-iot-business-department/image-load-failed.png';
-			});
+		const profilePicturePromise = fetchBlob(() => management.getCurrentStudentProfilePicture({ studentId: id }));
 
 		const studentDetailPromise = type === 'LOCAL'
 			? management.getLocalStudentById({ localStudentId: id })
@@ -29,11 +26,10 @@ export const load = async ({ parent }) => {
 			studentDetailPromise
 		]);
 
-		let faculties = await settings.getAllFaculties()
-		let faculty = null;
-		if (studentDetail.facultyId) {
-			faculty = faculties.find(f => f.id === studentDetail.facultyId);
-		}
+		const faculties = await settings.getAllFaculties();
+		const faculty = studentDetail.facultyId
+			? faculties.find(f => f.id === studentDetail.facultyId)
+			: null;
 
 		const student = {
 			...studentDetail,

@@ -32,6 +32,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+		justify-content: center;
     align-items: center;
     gap: 1rem;
   }

@@ -114,10 +114,10 @@
   .details-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     td {
-      padding: 0.15rem 0;
+      padding: 0.05rem 0;
       border-bottom: 2.5px dotted var(--neutral-bg);
       vertical-align: middle;
     }

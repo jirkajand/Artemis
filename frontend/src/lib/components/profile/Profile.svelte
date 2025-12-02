@@ -82,7 +82,7 @@
 />
 
 <!-- ---- Success dialog -->
-<ProfileChangeSuccessDialog bind:open={showSuccessDialog} on:closed={() => showSuccessDialog = false} />
+<ProfileChangeSuccessDialog bind:open={showSuccessDialog} onClose={() => showSuccessDialog = false} />
 
 <style lang="scss">
   .split-layout {
