@@ -1,7 +1,7 @@
 package cz.uhk.fim.settingsservice.service;
 
 import cz.uhk.fim.settingsservice.entity.SemesterEntity;
-import cz.uhk.fim.settingsservice.events.PushSemesterToKafka;
+import cz.uhk.fim.settingsservice.kafka.SemesterProducer;
 import cz.uhk.fim.settingsservice.kafka.model.SemesterMessage;
 import cz.uhk.fim.settingsservice.mapper.SemesterMapper;
 import cz.uhk.fim.settingsservice.model.SemesterCreateRequest;
@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -31,21 +32,25 @@ public class SemesterService {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    private final SemesterProducer semesterProducer;
+
 
     public SemesterResponse createSemester(SemesterCreateRequest semesterCreateRequest) {
         var semesterEntity = semesterMapper.toEntity(semesterCreateRequest);
-        semesterEntity.setId(null);
-        var savedEntity = semesterRepository.save(semesterEntity);
-        return semesterMapper.toResponse(savedEntity);
+        return semesterMapper.toResponse(createSemester(semesterEntity).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to create semester")));
     }
 
+    @Transactional
     public Optional<SemesterEntity> createSemester(SemesterEntity semesterEntity) {
+        log.info("Creating new semester: {}", semesterEntity);
         semesterEntity.setId(null);
-        var saved = Optional.of(semesterRepository.save(semesterEntity));
+        var saved = semesterRepository.save(semesterEntity);
 
-        eventPublisher.publishEvent(new PushSemesterToKafka(saved.get().getId()));
+        //eventPublisher.publishEvent(new PushSemesterToKafka(saved.get().getId()));
+        //log.info("SemesterCreate event for publish to Kafka is sent for semester id: {}", saved.get().getId());
+        semesterProducer.pushSemesterEntityToKafka(getSemesterMessage(saved));
 
-        return saved;
+        return Optional.of(saved);
     }
 
     public List<SemesterResponse> getAllSemesters() {
@@ -61,16 +66,18 @@ public class SemesterService {
         return semesterMapper.toResponse(semesterEntity);
     }
 
+    @Transactional
     public SemesterResponse updateSemester(UUID id, SemesterCreateRequest semesterCreateRequest) {
         var existingSemesterEntity = semesterRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester not found id: " + id));
 
-        var updatedSemesterEntity = semesterMapper.toEntity(semesterCreateRequest);
-        updatedSemesterEntity.setId(existingSemesterEntity.getId());
 
-        var savedEntity = semesterRepository.save(updatedSemesterEntity);
+        semesterMapper.updateEntityFromDto(semesterCreateRequest, existingSemesterEntity);
 
-        eventPublisher.publishEvent(new PushSemesterToKafka(savedEntity.getId()));
+        var savedEntity = semesterRepository.save(existingSemesterEntity);
+
+        //eventPublisher.publishEvent(new PushSemesterToKafka(savedEntity.getId()));
+        semesterProducer.pushSemesterEntityToKafka(getSemesterMessage(savedEntity));
 
         return semesterMapper.toResponse(savedEntity);
     }
@@ -91,7 +98,14 @@ public class SemesterService {
 
     public SemesterMessage getSemesterMessage(SemesterEntity entity) {
         var message = semesterMapper.toMessage(entity);
-        message.setDefaultRegistration(getCurrentSemester().getId().equals(entity.getId()));
+        var currentSemester = semesterRepository.findFirstBySemesterRegisterOpenDateNotNullAndSemesterRegisterOpenDateBeforeOrderBySemesterRegisterOpenDateDesc(LocalDate.now());
+        message.setDefaultRegistration(currentSemester.isPresent()
+                ? currentSemester.get().getId().equals(entity.getId())
+                : entity.getSemesterRegisterOpenDate() != null
+                && (
+                entity.getSemesterRegisterOpenDate().isBefore(LocalDate.now())
+                        || entity.getSemesterRegisterOpenDate().isEqual(LocalDate.now()))
+        );
         return message;
     }
 

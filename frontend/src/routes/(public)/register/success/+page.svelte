@@ -1,7 +1,6 @@
 <script lang="ts">
     import Card, { Content, Actions } from "@smui/card";
     import Button, { Label } from "@smui/button";
-	import { redirect } from "@sveltejs/kit";
 	import { goto } from "$app/navigation";
 </script>
 

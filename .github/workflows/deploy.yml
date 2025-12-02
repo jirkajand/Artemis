@@ -47,6 +47,17 @@ jobs:
             sed -i "s|^KEYCLOAK_CLIENT_SECRET=.*|KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}|" .env
 
             echo "Rebuilding containers..."
+          
+          
+          # Hotfix - infinite building
+            docker compose down --remove-orphans
+            docker container prune -f
+            docker image prune -a -f
+            docker network prune -f
+            docker builder prune -a -f
+            docker system prune -a -f   # does NOT remove volumes
+          
+          
             docker compose pull
             docker compose build --no-cache
             docker compose up -d --remove-orphans
