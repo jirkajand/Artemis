@@ -5,7 +5,7 @@
 </script>
 
 <div class="card-container">
-    <Card>
+    <Card variant="outlined" padded>
         <Content>
             <h2>Register as</h2>
         </Content>

@@ -6,19 +6,21 @@
 
 	let { children, data }: LayoutProps = $props();
 
-	const { user, clients, userNavbarData } = data;
+	const { clients, userNavbarData } = data;
 </script>
 
 <header>
-	<Navbar {user} />
+	<Navbar userData={userNavbarData} />
 </header>
 
 <div class="layout">
 	<Sidebar />
-	<main>
-		<SecondaryRegistrationPopup {clients} {userNavbarData} />
-		{@render children?.()}
-	</main>
+	<div class="content-scroll">
+		<main>
+			<SecondaryRegistrationPopup {clients} {userNavbarData} />
+			{@render children?.()}
+		</main>
+	</div>
 </div>
 
 
@@ -34,12 +36,11 @@
 		flex: 1;
 		overflow: hidden;
 	}
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: start;
-		justify-content: start;
+	.content-scroll {
 		flex: 1;
+		overflow-y: auto;
+	}
+	main {
 		margin: 0 auto;
 		padding: 2rem 1rem;
 		width: 100%;

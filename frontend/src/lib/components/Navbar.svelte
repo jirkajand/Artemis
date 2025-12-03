@@ -1,24 +1,28 @@
 <script lang="ts">
     import { keycloak } from "$lib/auth/keycloak";
-	import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
     import Button from "@smui/button";
 	import ProfileMenu from "./profile/ProfileMenu.svelte";
 	import ThemeSwitch from "./ThemeSwitch.svelte";
+	import type { ResponseStudentNavbar } from "$lib/api";
 
-    let { user = null }: {
-        user: KeycloakOIDCProfile | null;
+    let { userData = null }: {
+        userData: Promise<ResponseStudentNavbar> | null;
     } = $props();
 
 </script>
 
 <nav class="topbar">
-    {#if user}
-        <section>ARTEMIS DEMO</section>
-        <a href="/register">Register</a>
-        <ThemeSwitch />
-        <section class="last">
-            <ProfileMenu {user} />
+    {#if userData}
+    {#await userData then userDataSync}
+        <section class="app-title">ARTEMIS DEMO</section>
+        <section class="additional-opotions">
+            <a href="/register">Register</a>
+            <ThemeSwitch />
         </section>
+        <section class="last">
+            <ProfileMenu userData={userDataSync} />
+        </section>
+    {/await}
     {:else}
         <Button onclick={() => keycloak.login()}>Login</Button>
         <ThemeSwitch />
@@ -40,4 +44,17 @@
     nav.topbar .last {
         margin-left: auto;
     }
+
+    section.additional-opotions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        section.additional-opotions {
+            display: none;
+        }
+    }
+    
 </style>

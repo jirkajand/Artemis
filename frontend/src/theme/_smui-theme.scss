@@ -42,8 +42,8 @@
 
 html,
 body {
-  background-color: theme.$surface;
-  color: theme.$on-surface;
+  background-color: theme.$background;
+  color: var(--on-background)
 }
 
 a {

@@ -5,11 +5,7 @@
 
 <h1>Login</h1>
 
-<p>Use your company account to access Artemis.</p>
-
-<Button onclick={() => keycloak.login({
-  redirectUri: `${window.location.origin}/dashboard`
-})}>
+<Button onclick={() => keycloak.login()}>
   <Label>Login with Keycloak</Label>
 </Button>
 <br/>

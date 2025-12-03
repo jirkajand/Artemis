@@ -1,11 +1,17 @@
-import { error, type Load } from "@sveltejs/kit";
+import { error, redirect, type Load } from "@sveltejs/kit";
 import type { PageParentData } from "./$types";
+import type { fromAction } from "svelte/attachments";
 
 
 export const load: Load = async ({ parent }) => {
     const parentData = await parent() as PageParentData;
 
-    const { management, settings } = parentData.clients;
+    const { clients, userNavbarData } = parentData;
+    const { management, settings } = clients;
+
+    const userData = await userNavbarData;
+    if(userData.type == "LOCAL")
+        throw redirect(302, "/dashboard");
 
     try {
         const studentDetail = await management.getCurrentStudentDetail()

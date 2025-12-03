@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
     import { keycloak } from "$lib/auth/keycloak";
 	import List, { Item, Separator, Text, Graphic } from "@smui/list";
 	import Menu from "@smui/menu";
-  import { goto } from '$app/navigation';
+	import type { ResponseStudentNavbar } from "$lib/api";
+	import { goto } from "$app/navigation";
 
-    const { user = null }: { user: KeycloakOIDCProfile | null; } = $props();
+    const { userData = null }: { userData: ResponseStudentNavbar | null; } = $props();
 
     let menu: Menu;
     let anchor: HTMLElement | undefined = $state();
@@ -23,7 +23,7 @@
     onclick={() => toggleMenu()}
 >
     <img src="/profile-picture.jpeg" alt="Profile" />
-    <span>{user?.name}</span>
+    <span>{`${userData?.firstName} ${userData?.lastName}`}</span>
     <span class="material-icons">arrow_drop_down</span>
     <Menu
         id="profile-dropdown-menu"
@@ -33,18 +33,9 @@
         anchorCorner="BOTTOM_LEFT"
     >
         <List class="demo-list" dense>
-            <Item onSMUIAction={() => goto('/student-profile')}>
+            <Item onSMUIAction={() => (goto("/profile"))}>
                 <Graphic class="material-icons">person</Graphic>
                 <Text>My Profile</Text>
-            </Item>
-            <Item onSMUIAction={() => (console.log('Change Password'))}>
-                <Graphic class="material-icons">key</Graphic>
-                <Text>Change Password</Text>
-            </Item>
-            <Separator />
-            <Item onSMUIAction={() => (console.log('Documentation'))}>
-                <Graphic class="material-icons">book</Graphic>
-                <Text>Documentation</Text>
             </Item>
             <Separator />
             <Item onSMUIAction={() => (keycloak.logout())}>
@@ -59,6 +50,7 @@
 <style>
     :global(#profile-dropdown-menu) {
         margin-top: 0.5rem;
+        width: 100%;
     }
     button.profile-menu {
         background: none;
