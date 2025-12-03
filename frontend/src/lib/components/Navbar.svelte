@@ -15,9 +15,11 @@
 <nav class="topbar">
     {#if userData}
     {#await userData then userDataSync}
-        <section>ARTEMIS DEMO</section>
-        <a href="/register">Register</a>
-        <ThemeSwitch />
+        <section class="app-title">ARTEMIS DEMO</section>
+        <section class="additional-opotions">
+            <a href="/register">Register</a>
+            <ThemeSwitch />
+        </section>
         <!-- make navbar responsive -->
         <section class="last">
         <!-- delete some items from profile menu -->
@@ -45,4 +47,17 @@
     nav.topbar .last {
         margin-left: auto;
     }
+
+    section.additional-opotions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        section.additional-opotions {
+            display: none;
+        }
+    }
+    
 </style>
