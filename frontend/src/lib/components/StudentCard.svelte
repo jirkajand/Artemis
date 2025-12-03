@@ -36,8 +36,8 @@
                 <div class="line">
                     <Icon class="material-icons">person</Icon>
                     <div class="text-wrapper">
-                        <h2 class="card-title" title={student.name}>
-                            {student.name}
+                        <h2 class="card-title" title={student?.name ?? ''}>
+                            {student?.name ?? ''}
                         </h2>
                     </div>
                 </div>
@@ -45,8 +45,8 @@
                 <div class="line">
                     <Icon class="material-icons">school</Icon>
                     <div class="text-wrapper">
-                        <h3 class="faculty-subtitle" title={student.faculty.facultyNameInternational}>
-                            {student.faculty.facultyNameInternational}
+                        <h3 class="faculty-subtitle" title={student?.faculty?.facultyNameInternational ?? ''}>
+                            {student?.faculty?.facultyNameInternational ?? ''}
                         </h3>
                     </div>
                 </div>
@@ -54,14 +54,14 @@
                 <div class="line">
                     <Icon class="material-icons">home</Icon>
                     <div class="text-wrapper">
-                        <h3 class="faculty-subtitle" title={student.homeUniversity}>
-                            {student.homeUniversity}
+                        <h3 class="faculty-subtitle" title={student?.homeUniversity ?? ''}>
+                            {student?.homeUniversity ?? ''}
                         </h3>
                     </div>
                 </div>
 
                 <div class="bio-block">
-                    <p>"{student.bio}"</p>
+                    <p>"{student?.bio ?? ''}"</p>
                 </div>
             </Content>
         </div>

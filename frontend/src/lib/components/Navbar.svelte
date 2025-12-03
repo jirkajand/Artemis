@@ -1,7 +1,7 @@
 <script lang="ts">
     import { keycloak } from "$lib/auth/keycloak";
     import Button from "@smui/button";
-	import ProfileMenu from "./ProfileMenu.svelte";
+	import ProfileMenu from "./profile/ProfileMenu.svelte";
 	import ThemeSwitch from "./ThemeSwitch.svelte";
 	import type { ResponseStudentNavbar } from "$lib/api";
 

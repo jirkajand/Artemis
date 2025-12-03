@@ -8,6 +8,11 @@ export const load = async ({ parent }) => {
 
 	let students;
 	let faculties;
+	let {type: studentType} = await management.getCurrentStudentForNavbar()
+
+	if (studentType !== "LOCAL") {
+		throw redirect(302, "/");
+	}
 
 	try {
 		// fetch students

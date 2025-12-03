@@ -48,8 +48,8 @@
 				<div class="line">
 					<Icon class="material-icons">school</Icon>
 					<div class="text-wrapper">
-						<h3 class="faculty-subtitle" title={student.faculty.shortName}>
-							{student?.faculty.shortName}
+						<h3 class="faculty-subtitle" title={student?.faculty?.shortName ?? ''}>
+							{student?.faculty?.shortName ?? ''}
 						</h3>
 					</div>
 				</div>
@@ -57,8 +57,8 @@
 				<div class="line">
 					<Icon class="material-icons">home</Icon>
 					<div class="text-wrapper">
-						<h3 class="faculty-subtitle" title={student.homeUniversity}>
-							{student.homeUniversity}
+						<h3 class="faculty-subtitle" title={student?.homeUniversity ?? ''}>
+							{student?.homeUniversity ?? ''}
 						</h3>
 					</div>
 				</div>
@@ -66,8 +66,8 @@
 				<div class="line">
 					<Icon class="material-icons">public</Icon>
 					<div class="text-wrapper">
-						<h3 class="card-title" title={student.countryName}>
-							{student.countryName}
+						<h3 class="card-title" title={student?.countryName ?? ''}>
+							{student?.countryName ?? ''}
 						</h3>
 					</div>
 				</div>
@@ -98,10 +98,9 @@
 </div>
 
 <style>
-    /* 1. Slimmer Card Width */
     .card-display {
         width: 100%;
-        max-width: 340px; /* Reduced from 400px */
+        max-width: 340px;
         margin: 2rem auto;
         position: relative;
         display: flex;
@@ -122,10 +121,9 @@
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     }
 
-    /* --- Avatar Area (Resized Smaller) --- */
     .avatar-container {
         position: absolute;
-        top: -40px; /* Adjusted for smaller size */
+        top: -40px;
         left: 0;
         width: 100%;
         z-index: 5;
@@ -136,7 +134,7 @@
 
     .avatar-wrapper {
         position: relative;
-        width: 120px; /* Reduced from 150px */
+        width: 120px;
         height: 120px;
     }
 
@@ -152,12 +150,11 @@
         z-index: 2;
     }
 
-    /* --- Badges (Resized Smaller) --- */
     .badge-icon {
         background-color: var(--on-secondary) !important;
         position: absolute;
         bottom: 0;
-        width: 2.5rem; /* Reduced from 3.5rem */
+        width: 2.5rem;
         height: 2.5rem;
         border-radius: 50%;
         display: flex;
@@ -172,7 +169,7 @@
     .badge-icon.gender { left: -10px; }
     .badge-icon.country { right: -10px; }
 
-    /* --- Content Area --- */
+
     .student-info-container {
         flex: 1;
         display: flex;
@@ -213,7 +210,7 @@
         color: var(--on-background);
     }
 
-    /* Standardized Font Sizes */
+
     .faculty-subtitle {
         font-size: 0.975rem;
     }
@@ -223,7 +220,7 @@
         font-weight: 600 !important;
     }
 
-    /* --- Bio --- */
+
     .bio-block {
         margin-top: 1rem;
         padding: 0.75rem;
@@ -242,7 +239,6 @@
         line-height: 1.4;
     }
 
-    /* --- Actions --- */
     :global(.actions-flex) {
         display: flex;
         justify-content: center;
