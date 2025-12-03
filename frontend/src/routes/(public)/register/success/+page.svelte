@@ -6,7 +6,7 @@
 
 
 <div class="card-container">
-    <Card>
+    <Card variant="outlined" padded>
         <Content>
             <h2>Registration Successful!</h2>
             <p>Wait for the email with account verification instructions.</p>
