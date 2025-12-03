@@ -12,9 +12,11 @@
 </header>
 
 <div class="layout">
-	<main>
-		{@render children?.()}
-	</main>
+	<div class="content-scroll">
+		<main>
+			{@render children?.()}
+		</main>
+	</div>
 </div>
 
 
@@ -30,13 +32,11 @@
 		flex: 1;
 		overflow: hidden;
 	}
+	.content-scroll {
+		flex: 1;
+		overflow-y: auto;
+	}
 	main {
-		position: relative;
-
-		display: flex;
-		flex-direction: column;
-		align-items: start;
-		justify-content: start;
 		margin: 0 auto;
 		padding: 2rem 1rem;
 		width: 100%;

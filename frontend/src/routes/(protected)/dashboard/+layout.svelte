@@ -31,28 +31,24 @@
 	</Row>
 </TopAppBar>
 
-<div class="dashboard-container">
-	<div class="card-grid">
-		{@render children?.()}
-	</div>
-
-	{#if paginationData && paginationData.total > paginationData.perPage}
-		<div class="pagination-wrapper">
-			<PaginationBar
-				total={paginationData.total}
-				page={paginationData.page}
-				perPage={paginationData.perPage}
-				{onPageChange}
-			/>
-		</div>
-	{/if}
+<div class="card-grid">
+	{@render children?.()}
 </div>
+
+{#if paginationData && paginationData.total > paginationData.perPage}
+	<div class="pagination-wrapper">
+		<PaginationBar
+			total={paginationData.total}
+			page={paginationData.page}
+			perPage={paginationData.perPage}
+			{onPageChange}
+		/>
+	</div>
+{/if}
 
 <style>
     :global(main) {
-        overflow: scroll;
         max-width: unset !important;
-        background-color: var(--background);
     }
 
     .pagination-wrapper {
@@ -67,10 +63,6 @@
         gap: 1rem;
         padding: 2rem 0;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    }
-
-    .dashboard-container {
-        width: 100%;
     }
 
     :global(.mdc-top-app-bar) {
