@@ -57,8 +57,8 @@
 				<div class="line">
 					<Icon class="material-icons">home</Icon>
 					<div class="text-wrapper">
-						<h3 class="faculty-subtitle" title={student.homeUniversity}>
-							{student.homeUniversity}
+						<h3 class="faculty-subtitle" title={student?.homeUniversity ?? ''}>
+							{student?.homeUniversity ?? ''}
 						</h3>
 					</div>
 				</div>
@@ -66,8 +66,8 @@
 				<div class="line">
 					<Icon class="material-icons">public</Icon>
 					<div class="text-wrapper">
-						<h3 class="card-title" title={student.countryName}>
-							{student.countryName}
+						<h3 class="card-title" title={student?.countryName ?? ''}>
+							{student?.countryName ?? ''}
 						</h3>
 					</div>
 				</div>

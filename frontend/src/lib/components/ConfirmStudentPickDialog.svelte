@@ -38,7 +38,7 @@
 			<div class="info-grid">
 				<div class="info-item">
 					<span class="label">Home University</span>
-					<span class="value">{student.homeUniversity}</span>
+					<span class="value">{student?.homeUniversity ?? ''}</span>
 				</div>
 				<div class="arrow">➜</div>
 				<div class="info-item">
@@ -50,7 +50,7 @@
 			<div class="bio-section">
 				<span class="quote-icon">❝</span>
 				<div class="bio-text">
-					{student.bio}
+					{student?.bio ?? ''}
 				</div>
 			</div>
 		</Content>

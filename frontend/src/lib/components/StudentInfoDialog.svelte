@@ -59,15 +59,15 @@
 					</tr>
 					<tr>
 						<td><strong>Email:</strong></td>
-						<td>{student.email}</td>
+						<td>{student?.email ?? ''}</td>
 					</tr>
 					<tr>
 						<td><strong>Phone number:</strong></td>
-						<td>{student.phoneNumber}</td>
+						<td>{student?.phoneNumber ?? ''}</td>
 					</tr>
 					<tr>
 						<td><strong>Country:</strong></td>
-						<td>{student.countryName}</td>
+						<td>{student?.countryName ?? ''}</td>
 					</tr>
 					</tbody>
 
@@ -83,7 +83,7 @@
 					</tr>
 					<tr>
 						<td><strong>Home Faculty:</strong></td>
-						<td>{student.homeUniversity}</td>
+						<td>{student?.homeUniversity ?? ''}</td>
 					</tr>
 					<tr>
 						<td><strong>Born:</strong></td>
@@ -110,7 +110,7 @@
 
 		<div class="bio-section">
 			<h4 class="table-heading">About me</h4>
-			<div class="bio-content-full">{student.bio}</div>
+			<div class="bio-content-full">{student?.bio ?? ''}</div>
 		</div>
 	</DialogContent>
 
