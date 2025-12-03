@@ -16,14 +16,6 @@ export const load: LayoutLoad = async ({ fetch }) => {
     throw redirect(302, "/login");
   }
 
-  // Fetch userinfo using the accessToken
-  let user: KeycloakOIDCProfile | null = null;
-  try {
-    user = await getUserInfo(fetch);
-  } catch (err) {
-    console.error("Failed to fetch user info:", err);
-  }
-
   // Setup API clients with access token if authenticated
   const config = new Configuration({
     accessToken: () => `Bearer ${keycloak.token}`,
@@ -36,8 +28,8 @@ export const load: LayoutLoad = async ({ fetch }) => {
     settings: new SettingsServiceApi(config)
   };
 
-  // Fetch user navbar data for pop-up registration
+  // Fetch user navbar data
   const userNavbarData = clients.management.getCurrentStudentForNavbar();
 
-  return { user, clients, userNavbarData };
+  return { clients, userNavbarData };
 };
