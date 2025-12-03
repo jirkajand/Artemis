@@ -27,17 +27,13 @@
 	</Row>
 </TopAppBar>
 
-<div class="dashboard-container">
-	<div class="card-grid">
-		{@render children?.()}
-	</div>
+<div class="card-grid">
+    {@render children?.()}
 </div>
 
 <style>
     :global(main) {
-        overflow: scroll;
         max-width: unset !important;
-				background-color: var(--background);
     }
 
     :global(.segment-section) {
@@ -49,10 +45,6 @@
         gap: 1rem;
         padding: 2rem 0;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    }
-
-    .dashboard-container {
-        width: 100%;
     }
 
     :global(.mdc-top-app-bar) {
