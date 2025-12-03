@@ -45,8 +45,8 @@
                 <div class="line">
                     <Icon class="material-icons">school</Icon>
                     <div class="text-wrapper">
-                        <h3 class="faculty-subtitle" title={student.faculty.facultyNameInternational}>
-                            {student.faculty.facultyNameInternational}
+                        <h3 class="faculty-subtitle" title={student?.faculty?.facultyNameInternational ?? ''}>
+                            {student?.faculty?.facultyNameInternational ?? ''}
                         </h3>
                     </div>
                 </div>
