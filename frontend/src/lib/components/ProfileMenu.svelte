@@ -3,6 +3,7 @@
 	import List, { Item, Separator, Text, Graphic } from "@smui/list";
 	import Menu from "@smui/menu";
 	import type { ResponseStudentNavbar } from "$lib/api";
+	import { goto } from "$app/navigation";
 
     const { userData = null }: { userData: ResponseStudentNavbar | null; } = $props();
 
@@ -32,22 +33,9 @@
         anchorCorner="BOTTOM_LEFT"
     >
         <List class="demo-list" dense>
-            <Item onSMUIAction={() => (console.log('Profile'))}>
+            <Item onSMUIAction={() => (goto("/profile"))}>
                 <Graphic class="material-icons">person</Graphic>
                 <Text>My Profile</Text>
-            </Item>
-            <Item onSMUIAction={() => (console.log('Edit'))}>
-                <Graphic class="material-icons">edit</Graphic>
-                <Text>Edit Profile</Text>
-            </Item>
-            <Item onSMUIAction={() => (console.log('Change Password'))}>
-                <Graphic class="material-icons">key</Graphic>
-                <Text>Change Password</Text>
-            </Item>
-            <Separator />
-            <Item onSMUIAction={() => (console.log('Documentation'))}>
-                <Graphic class="material-icons">book</Graphic>
-                <Text>Documentation</Text>
             </Item>
             <Separator />
             <Item onSMUIAction={() => (keycloak.logout())}>
@@ -62,6 +50,7 @@
 <style>
     :global(#profile-dropdown-menu) {
         margin-top: 0.5rem;
+        width: 100%;
     }
     button.profile-menu {
         background: none;

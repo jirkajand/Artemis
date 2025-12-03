@@ -5,7 +5,6 @@
 	import ThemeSwitch from "./ThemeSwitch.svelte";
 	import type { ResponseStudentNavbar } from "$lib/api";
 
-    // use userNavData instead
     let { userData = null }: {
         userData: Promise<ResponseStudentNavbar> | null;
     } = $props();
@@ -20,9 +19,7 @@
             <a href="/register">Register</a>
             <ThemeSwitch />
         </section>
-        <!-- make navbar responsive -->
         <section class="last">
-        <!-- delete some items from profile menu -->
             <ProfileMenu userData={userDataSync} />
         </section>
     {/await}
