@@ -79,7 +79,7 @@
 					<tbody>
 					<tr>
 						<td><strong>Destination Faculty:</strong></td>
-						<td>{student.faculty.facultyNameInternational}</td>
+						<td>{student?.faculty?.facultyNameInternational ?? ''}</td>
 					</tr>
 					<tr>
 						<td><strong>Home Faculty:</strong></td>

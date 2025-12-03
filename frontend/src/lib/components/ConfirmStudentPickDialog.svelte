@@ -43,7 +43,7 @@
 				<div class="arrow">➜</div>
 				<div class="info-item">
 					<span class="label">Destination</span>
-					<span class="value">{student.faculty.shortName}</span>
+					<span class="value">{student?.faculty?.shortName ?? ''}</span>
 				</div>
 			</div>
 
