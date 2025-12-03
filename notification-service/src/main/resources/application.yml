@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: default,kafka,mail,country-language
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "https://keycloak.artemis.jirka.test.esnhk.cz/realms/Artemis"
+server:
+  port: ${SERVER_PORT:8083}

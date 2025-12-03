@@ -11,6 +11,12 @@
       "pathModification": {
         "prepend": "/settings/api"
       }
+    },
+    {
+      "inputFile": "./notification-service-api.yaml",
+      "pathModification": {
+        "prepend": "/notification/api"
+      }
     }
   ],
   "output": "./merged-openapi.yaml"

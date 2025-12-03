@@ -3,9 +3,11 @@ package cz.uhk.fim.service;
 import cz.uhk.fim.entity.InternationalStudentEntity;
 import cz.uhk.fim.entity.LocalStudentEntity;
 import cz.uhk.fim.entity.StudentEntity;
+import cz.uhk.fim.kafka.SendEmailKafkaProducer;
 import cz.uhk.fim.mapper.InternationalStudentMapper;
 import cz.uhk.fim.mapper.PageableMapper;
 import cz.uhk.fim.repository.InternationalStudentRepository;
+import cz.uhk.fim.usermanagement.kafka.model.NotificationSendEmailMessage;
 import cz.uhk.fim.usermanagement.model.AssignedInternationalStudent;
 import cz.uhk.fim.usermanagement.model.GetAllInternationalStudentsAnonymous200Response;
 import cz.uhk.fim.usermanagement.model.InternationalStudentProfile;
@@ -40,6 +42,7 @@ public class InternationalStudentService {
     private final KeycloakService keycloakService;
     private final ProfilePicturesService profilePicturesService;
     private final SemesterService semesterService;
+    private final SendEmailKafkaProducer sendEmailKafkaProducer;
 
     @Value("${international-student.default-role}")
     private String defaultRole;
@@ -114,7 +117,11 @@ public class InternationalStudentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "International Student with id " + internationalStudentId + " not found."));
 
         internationalStudent.setAssignedBuddy(localStudentEntity);
-        return internationalStudentRepository.save(internationalStudent);
+        var saved = internationalStudentRepository.save(internationalStudent);
+
+        sendEmailKafkaProducer.sendEmailMessage(NotificationSendEmailMessage.NotificationType.ASSIGNED_BY_LOCAL_STUDENT, localStudentEntity, saved);
+
+        return saved;
     }
 
     public GetAllInternationalStudentsAnonymous200Response getAllInternationalStudents(Integer page, Integer size, @Nullable UUID semesterId, @Nullable UUID facultyId, @Nullable String countryCode, @Nullable Boolean containAssigned) {

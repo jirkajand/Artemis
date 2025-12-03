@@ -1,0 +1,24 @@
+spring:
+  cloud:
+    function:
+      definition: notificationSendEmail
+    stream:
+      bindings:
+        notificationSendEmail-in-0:
+          destination: notification.send.email
+          group: notification-service.notification.send.email
+      kafka:
+        binder:
+          auto-add-partitions: true
+          enable-observation: true
+          autoCreateTopics: false
+          configuration:
+            # need to set the group here to be loaded
+            group-id: notification-service.notification.send.email
+            auto-offset-reset: earliest
+            key:
+              serializer: org.apache.kafka.common.serialization.StringSerializer
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          brokers: ${INTERNAL_KAFKA_HOST:localhost}:${INTERNAL_KAFKA_PORT:29093}

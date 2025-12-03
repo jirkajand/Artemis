@@ -87,12 +87,29 @@ services:
     depends_on:
       - artemis-database
 
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: notification-service
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
+    environment:
+      - SERVER_PORT=${NOTIFICATION_SERVICE_PORT}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - INTERNAL_KAFKA_HOST=kafkaInternal
+      - INTERNAL_KAFKA_PORT=${INTERNAL_KAFKA_PORT}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD}
+      - GMAIL_USERNAME=${GMAIL_USERNAME}
+    depends_on:
+      - kafkaInternal
+
   zookeeper:
     image: confluentinc/cp-zookeeper
     container_name: zookeeper
     restart: unless-stopped
-    #    ports:
-    #      - 22181:2181
+    ports:
+      - 22181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -105,8 +122,8 @@ services:
     container_name: kafkaInternal
     depends_on:
       - zookeeper
-    #    ports:
-    #      - 29093:29093
+    ports:
+      - 29093:29093
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -142,7 +159,8 @@ services:
       sleep 5;
       
       kafka-topics --bootstrap-server kafkaInternal:${INTERNAL_KAFKA_PORT} --create --topic settings.semester --partitions 3 --replication-factor 1 --config cleanup.policy=compact --if-not-exists;
-      echo 'Created kafka topics:  settings.semester';
+      kafka-topics --bootstrap-server kafkaInternal:${INTERNAL_KAFKA_PORT} --create --topic notification.send.email --partitions 3 --replication-factor 1 --config cleanup.policy=compact --if-not-exists;
+      echo 'Created kafka topics:  settings.semester | notification.send.email';
       "
 
 volumes:
