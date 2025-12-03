@@ -1,5 +1,6 @@
 import type { PageLoad } from './$types';
 import { getCountryFlag, getCountryName, getGenderIcon, getAllCountryNames } from '$lib/helpers/studentUtils';
+import { redirect } from '@sveltejs/kit';
 
 const PER_PAGE = 20;
 
@@ -15,6 +16,11 @@ const getEmptyState = (management: any) => ({
 
 export const load: PageLoad = async ({ parent, url }) => {
 	const { clients: { settings, management } } = await parent();
+	let {type: studentType} = await management.getCurrentStudentForNavbar()
+
+	if (studentType !== "LOCAL") {
+		throw redirect(302, "/");
+	}
 
 	// Parse params once
 	const page = Math.max(1, Number(url.searchParams.get('page')) || 1);

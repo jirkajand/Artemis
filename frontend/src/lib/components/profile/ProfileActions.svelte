@@ -21,6 +21,7 @@
 
 <style lang="scss">
   .actions {
+		margin-top: 1.5rem;
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -30,7 +31,7 @@
     border: none;
     color: var(--on-surface) !important;
     border-radius: 6px;
-    font-size: 1rem !important;
+    font-size: calc(0.5vw + 0.65rem) !important;
     padding: 1.5rem !important;
     cursor: pointer;
     transition: all 0.2s ease;
