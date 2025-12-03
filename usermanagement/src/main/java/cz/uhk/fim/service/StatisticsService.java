@@ -1,6 +1,5 @@
 package cz.uhk.fim.service;
 
-import cz.uhk.fim.entity.InternationalStudentEntity;
 import cz.uhk.fim.repository.InternationalStudentRepository;
 import cz.uhk.fim.repository.LocalStudentRepository;
 import cz.uhk.fim.usermanagement.model.UserManagementStatisticsInternationalStudentBySemester;
@@ -13,9 +12,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,49 +34,41 @@ public class StatisticsService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No international students found for semester with id " + semesterId + ".");
         }
         var result = new UserManagementStatisticsInternationalStudentBySemester();
+        // Single pass aggregations
+        int totalAssigned = 0;
+        int totalUnassigned = 0;
+        var countrySet = new HashSet<String>();
+        var countryCountMap = new HashMap<String, Integer>();
+        var facultyCountMap = new HashMap<String, Integer>();
+        var ageCountMap = new HashMap<String, Integer>();
+        for (var student : internationalStudentsBySemester) {
+            // Assigned/unassigned
+            boolean hasBuddy = student.getAssignedBuddy() != null || Boolean.TRUE.equals(student.getAnonymizedHasBuddy());
+            if (hasBuddy) {
+                totalAssigned++;
+            } else {
+                totalUnassigned++;
+            }
+            // Country code
+            String countryCode = Objects.toString(student.getCountryISO(), "");
+            countrySet.add(countryCode);
+            countryCountMap.put(countryCode, countryCountMap.getOrDefault(countryCode, 0) + 1);
+            // Faculty ID
+            String facultyId = Objects.nonNull(student.getFacultyId()) ? student.getFacultyId().toString() : "";
+            facultyCountMap.put(facultyId, facultyCountMap.getOrDefault(facultyId, 0) + 1);
+            // Age
+            String ageStr = Objects.nonNull(student.getDateOfBirth())
+                    ? String.valueOf(Period.between(student.getDateOfBirth(), LocalDate.now()).getYears())
+                    : "";
+            ageCountMap.put(ageStr, ageCountMap.getOrDefault(ageStr, 0) + 1);
+        }
         result.setTotalInternationalStudents(internationalStudentsBySemester.size());
-        result.setTotalAssignedInternationalStudents(internationalStudentsBySemester.stream()
-                .filter(student -> student.getAssignedBuddy() != null || Boolean.TRUE.equals(student.getAnonymizedHasBuddy()))
-                .toList()
-                .size());
-        result.setTotalUnassignedInternationalStudents(internationalStudentsBySemester.stream()
-                .filter(student -> student.getAssignedBuddy() == null || Boolean.FALSE.equals(student.getAnonymizedHasBuddy()))
-                .toList()
-                .size());
-        result.setTotalInternationalStudentsCountries(internationalStudentsBySemester.stream()
-                .map(InternationalStudentEntity::getCountryISO)
-                .distinct()
-                .toList()
-                .size());
-        result.setTotalInternationalStudentsByCountryCode(internationalStudentsBySemester.stream()
-                .collect(Collectors.groupingBy(
-                        student -> Objects.toString(student.getCountryISO(), ""),
-                        Collectors.collectingAndThen(
-                                Collectors.counting(),
-                                Long::intValue
-                        )
-                )));
-        result.setTotalInternationalStudentsByFacultyId(internationalStudentsBySemester.stream()
-                .collect(Collectors.groupingBy(
-                        internationalStudentEntity -> Objects.nonNull(internationalStudentEntity.getFacultyId())
-                                ? internationalStudentEntity.getFacultyId().toString()
-                                : "",
-                        Collectors.collectingAndThen(
-                                Collectors.counting(),
-                                Long::intValue
-                        )
-                )));
-        result.setTotalInternationalStudentsByAge(internationalStudentsBySemester.stream()
-                .collect(Collectors.groupingBy(
-                        student ->
-                                Objects.nonNull(student.getDateOfBirth())
-                                        ? String.valueOf(Period.between(student.getDateOfBirth(), LocalDate.now()).getYears())
-                                        : "",
-                        Collectors.collectingAndThen(
-                                Collectors.counting(),
-                                Long::intValue
-                        )
-                )));
+        result.setTotalAssignedInternationalStudents(totalAssigned);
+        result.setTotalUnassignedInternationalStudents(totalUnassigned);
+        result.setTotalInternationalStudentsCountries(countrySet.size());
+        result.setTotalInternationalStudentsByCountryCode(countryCountMap);
+        result.setTotalInternationalStudentsByFacultyId(facultyCountMap);
+        result.setTotalInternationalStudentsByAge(ageCountMap);
         return result;
     }
 
