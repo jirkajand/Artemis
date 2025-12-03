@@ -1,24 +1,29 @@
 <script lang="ts">
     import { keycloak } from "$lib/auth/keycloak";
-	import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
     import Button from "@smui/button";
 	import ProfileMenu from "./ProfileMenu.svelte";
 	import ThemeSwitch from "./ThemeSwitch.svelte";
+	import type { ResponseStudentNavbar } from "$lib/api";
 
-    let { user = null }: {
-        user: KeycloakOIDCProfile | null;
+    // use userNavData instead
+    let { userData = null }: {
+        userData: Promise<ResponseStudentNavbar> | null;
     } = $props();
 
 </script>
 
 <nav class="topbar">
-    {#if user}
+    {#if userData}
+    {#await userData then userDataSync}
         <section>ARTEMIS DEMO</section>
         <a href="/register">Register</a>
         <ThemeSwitch />
+        <!-- make navbar responsive -->
         <section class="last">
-            <ProfileMenu {user} />
+        <!-- delete some items from profile menu -->
+            <ProfileMenu userData={userDataSync} />
         </section>
+    {/await}
     {:else}
         <Button onclick={() => keycloak.login()}>Login</Button>
         <ThemeSwitch />

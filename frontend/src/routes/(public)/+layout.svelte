@@ -8,7 +8,7 @@
 </script>
 
 <header>
-	<Navbar user={null} />
+	<Navbar userData={null} />
 </header>
 
 <div class="layout">

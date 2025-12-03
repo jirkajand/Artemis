@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
     import { keycloak } from "$lib/auth/keycloak";
 	import List, { Item, Separator, Text, Graphic } from "@smui/list";
 	import Menu from "@smui/menu";
+	import type { ResponseStudentNavbar } from "$lib/api";
 
-    const { user = null }: { user: KeycloakOIDCProfile | null; } = $props();
+    const { userData = null }: { userData: ResponseStudentNavbar | null; } = $props();
 
     let menu: Menu;
     let anchor: HTMLElement | undefined = $state();
@@ -22,7 +22,7 @@
     onclick={() => toggleMenu()}
 >
     <img src="/profile-picture.jpeg" alt="Profile" />
-    <span>{user?.name}</span>
+    <span>{`${userData?.firstName} ${userData?.lastName}`}</span>
     <span class="material-icons">arrow_drop_down</span>
     <Menu
         id="profile-dropdown-menu"
