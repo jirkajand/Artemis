@@ -76,7 +76,7 @@ public class EmailTemplatingService {
      * @param notificationType Type of notification email.
      *                         Supported types: ASSIGNED_BY_LOCAL_STUDENT, INTERNATIONAL_STUDENT_ANONYMIZED
      * @param languageCode     Language code for localization (e.g., "en", "cs").
-     * @param attributes       FULLNAME | ASSIGNER_FULLNAME | ASSIGNED_FULLNAME
+     * @param attributes       Map of attribute keys to values. Supported keys: {RECIPIENT_FULLNAME}, {ASSIGNER_FULLNAME}
      * @return Generated email body as a String.
      */
     public String getBodyWithTemplate(NotificationSendEmailMessage.NotificationType notificationType, String languageCode, Map<String, String> attributes) {

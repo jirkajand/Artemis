@@ -29,13 +29,9 @@ public class EmailSenderConfig {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        // starttls.required může být true nebo false podle serveru; pokud způsobuje problém, nastavte na false
         props.put("mail.smtp.starttls.required", "true");
-        // Důvěřovat konkrétnímu hostu (pomůže s certifikáty)
         props.put("mail.smtp.ssl.trust", emailCredentialsConfig.getHost());
-        // Zajistit moderní TLS verzi
         props.put("mail.smtp.ssl.protocols", "TLSv1.2 TLSv1.3");
-        // volitelné timeouts pro lepší diagnostiku
         props.put("mail.smtp.connectiontimeout", "10000");
         props.put("mail.smtp.timeout", "10000");
         props.put("mail.smtp.writetimeout", "10000");
