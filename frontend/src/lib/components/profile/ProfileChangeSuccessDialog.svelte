@@ -29,11 +29,12 @@
 <style>
 
     :global(.mdc-dialog) {
-        width: max(350px, 25vw);
+
     }
 
 		:global(.mdc-dialog__surface){
 			border-radius: 20px !important;
+        width: max(350px, 25vw) !important;
 		}
 
 		:global(.mdc-dialog__actions) {

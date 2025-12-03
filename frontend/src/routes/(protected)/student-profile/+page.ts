@@ -41,6 +41,7 @@ export const load = async ({ parent }) => {
 			countryName: getCountryName(studentDetail?.countryCode) ?? '',
 			genderIcon: getGenderIcon(studentDetail?.gender)
 		};
+		console.log(student);
 
 		return { faculties, student, management };
 

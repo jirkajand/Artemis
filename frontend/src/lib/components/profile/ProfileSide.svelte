@@ -32,9 +32,10 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-		justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 1rem;
+		margin-top: 2rem;
   }
 
   .bio-section {
@@ -45,10 +46,15 @@
 
   .bio-text {
     font-style: italic;
+    font-size: calc(0.5vw + 0.5rem);
     color: var(--on-background);
     line-height: 1.6;
     margin-top: 1rem;
     padding: 0 1rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+		overflow: hidden;
   }
 
   .bio-input {

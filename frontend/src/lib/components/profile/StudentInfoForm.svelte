@@ -135,12 +135,12 @@
   }
 
   .section-header {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 2px solid var(--neutral-bg);
-    padding: 1rem 0 0.5rem 0;
+    padding: 0.5rem 0;
     color: var(--on-surface);
     text-align: center;
   }
@@ -157,7 +157,7 @@
   input, select {
     width: 100%;
     padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
+    font-size: calc(0.5vw + 0.5rem);
     border-radius: 6px;
     border: 1px solid #ccc;
     background-color: var(--surface);
