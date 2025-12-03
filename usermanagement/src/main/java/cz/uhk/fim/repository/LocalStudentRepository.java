@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface LocalStudentRepository  extends JpaRepository<LocalStudentEntity, UUID> {
     Optional<LocalStudentEntity> findByKeycloakId(UUID keycloakIdUUID);
+
+    Integer countByIsActiveTrue();
 }

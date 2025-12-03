@@ -517,6 +517,50 @@ paths:
                       $ref: '#/components/schemas/InternationalStudentAnonymous'
         '401':
           description: Unauthorized
+  /statistics/local-student/active:
+    get:
+      tags: [ UserManagement ]
+      summary: getUserManagementStatisticsLocalStudentActive
+      description: Retrieve statistics about active local students in user management
+      operationId: getUserManagementStatisticsLocalStudentActive
+      security:
+        - keycloak_auth: [ ADMIN ]
+      responses:
+        '200':
+          description: Statistics about active local students retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserManagementStatisticsLocalStudentActive'
+        '401':
+          description: Unauthorized
+  /statistics/international-student/semester/{semesterId}:
+    get:
+      tags: [ UserManagement ]
+      summary: getUserManagementStatisticsInternationalStudentBySemester
+      description: Retrieve statistics about international students for a specific semester in user management
+      operationId: getUserManagementStatisticsInternationalStudentBySemester
+      security:
+        - keycloak_auth: [ ADMIN ]
+      parameters:
+        - in: path
+          name: semesterId
+          description: Semester ID to filter statistics by semester
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Statistics about active international students for the specified semester retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserManagementStatisticsInternationalStudentBySemester'
+        '401':
+          description: Unauthorized
+        '404':
+          description: No international students found for the given semester
 
 components:
   schemas:
@@ -921,6 +965,36 @@ components:
           type: string
           example: Profile details updated successfully
 
+    UserManagementStatisticsLocalStudentActive:
+      type: object
+      properties:
+        totalActiveLocalStudents:
+          type: integer
+    UserManagementStatisticsInternationalStudentBySemester:
+      type: object
+      properties:
+        totalInternationalStudents:
+          type: integer
+        totalAssignedInternationalStudents:
+          type: integer
+        totalUnassignedInternationalStudents:
+          type: integer
+        totalInternationalStudentsCountries:
+          type: integer
+        totalInternationalStudentsByCountryCode:
+          type: object
+          additionalProperties:
+            type: integer
+        totalInternationalStudentsByFacultyId:
+          type: object
+          additionalProperties:
+            type: integer
+        totalInternationalStudentsByAge:
+          type: object
+          additionalProperties:
+            type: integer
+
+  
   securitySchemes:
     keycloak_auth:
       type: oauth2
