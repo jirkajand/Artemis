@@ -2,7 +2,7 @@ spring:
   application:
     name: notification-service
   profiles:
-    active: default,kafka,mail
+    active: default,kafka,mail,country-language
   security:
     oauth2:
       resourceserver:

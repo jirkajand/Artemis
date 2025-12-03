@@ -1,0 +1,5 @@
+country-language:
+  default-language: en
+  languages:
+    CZ: cs
+    EN: en

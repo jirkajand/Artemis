@@ -1,6 +1,7 @@
 package cz.uhk.fim.notificationservice.email;
 
 import cz.uhk.fim.notificationservice.kafka.model.NotificationSendEmailMessage;
+import cz.uhk.fim.notificationservice.properties.CountryLanguageProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ public class EmailService {
     private final EmailTemplatingService emailTemplatingService;
     private final EmailLocaleService emailLocaleService;
 
+    private final CountryLanguageProperties countryLanguageProperties;
+
     @Value("${spring.mail.username}")
     private String sender;
 
@@ -32,9 +35,14 @@ public class EmailService {
         if (message.getAssignerFullName() != null) {
             variables.put("{ASSIGNER_FULLNAME}", message.getAssignerFullName());
         }
-        var body = emailTemplatingService.getBodyWithTemplate(message.getType(), message.getLanguageCode(), variables);
 
-        MimeMessage mailMessage = createMimeMessage(body, message);
+        var languageCode = message.getCountryCode() != null
+                ? countryLanguageProperties.getLanguages().getOrDefault(message.getCountryCode(), countryLanguageProperties.getDefaultLanguage())
+                : countryLanguageProperties.getDefaultLanguage();
+
+        var body = emailTemplatingService.getBodyWithTemplate(message.getType(), languageCode, variables);
+
+        MimeMessage mailMessage = createMimeMessage(body, message, languageCode);
         if (mailMessage != null) {
             var emailSent = sendEmail(mailMessage, message);
             if (!emailSent) {
@@ -58,14 +66,14 @@ public class EmailService {
         }
     }
 
-    private MimeMessage createMimeMessage(String body, NotificationSendEmailMessage message) {
+    private MimeMessage createMimeMessage(String body, NotificationSendEmailMessage message, String languageCode) {
         MimeMessage mailMessage = null;
         try {
             mailMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mailMessage, false, "UTF-8");
             helper.setFrom(sender);
             helper.setTo(message.getRecipient());
-            helper.setSubject(emailLocaleService.getLocalizedSubject(message.getType(), message.getLanguageCode()));
+            helper.setSubject(emailLocaleService.getLocalizedSubject(message.getType(), languageCode));
             mailMessage.setContent(body, "text/html; charset=UTF-8");
         } catch (MessagingException e) {
             log.error("MessagingException: ", e);
