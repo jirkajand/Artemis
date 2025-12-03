@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -28,6 +27,7 @@ public class StatisticsService {
 
 
     public UserManagementStatisticsInternationalStudentBySemester getUserManagementStatisticsInternationalStudentBySemester(UUID semesterId) {
+        //There should be done improvement - do pagination here if there are too many international students in the semester, but based on a scale of project, it is not necessary now.
         var internationalStudentsBySemester = internationalStudentRepository.findAllBySemesterIdsContains(semesterId);
 
         if (internationalStudentsBySemester == null || internationalStudentsBySemester.isEmpty()) {
@@ -50,16 +50,20 @@ public class StatisticsService {
                 totalUnassigned++;
             }
             // Country code
-            String countryCode = Objects.toString(student.getCountryISO(), "");
+            String countryCode = student.getCountryISO() != null && !student.getCountryISO().isEmpty()
+                    ? student.getCountryISO()
+                    : "UNKNOWN";
             countrySet.add(countryCode);
             countryCountMap.put(countryCode, countryCountMap.getOrDefault(countryCode, 0) + 1);
             // Faculty ID
-            String facultyId = Objects.nonNull(student.getFacultyId()) ? student.getFacultyId().toString() : "";
+            String facultyId = student.getFacultyId() != null && !student.getFacultyId().toString().isEmpty()
+                    ? student.getFacultyId().toString()
+                    : "UNKNOWN";
             facultyCountMap.put(facultyId, facultyCountMap.getOrDefault(facultyId, 0) + 1);
             // Age
-            String ageStr = Objects.nonNull(student.getDateOfBirth())
+            String ageStr = student.getDateOfBirth() != null
                     ? String.valueOf(Period.between(student.getDateOfBirth(), LocalDate.now()).getYears())
-                    : "";
+                    : "UNKNOWN";
             ageCountMap.put(ageStr, ageCountMap.getOrDefault(ageStr, 0) + 1);
         }
         result.setTotalInternationalStudents(internationalStudentsBySemester.size());

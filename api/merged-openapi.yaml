@@ -629,6 +629,8 @@ paths:
                   #/components/schemas/UserManagementStatisticsInternationalStudentBySemester
         '401':
           description: Unauthorized
+        '404':
+          description: No international students found for the given semester
   /settings/api/health:
     get:
       tags:
