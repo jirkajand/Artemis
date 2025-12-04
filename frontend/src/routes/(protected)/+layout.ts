@@ -1,8 +1,7 @@
 import { Configuration, SettingsServiceApi, UserManagementApi } from "$lib/api";
-import { getUserInfo, initKeycloak, keycloak } from "$lib/auth/keycloak";
+import { initKeycloak, keycloak } from "$lib/auth/keycloak";
 import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
-import type { KeycloakOIDCProfile } from "$lib/auth/keycloak-types";
 
 export const prerender = true;
 export const ssr = false;

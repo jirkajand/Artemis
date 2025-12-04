@@ -11,13 +11,8 @@ const config = {
 
 	kit: {	
 		adapter: adapter({
-			// No "fallback" => this is NOT pure SPA mode
-			// Each route becomes its own .html file
-		}),
-
-		prerender: {
-			entries: ['*'] // prerender all routes into static HTML
-		}
+			fallback: '200.html'	// SPA fallback page
+		})
 	}
 };
 

@@ -78,5 +78,50 @@ docker compose up --build -d
 
 ## Frontend Development
 
+### Run local development environment
+
 1. Run the OpenAPI client generation see "Frontend Code Generation" section above.
-2. Start the docker compose using `docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up --build -d`.
+```bash
+cd ./frontend/
+npm run generate:api
+cd ..
+```
+2. Start the docker compose using:
+```bash
+docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up --build -d
+```
+
+### Test production build locally
+
+1. Apply the following changes in `.env`:
+```
+VITE_API_BASE_URL=http://localhost:${GATEWAY_PORT}
+``` 
+2. Start the docker compose:
+```bash
+docker compose up --build -d
+```
+or replicating the server pipeline:
+```bash
+docker compose pull
+docker compose build --no-cache
+docker compose up -d --remove-orphans
+```
+
+### Adding new UI elements (SMUI)
+To add new UI elements using Svelte Material UI (SMUI), follow these steps:
+1. Install the desired SMUI package via npm:
+```bash
+npm install --save-dev @smui/button
+```
+2. Recompile the SMUI styles:
+```bash
+npm run prepare:smui
+```
+3. Import the desired SMUI components into your Svelte files:
+```html
+<script>
+  import Button from '@smui/button';
+</script>
+<Button variant="raised">Click Me</Button>
+```
