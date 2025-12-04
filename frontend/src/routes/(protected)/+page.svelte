@@ -128,7 +128,7 @@
         }
 
         :global(.logout-btn) {
-            background-color: var(--on-primary);
+            background-color: var(--surface);
             color: var(--primary);
             font-weight: 600;
 

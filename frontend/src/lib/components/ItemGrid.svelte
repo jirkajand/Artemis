@@ -16,22 +16,27 @@
         display: grid;
         gap: 1rem;
         padding: 2rem 0;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
     .dashboard-container {
+				padding: 0 1rem;
         width: 100%;
     }
 
     :global(.mdc-top-app-bar) {
-        border-radius: 10px;
+				flex-direction: row !important;
         background-color: var(--menu-bg) !important;
+				border-radius: 15px;
+    }
+
+		:global(.mdc-top-app-bar__row) {
+        margin: 0.5rem;
     }
 
     :global(.mdc-top-app-bar__section) {
 				gap: 1rem;
 				display: flex;
-        padding: 0.5rem 1rem;
         flex: 1 !important;
         justify-content: center !important;
     }

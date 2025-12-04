@@ -33,7 +33,7 @@
         anchorCorner="BOTTOM_LEFT"
     >
         <List class="demo-list" dense>
-            <Item onSMUIAction={() => (goto("/profile"))}>
+            <Item onSMUIAction={() => (goto("/student-profile"))}>
                 <Graphic class="material-icons">person</Graphic>
                 <Text>My Profile</Text>
             </Item>
