@@ -32,5 +32,6 @@ RUN npm prune --production
 # 2) runtime stage (Static server)
 FROM nginx:alpine
 COPY --from=builder /app/frontend/build /usr/share/nginx/html
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
