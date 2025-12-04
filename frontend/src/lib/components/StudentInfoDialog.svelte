@@ -97,7 +97,7 @@
 				<div class="picture-container-sized">
 					<img
 						class="dialog-picture"
-						src="https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6"
+						src={student?.profilePicture}
 						alt="Student picture"
 					/>
 					<div class="picture-badges">

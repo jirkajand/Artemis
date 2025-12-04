@@ -1,7 +1,7 @@
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import countries from "i18n-iso-countries";
 import en from "i18n-iso-countries/langs/en.json";
-const DEFAULT_PROFILE_PICTURE = 'https://icons.veryicon.com/png/o/education-technology/alibaba-cloud-iot-business-department/image-load-failed.png';
+const DEFAULT_PROFILE_PICTURE = 'https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6';
 countries.registerLocale(en);
 
 export function getCountryFlag(countryCode: string) {
