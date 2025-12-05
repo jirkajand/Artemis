@@ -1,4 +1,4 @@
-## Run Artemis
+which change is whichj? ## Run Artemis
 
 There is need to get keycloak client secret and set it in `.env` file before running the docker compose.
 
@@ -125,3 +125,23 @@ npm run prepare:smui
 </script>
 <Button variant="raised">Click Me</Button>
 ```
+
+## Deploy
+Whole deploy process is done through GitHub actions.
+
+### Add ENV variable
+You have to add the variable into .github/workflows/deploy.yml to the environments of the script
+```yaml
+KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+```
+
+Then pass it to the server using
+```yaml
+-o SendEnv=KEYCLOAK_CLIENT_SECRET
+```
+
+At the server allow the acceptance of the env variable:
+1. Go to the server
+2. Edit sshd config: ```nano /etc/ssh/sshd_config```
+3. Add ```AcceptEnv KEYCLOAK_CLIENT_SECRET``` to the ```# Allow client to pass locale environment variables```
+4. Restart the service ```systemctl restart ssh```
