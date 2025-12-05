@@ -208,6 +208,7 @@
         font-size: 0.9rem;
     }
     .bio-block p {
+        text-align: center;
         margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 3;
