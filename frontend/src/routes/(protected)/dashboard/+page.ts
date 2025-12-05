@@ -4,30 +4,32 @@ import { redirect } from '@sveltejs/kit';
 
 const PER_PAGE = 20;
 
-// Centralized empty state to prevent drift between success/fail shapes
 const getEmptyState = (management: any) => ({
 	students: [],
 	faculties: [],
 	filterValues: { countries: [], destinationFaculties: [], semesters: [] },
-	activeFilters: { country: '', faculty: '', semester: '' },
+	activeFilters: { country: '', faculty: '', semester: '', containAssigned: false },
 	pagination: { page: 1, perPage: 0, total: 0 },
 	management
 });
 
 export const load: PageLoad = async ({ parent, url }) => {
 	const { clients: { settings, management } } = await parent();
-	let {type: studentType} = await management.getCurrentStudentForNavbar()
+	let { type: studentType } = await management.getCurrentStudentForNavbar();
 
-	if (studentType !== "LOCAL") {
-		throw redirect(302, "/");
+	if (studentType !== 'LOCAL') {
+		throw redirect(302, '/');
 	}
 
-	// Parse params once
 	const page = Math.max(1, Number(url.searchParams.get('page')) || 1);
+
+	const containAssigned = url.searchParams.get('containAssigned') === 'true';
+
 	const filters = {
 		countryCode: url.searchParams.get('country') || undefined,
 		facultyId: url.searchParams.get('faculty') || undefined,
-		semesterId: url.searchParams.get('semester') || undefined
+		semesterId: url.searchParams.get('semester') || undefined,
+		containAssigned
 	};
 
 	try {
@@ -35,7 +37,6 @@ export const load: PageLoad = async ({ parent, url }) => {
 			management.getAllInternationalStudentsAnonymous({
 				page: page - 1,
 				size: PER_PAGE,
-				containAssigned: false,
 				...filters
 			}),
 			settings.getAllFaculties().then(res => res ?? []),
@@ -44,7 +45,6 @@ export const load: PageLoad = async ({ parent, url }) => {
 
 		const facultyMap = new Map(faculties.map(f => [f.id, f]));
 
-		// Mapper function to keep the return statement clean
 		const students = (studentRes?.students ?? []).map(s => ({
 			...s,
 			faculty: facultyMap.get(s.facultyId),
@@ -53,7 +53,6 @@ export const load: PageLoad = async ({ parent, url }) => {
 			genderIcon: getGenderIcon(s.gender ?? '')
 		}));
 
-		// Build filter options
 		const filterValues = {
 			countries: Object.entries(getAllCountryNames()).map(([value, label]) => ({ value, label })),
 			destinationFaculties: faculties.map(f => ({ id: f.id, label: f.shortName })),
@@ -65,6 +64,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 			faculties,
 			filterValues,
 			activeFilters: {
+				containAssigned: filters.containAssigned,
 				country: filters.countryCode,
 				faculty: filters.facultyId,
 				semester: filters.semesterId

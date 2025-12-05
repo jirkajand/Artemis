@@ -78,14 +78,15 @@
 
 			</Content>
 		</div>
-
+		{#if !student.isAssigned}
 		<Actions class="actions-flex">
 			<ActionButtons>
-				<Button variant="raised" onclick={handleOpenDialog} class="pick-btn">
+				<Button disabled={student?.isAssigned} variant="raised" onclick={handleOpenDialog} class="pick-btn">
 					<Label>Pick Student</Label>
 				</Button>
 			</ActionButtons>
 		</Actions>
+		{/if}
 	</Card>
 
 	<ConfirmStudentDialog

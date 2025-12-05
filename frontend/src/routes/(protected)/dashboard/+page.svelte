@@ -6,52 +6,57 @@
 	import ItemGrid from '$lib/components/ItemGrid.svelte';
 	import PaginationBar from '$lib/components/PaginationBar.svelte';
 	import AnonymisedStudentCard from '$lib/components/AnonymisedStudentCard.svelte';
+	import SegmentedButton, { Segment } from '@smui/segmented-button';
+	import { Label } from '@smui/tab';
 
 	let { data } = $props();
 	let { students, management, filterValues, pagination, activeFilters } = $derived(data);
 	let { countries, destinationFaculties, semesters } = $derived(filterValues);
 
-	let filters = $state({
-		country: activeFilters.country,
-		faculty: activeFilters.faculty,
-		semester: activeFilters.semester,
-		page: pagination.page
-	});
+	const choices = ['Show unassigned', 'Show assigned'];
 
+	let page = $state(pagination.page);
+	let faculty = $state(activeFilters.faculty);
+	let semester = $state(activeFilters.semester);
+	let assignedFilter = $state(activeFilters.containAssigned ? choices[1] : choices[0]);
 	let selectedCountry = $state(
 		activeFilters.country
 			? countries.find((c) => c.value === activeFilters.country)
 			: undefined
 	);
 
-	// Keep filters.country in sync with Autocomplete
-	$effect(() => {
-		filters.country = selectedCountry?.value ?? '';
+	let currentParams = $derived({
+		country: selectedCountry?.value ?? '',
+		faculty,
+		semester,
+		containAssigned: assignedFilter === choices[1]
 	});
 
-	// MAIN SYNC: every change to filters updates the URL
+	let lastParams = JSON.stringify(currentParams);
+
 	$effect(() => {
-		const params = new URLSearchParams();
+		const paramsStr = JSON.stringify(currentParams);
 
-		if (filters.country) params.set('country', filters.country);
-		if (filters.faculty) params.set('faculty', filters.faculty);
-		if (filters.semester) params.set('semester', filters.semester);
+		if (paramsStr !== lastParams) {
+			page = 1;
+			lastParams = paramsStr;
+		}
 
-		params.set('page', filters.page.toString());
+		const q = new URLSearchParams();
+		if (currentParams.country) q.set('country', currentParams.country);
+		if (currentParams.faculty) q.set('faculty', currentParams.faculty);
+		if (currentParams.semester) q.set('semester', currentParams.semester);
+		q.set('containAssigned', String(currentParams.containAssigned));
+		q.set('page', String(page));
 
-		const query = params.toString();
-		const currentQuery = new URLSearchParams(location.search).toString();
-
-		// Only update when something actually changed
-		if (query !== currentQuery) {
-			goto(`?${query}`, { keepFocus: true, noScroll: true });
+		const query = q.toString();
+		if (query !== new URLSearchParams(location.search).toString()) {
+			goto(`?${query}`, { keepFocus: true, noScroll: true, replaceState: true });
 		}
 	});
 
 	function onPageChange(newPage: number) {
-		// FIX: this triggers the $effect and reloads data from backend
-		filters.page = newPage;
-
+		page = newPage;
 		document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
@@ -62,15 +67,11 @@
 			});
 
 			alert(`You are now a buddy for this student from ${student.countryName}!`);
-
-			// This refreshes data, but we must also ensure we stay on valid page
 			await invalidateAll();
 
-			// FIX: If page became empty after removal, go back 1 page
-			if (students.length === 1 && filters.page > 1) {
-				filters.page -= 1;
+			if (students.length === 1 && page > 1) {
+				page -= 1;
 			}
-
 		} catch (e) {
 			alert('Something went wrong!');
 		}
@@ -78,8 +79,8 @@
 </script>
 
 <TopAppBar variant="static">
-	<Row>
-		<Section class="filter-panel">
+	<Row class="filter-container">
+		<Section class="filters-left">
 			<div class="country-select">
 				<Autocomplete
 					textfield$variant="outlined"
@@ -90,19 +91,29 @@
 				/>
 			</div>
 
-			<Select variant="outlined" bind:value={filters.faculty} label="Faculty">
+			<Select variant="outlined" bind:value={faculty} label="Faculty">
 				<Option value=""></Option>
 				{#each destinationFaculties as f}
 					<Option value={f.id}>{f.label}</Option>
 				{/each}
 			</Select>
 
-			<Select variant="outlined" bind:value={filters.semester} label="Semester">
+			<Select variant="outlined" bind:value={semester} label="Semester">
 				<Option value=""></Option>
 				{#each semesters as s}
 					<Option value={s.id}>{s.label}</Option>
 				{/each}
 			</Select>
+		</Section>
+
+		<Section class="filters-right">
+			<SegmentedButton segments={choices} singleSelect bind:selected={assignedFilter}>
+				{#snippet segment(segment)}
+					<Segment {segment}>
+						<Label>{segment}</Label>
+					</Segment>
+				{/snippet}
+			</SegmentedButton>
 		</Section>
 	</Row>
 </TopAppBar>
@@ -118,7 +129,7 @@
 		<PaginationBar
 			total={pagination.total}
 			perPage={pagination.perPage}
-			bind:page={filters.page}
+			bind:page
 			{onPageChange}
 		/>
 	</div>
@@ -126,17 +137,35 @@
 
 <style>
     :global(main) {
-				padding: 1rem !important;
+        padding: 1rem !important;
         overflow: scroll;
         max-width: unset !important;
         background-color: var(--background);
     }
 
-    .filter-panel {
+    .filter-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        gap: 0.75rem;
+    }
+
+    .filters-left {
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
         align-items: center;
+    }
+
+    .filters-right {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    .country-select {
+        width: 200px;
     }
 
     .pagination-wrapper {
@@ -144,10 +173,5 @@
         justify-content: center;
         padding: 1rem;
         width: 100%;
-    }
-
-    .country-select {
-        display: inline-flex;
-        width: 200px;
     }
 </style>
