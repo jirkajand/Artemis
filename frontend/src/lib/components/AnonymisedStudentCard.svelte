@@ -233,6 +233,7 @@
 
     .bio-block p {
         margin: 0;
+				text-align: center;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
