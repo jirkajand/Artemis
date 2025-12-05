@@ -18,20 +18,10 @@
 		}
 	} = $props();
 
+
 	function handleClose() {
 		open = false;
 		onClose();
-	}
-
-	function handleConfirm() {
-		onConfirm(student);
-		handleClose();
-	}
-
-	async function resetScroll() {
-		await tick();
-		const scrollContainer = document.querySelector('.mdc-dialog__content');
-		if (scrollContainer) scrollContainer.scrollTop = 0;
 	}
 </script>
 
@@ -96,9 +86,9 @@
 			<div class="dialog-picture-wrapper">
 				<div class="picture-container-sized">
 					<img
+						alt="Student pic"
 						class="dialog-picture"
-						src="https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6"
-						alt="Student picture"
+						src={student.profilePicture}
 					/>
 					<div class="picture-badges">
 						<span class="badge-gender">{student.genderIcon}</span>

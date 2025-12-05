@@ -1,4 +1,4 @@
-import { getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
+import { fetchBlob, getCountryFlag, getCountryName, getGenderIcon } from '$lib/helpers/studentUtils';
 import type { PageParentData } from "./$types";
 import { redirect, error } from "@sveltejs/kit";
 
@@ -18,11 +18,19 @@ export const load = async ({ parent }) => {
 		// fetch students
 		const res = await management.getAssignedInternationalStudentsForLocalStudent();
 		if (!res?.students) throw new Error("Missing students data");
-		students = res.students;
+
+		//profile picture
+		students = await Promise.all(
+			res.students.map(async (student) => ({
+				...student,
+				profilePicture: await fetchBlob(() => management.getCurrentStudentProfilePicture({ studentId: student.id }))
+			}))
+		);
 
 		// fetch faculties
 		faculties = await settings.getAllFaculties();
 		if (!faculties) throw new Error("Failed to load faculties");
+
 
 	} catch (e) {
 		console.error("Student fetch failed:", e);

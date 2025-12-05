@@ -7,8 +7,6 @@
     const {student} = $props()
     let open = $state(false);
 
-    const avatarUrl = 'https://preview.redd.it/pc9b705en1r91.jpg?width=640&crop=smart&auto=webp&s=4d27efd62c32e9ba94e9a522bc7d0d11ad3cf2c6';
-
     const handleClose = () => {
         console.log('Dialog closed');
     };
@@ -19,14 +17,14 @@
 
         <div class="avatar-container">
             <div class="avatar-wrapper">
-                <div class="badge-icon gender" title={student.gender}>
+                <div class="badge-icon gender" title={student?.gender}>
                     {student.genderIcon}
                 </div>
                 <div class="avatar-pic"
-                     style={`background-image: url('${avatarUrl}')`}>
+                     style={`background-image: url('${student?.profilePicture}')`}>
                 </div>
-                <div class="badge-icon country" title={student.countryCode}>
-                    {student.countryFlag}
+                <div class="badge-icon country" title={student?.countryCode}>
+                    {student?.countryFlag}
                 </div>
             </div>
         </div>
