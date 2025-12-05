@@ -33,8 +33,9 @@ jobs:
       - name: Deploy new version
         env:
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o SendEnv=KEYCLOAK_CLIENT_SECRET -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz << 'EOF'
+          ssh -i ~/.ssh/id_ed25519 -o SendEnv=KEYCLOAK_CLIENT_SECRET -o SendEnv=GMAIL_PASSWORD -o StrictHostKeyChecking=yes deploy-artemis@cipisek.jirka.test.esnhk.cz << 'EOF'
             set -euo pipefail
             set +x  # disable debug output (protect secrets)
             cd /var/www/artemis2/Artemis
@@ -45,6 +46,7 @@ jobs:
           
             echo "Updating .env with Keycloak secret..."
             sed -i "s|^KEYCLOAK_CLIENT_SECRET=.*|KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}|" .env
+            sed -i "s|^GMAIL_PASSWORD=.*|GMAIL_PASSWORD=${GMAIL_PASSWORD}|" .env
 
             echo "Rebuilding containers..."
           
