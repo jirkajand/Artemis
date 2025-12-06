@@ -1,20 +1,22 @@
 <script lang="ts">
-	let {profilePicture, genderIcon, countryFlag } = $props()
+	let {profilePicture, genderIcon, countryFlag, displayBadges = true } = $props()
 </script>
 
 <div class="image-wrapper">
 	<img src={profilePicture} class="student-photo" alt="Student" />
+	{#if displayBadges}
 	<div class="badges-overlay">
 		<span class="badge gender-badge" title="Gender">{genderIcon}</span>
 		<span class="badge country-badge" title="Country">{countryFlag}</span>
 	</div>
+	{/if}
 </div>
 
 <style lang="scss">
   .image-wrapper {
     position: relative;
     width: 100%;
-    max-width: 300px;
+    max-width: 250px;
   }
 
   .student-photo {

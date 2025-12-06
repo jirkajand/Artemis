@@ -7,6 +7,6 @@ export const load: Load = async ({ parent }) => {
     
     // if user is logged in redirect to home page
     if (keycloak.authenticated) {
-        throw redirect(302, "/");
+        throw redirect(302, "/dashboard");
     }
 };
