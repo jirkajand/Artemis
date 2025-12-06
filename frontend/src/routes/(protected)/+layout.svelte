@@ -6,11 +6,12 @@
 
 	let { children, data }: LayoutProps = $props();
 
-	const { clients, userNavbarData } = data;
+	const { clients, userNavbarData, userPicture } = data;	
+
 </script>
 
 <header>
-	<Navbar userData={userNavbarData} />
+	<Navbar userData={userNavbarData} userPicture={userPicture} />
 </header>
 
 <div class="layout">

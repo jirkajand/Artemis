@@ -5,7 +5,13 @@
 	import type { ResponseStudentNavbar } from "$lib/api";
 	import { goto } from "$app/navigation";
 
-    const { userData = null }: { userData: ResponseStudentNavbar | null; } = $props();
+    const { 
+        userData = null,
+        userPicture = null
+    }: {
+        userData: ResponseStudentNavbar | null;
+        userPicture: Blob | null;
+    } = $props();
 
     let menu: Menu;
     let anchor: HTMLElement | undefined = $state();
@@ -22,7 +28,14 @@
     bind:this={anchor}
     onclick={() => toggleMenu()}
 >
-    <img src="/profile-picture.jpeg" alt="Profile" />
+    {#if userPicture}
+        <img
+            src={URL.createObjectURL(userPicture)}
+            alt="Profile"
+        />
+    {:else}
+        <img src="/profile-picture.jpeg" alt="Profile" />
+    {/if}
     <span>{`${userData?.firstName} ${userData?.lastName}`}</span>
     <span class="material-icons">arrow_drop_down</span>
     <Menu
