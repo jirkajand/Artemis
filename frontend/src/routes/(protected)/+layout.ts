@@ -30,5 +30,17 @@ export const load: LayoutLoad = async ({ fetch }) => {
   // Fetch user navbar data
   const userNavbarData = clients.management.getCurrentStudentForNavbar();
 
-  return { clients, userNavbarData };
+  const userPicture = new Promise<Blob | null>(async (resolve) => {
+    const userNavbarDataSync = await userNavbarData;
+    try {
+      const studentId = userNavbarDataSync.id;
+      if(studentId == undefined) throw new Error("Student ID is undefined");
+      const pictureBlob = await clients.management.getCurrentStudentProfilePicture({ studentId });
+      resolve(pictureBlob);
+    } catch (error) {
+      resolve(null);
+    }
+  })
+
+  return { clients, userNavbarData, userPicture };
 };

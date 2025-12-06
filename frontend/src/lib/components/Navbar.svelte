@@ -1,28 +1,35 @@
 <script lang="ts">
     import { keycloak } from "$lib/auth/keycloak";
     import Button from "@smui/button";
+    import CircularProgress from '@smui/circular-progress';
 	import ProfileMenu from "./profile/ProfileMenu.svelte";
 	import ThemeSwitch from "./ThemeSwitch.svelte";
 	import type { ResponseStudentNavbar } from "$lib/api";
 
-    let { userData = null }: {
+    let {
+        userData = null,
+        userPicture = null
+    }: {
         userData: Promise<ResponseStudentNavbar> | null;
+        userPicture: Promise<Blob | null> | null;
     } = $props();
 
 </script>
 
 <nav class="topbar">
-    {#if userData}
-    {#await userData then userDataSync}
-        <section class="app-title">ARTEMIS DEMO</section>
-        <section class="additional-opotions">
-            <a href="/register">Register</a>
-            <ThemeSwitch />
-        </section>
-        <section class="last">
-            <ProfileMenu userData={userDataSync} />
-        </section>
-    {/await}
+    {#if userData && userPicture}
+    <section class="app-title">ARTEMIS DEMO</section>
+    <section class="additional-opotions">
+        <a href="/register">Register</a>
+        <ThemeSwitch />
+    </section>
+    <section class="last">
+        {#await Promise.all([userData, userPicture])}
+            <CircularProgress style="height: 32px; width: 32px;" indeterminate />
+        {:then [userDataSync, userPictureSync]}
+            <ProfileMenu userData={userDataSync} userPicture={userPictureSync} />
+        {/await}
+    </section>
     {:else}
         <Button onclick={() => keycloak.login()}>Login</Button>
         <ThemeSwitch />
