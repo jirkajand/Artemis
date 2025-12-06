@@ -105,6 +105,7 @@
     .split-layout {
       flex-direction: column;
       gap: 2rem;
+	  margin: 0;
     }
 
     .image-column {

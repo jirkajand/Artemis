@@ -55,7 +55,7 @@
 		document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	async function handleBuddyMatch(student: { id: string; countryName: string }) {
+	async function handleBuddyMatch(student: { id?: string; countryName: string }) {
 		try {
 			await management.assignInternationalStudentToLocalStudent({
 				internationalStudentId: student.id
@@ -77,34 +77,30 @@
 	}
 </script>
 
-<TopAppBar variant="static">
-	<Row>
-		<Section class="filter-panel">
-			<div class="country-select">
-				<Autocomplete
-					textfield$variant="outlined"
-					options={countries}
-					bind:value={selectedCountry}
-					label="Country"
-					getOptionLabel={(option) => option?.label || ''}
-				/>
-			</div>
+<TopAppBar variant="static" style="padding: 0.5rem;">
+	<Section style="flex-wrap: wrap;">
+		<Autocomplete
+			textfield$variant="outlined"
+			options={countries}
+			bind:value={selectedCountry}
+			label="Country"
+			getOptionLabel={(option) => option?.label || ''}
+		/>
 
-			<Select variant="outlined" bind:value={filters.faculty} label="Faculty">
-				<Option value=""></Option>
-				{#each destinationFaculties as f}
-					<Option value={f.id}>{f.label}</Option>
-				{/each}
-			</Select>
+		<Select variant="outlined" bind:value={filters.faculty} label="Faculty">
+			<Option value=""></Option>
+			{#each destinationFaculties as f}
+				<Option value={f.id}>{f.label}</Option>
+			{/each}
+		</Select>
 
-			<Select variant="outlined" bind:value={filters.semester} label="Semester">
-				<Option value=""></Option>
-				{#each semesters as s}
-					<Option value={s.id}>{s.label}</Option>
-				{/each}
-			</Select>
-		</Section>
-	</Row>
+		<Select variant="outlined" bind:value={filters.semester} label="Semester">
+			<Option value=""></Option>
+			{#each semesters as s}
+				<Option value={s.id}>{s.label}</Option>
+			{/each}
+		</Select>
+	</Section>
 </TopAppBar>
 
 <ItemGrid>
@@ -126,17 +122,7 @@
 
 <style>
     :global(main) {
-				padding: 1rem !important;
-        overflow: scroll;
         max-width: unset !important;
-        background-color: var(--background);
-    }
-
-    .filter-panel {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        align-items: center;
     }
 
     .pagination-wrapper {
@@ -144,10 +130,5 @@
         justify-content: center;
         padding: 1rem;
         width: 100%;
-    }
-
-    .country-select {
-        display: inline-flex;
-        width: 200px;
     }
 </style>
