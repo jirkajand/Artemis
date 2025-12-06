@@ -9,6 +9,8 @@
 	let {student, onPick} = $props();
 	let dialogOpen = $state(false);
 
+	let assignedBuddyName = student?.assignedBuddy?.firstName + " " + student?.assignedBuddy?.lastName
+
 	const handleOpenDialog = () => dialogOpen = true;
 
 	const handleConfirmPick = () => {

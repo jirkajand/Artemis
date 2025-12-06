@@ -60,7 +60,7 @@
 		document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	async function handleBuddyMatch(student: { id: string; countryName: string }) {
+	async function handleBuddyMatch(student: { id?: string; countryName: string }) {
 		try {
 			await management.assignInternationalStudentToLocalStudent({
 				internationalStudentId: student.id
@@ -150,6 +150,16 @@
         padding: 0.5rem 1rem;
         gap: 0.75rem;
     }
+
+		:global(.mdc-segmented-button__segment){
+				background-color: var(--neutral-bg) !important;
+		}
+
+		:global(.mdc-segmented-button__segment--selected){
+        background: var(--primary) !important;
+				color: var(--on-surface) !important;
+
+		}
 
     .filters-left {
         display: flex;
