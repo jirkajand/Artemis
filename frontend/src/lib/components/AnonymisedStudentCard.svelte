@@ -9,6 +9,8 @@
 	let {student, onPick} = $props();
 	let dialogOpen = $state(false);
 
+	let assignedBuddyName = student?.assignedBuddy?.firstName + " " + student?.assignedBuddy?.lastName
+
 	const handleOpenDialog = () => dialogOpen = true;
 
 	const handleConfirmPick = () => {
@@ -78,14 +80,15 @@
 
 			</Content>
 		</div>
-
+		{#if !student.isAssigned}
 		<Actions class="actions-flex">
 			<ActionButtons>
-				<Button variant="raised" onclick={handleOpenDialog} class="pick-btn">
+				<Button disabled={student?.isAssigned} variant="raised" onclick={handleOpenDialog} class="pick-btn">
 					<Label>Pick Student</Label>
 				</Button>
 			</ActionButtons>
 		</Actions>
+		{/if}
 	</Card>
 
 	<ConfirmStudentDialog
@@ -232,6 +235,7 @@
 
     .bio-block p {
         margin: 0;
+				text-align: center;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
