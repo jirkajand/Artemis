@@ -100,8 +100,6 @@
 	<style lang="scss">
 		:global(main) {
 			max-width: unset !important;
-			margin: 0 !important;
-			padding: 0 !important;
 			height: 100%;
 		}
 
