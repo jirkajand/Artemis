@@ -79,17 +79,16 @@
 </script>
 
 <TopAppBar variant="static">
-	<Row class="filter-container">
+	<div class="filters-bar-inner">
 		<Section class="filters-left">
-			<div class="country-select">
-				<Autocomplete
-					textfield$variant="outlined"
-					options={countries}
-					bind:value={selectedCountry}
-					label="Country"
-					getOptionLabel={(option) => option?.label || ''}
-				/>
-			</div>
+			<Autocomplete
+				textfield$variant="outlined"
+				options={countries}
+				bind:value={selectedCountry}
+				label="Country"
+				getOptionLabel={(option) => option?.label || ''}
+				textfield$style="width: 100%;"
+			/>
 
 			<Select variant="outlined" bind:value={faculty} label="Faculty">
 				<Option value=""></Option>
@@ -115,7 +114,7 @@
 				{/snippet}
 			</SegmentedButton>
 		</Section>
-	</Row>
+	</div>
 </TopAppBar>
 
 <ItemGrid>
@@ -137,46 +136,41 @@
 
 <style>
     :global(main) {
-        padding: 1rem !important;
-        overflow: scroll;
         max-width: unset !important;
-        background-color: var(--background);
     }
 
-    .filter-container {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        padding: 0.5rem 1rem;
-        gap: 0.75rem;
-    }
+	:global(.filters-bar-inner) {
+		display: flex;
+		flex-flow: row;
+		flex-wrap: wrap;
+		width: 100%;
+		padding: 0.5rem;
+	}
 
-		:global(.mdc-segmented-button__segment){
-				background-color: var(--neutral-bg) !important;
-		}
+	:global(.filters-left) {
+		flex-wrap: wrap;
+		flex: 1 1 auto!important;
+	}
 
-		:global(.mdc-segmented-button__segment--selected){
-        background: var(--primary) !important;
-				color: var(--on-surface) !important;
+	:global(.filters-left > *) {
+		flex: 1;
+		min-width: 8rem;
+		max-width: 12rem;
+	}
 
-		}
+	:global(.filters-right) {
+		flex: 1 1 auto!important;
+		white-space: nowrap;
+	}
 
-    .filters-left {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        align-items: center;
-    }
+	:global(.mdc-segmented-button__segment){
+		background-color: var(--neutral-bg) !important;
+	}
 
-    .filters-right {
-        display: flex;
-        justify-content: flex-end;
-        width: 100%;
-    }
-
-    .country-select {
-        width: 200px;
-    }
+	:global(.mdc-segmented-button__segment--selected){
+		background: var(--primary) !important;
+		color: var(--on-surface) !important;
+	}
 
     .pagination-wrapper {
         display: flex;
