@@ -11,7 +11,7 @@
         userPicture = null
     }: {
         userData: Promise<ResponseStudentNavbar> | null;
-        userPicture: Promise<Blob | null> | null;
+        userPicture?: Promise<Blob | null> | null;
     } = $props();
 
 </script>
