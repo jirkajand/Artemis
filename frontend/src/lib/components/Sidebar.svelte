@@ -13,7 +13,7 @@
         { name: "My Students", icon: "school", href: "/my-students" },
         // { name: "Events", icon: "event", href: "/events" },
         // { name: "Statistics", icon: "bar_chart", href: "/statistics" },
-        // { name: "Administration", icon: "admin_panel_settings", href: "/administration" },
+        { name: "Administration", icon: "admin_panel_settings", href: "/admin" },
         // { name: "E-mailing", icon: "mail", href: "/emailing" },
     ];
 

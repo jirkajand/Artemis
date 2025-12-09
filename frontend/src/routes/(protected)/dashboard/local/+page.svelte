@@ -150,6 +150,8 @@
 	:global(.filters-left) {
 		flex-wrap: wrap;
 		flex: 1 1 auto!important;
+
+		z-index: 30!important; /* HOTFIX: flebox is messing with the z-index context */
 	}
 
 	:global(.filters-left > *) {
