@@ -2,19 +2,19 @@
 	import type { PageProps } from "./$types";
 	import SemesterCard from "./SemesterCard.svelte";
 	import Button, { Icon, Label } from "@smui/button";
-	import CrudDialog from "./CrudDialog.svelte";
+	import CrudDialog from "$lib/components/crud/CrudDialog.svelte";
 	import type { SemesterResponse } from "$lib/api";
 	import SemesterCreateUpdateForm, { type SemesterFormDirty } from "./SemesterCreateUpdateForm.svelte";
-	import DeleteDialog from "./DeleteDialog.svelte";
+	import DeleteDialog from "$lib/components/crud/DeleteDialog.svelte";
 	import { invalidateAll } from "$app/navigation";
 
     const { data }: PageProps = $props();
     const { semesters, settingsClient } = $derived(data);
 
     let form: SemesterFormDirty = $state({
-        semesterName: 'Semester 1',
+        semesterName: '',
         semesterType: 'WINTER',
-        year: new Date().getFullYear().toString(),
+        year: new Date().getFullYear().toString() + "/" + (new Date().getFullYear() + 1).toString(),
         semesterRegisterOpenDate: new Date().toISOString().split('T')[0], // format as YYYY-MM-DD
     });
     let formType = $state<'create' | 'edit' | null>('create');
