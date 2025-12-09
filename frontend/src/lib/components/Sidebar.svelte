@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from "$app/state";
+	import type { ResponseStudentNavbar, SemesterResponse } from "$lib/api";
 	import Button from "@smui/button";
+	import { onMount } from "svelte";
 
     // define list of nav pages
     interface NavPage {
@@ -8,6 +10,7 @@
         icon: string;
         href: string;
     }
+
     const navPages: NavPage[] = [
         { name: "Dashboard", icon: "dashboard", href: "/dashboard" },
         { name: "My Students", icon: "school", href: "/my-students" },
@@ -17,7 +20,50 @@
         // { name: "E-mailing", icon: "mail", href: "/emailing" },
     ];
 
+    const roleAcessiblePages: Record<string, string[] | null> = {
+        "ADMIN": null,
+        "TUTOR": ["/dashboard", "/my-students", "/admin"],
+        "LOCAL": ["/dashboard", "/my-students"],
+        "INTERNATIONAL": ["/dashboard"],
+    };
+
+    let { 
+        currentSemester,
+        userNavbarData
+    } : {
+        currentSemester?: SemesterResponse;
+        userNavbarData: Promise<ResponseStudentNavbar>;
+    } = $props();
+
     let isOpen = $state(false);
+    let roles = $state<string[]>(["ADMIN"]); // default role
+    let filteredNavPages = $derived(getAvailablePages(roles));
+
+    function getAvailablePages(roles: string[]): NavPage[] {
+        const accessiblePages = new Set<string>();
+        // if any of the roles have null (i.e., ADMIN), return all pages
+        for (const role of roles) {
+            if(!roleAcessiblePages.hasOwnProperty(role))
+                continue;
+            if (roleAcessiblePages[role] === null)
+                return navPages;
+            roleAcessiblePages[role].forEach(page => accessiblePages.add(page));
+        }
+        return navPages.filter(page => accessiblePages.has(page.href));
+    }
+
+    onMount(async () => {
+        // use both roles and type as roles
+        const userData = await userNavbarData;
+        const combinedRoles = [
+            ...(userData.roles ?? []),
+            ...(userData.type ? [userData.type] : []),
+        ];
+        if(combinedRoles.length === 0) {
+            combinedRoles.push("ADMIN"); // default to admin if no roles found (only visual, no real effect)
+        }
+        roles = combinedRoles;
+    });
 
 </script>
 
@@ -30,7 +76,7 @@
     </a>
     <nav>
         <ul>
-            {#each navPages as section}
+            {#each filteredNavPages as section}
                 <li class:active="{page.url.pathname.includes(section.href)}">
                     <a href="{section.href}">
                         <span class="material-icons">{section.icon}</span>{section.name}
@@ -40,8 +86,13 @@
         </ul>
     </nav>
     <section class="semester">
+        {#if currentSemester}
         <span>Current Semester:</span>
-        <span>2025/2026 - Winter semester</span>
+        <span>{`${currentSemester.year} ${currentSemester.semesterName}`}</span>
+        {/if}
+    </section>
+    <section class="roles">
+        {`${roles.join(", ")}`}
     </section>
     <section class="footer">
         <span>2025 ©</span>
@@ -111,6 +162,11 @@
         flex-flow: column;
         font-size: 0.9rem;
         text-align: center;
+    }
+    .roles {
+        text-align: center;
+        font-size: 0.8rem;
+        color: color-mix(in srgb, currentColor 60%, transparent);
     }
     .footer {
         display: flex;

@@ -42,5 +42,13 @@ export const load: LayoutLoad = async ({ fetch }) => {
     }
   })
 
-  return { clients, userNavbarData, userPicture };
+  let currentSemester;
+  try {
+	  currentSemester = await clients.settings.getCurrentSemester();
+  } catch (error: any) {
+    // log error code and message
+    console.log("Error fetching current semester:", error.message);
+  }
+
+  return { clients, userNavbarData, userPicture, currentSemester };
 };
