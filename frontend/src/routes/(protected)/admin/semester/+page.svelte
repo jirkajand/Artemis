@@ -34,14 +34,11 @@
             year: semester.year,
             semesterRegisterOpenDate: (semester.semesterRegisterOpenDate ?? new Date()).toISOString().split('T')[0],
         };
-
-        console.log("Editing semester:", semester.semesterName, form);
     }
 
     function openDeleteDialog(semester: SemesterResponse) {
         deleteDialogOpen = true;
         selectedSemester = semester;
-        console.log("Delete semester:", semester.semesterName);
     }
 
     function openCreateDialog() {
@@ -66,11 +63,9 @@
                     semesterRegisterOpenDate: new Date(form.semesterRegisterOpenDate)
                 }
             });
-            console.log("Semester created:", response);
 
             formDialogOpen = false;
         } catch (error) {
-            console.error("Error creating semester:", error);
             errorMessage = `Failed to create semester: ${error instanceof Error ? error.message : String(error)}`;
         } finally {
             loading = false;
@@ -102,11 +97,9 @@
                     semesterRegisterOpenDate: new Date(form.semesterRegisterOpenDate)
                 },
             });
-            console.log("Semester updated:", response);
 
             formDialogOpen = false;
         } catch (error) {
-            console.error("Error updating semester:", error);
             errorMessage = `Failed to update semester: ${error instanceof Error ? error.message : String(error)}`;
         } finally {
             loading = false;
@@ -133,9 +126,7 @@
         bind:open={deleteDialogOpen}
         title="Delete Semester"
         message={`Are you sure you want to delete "${selectedSemester?.semesterName}"? This action cannot be undone.`}
-        onSubmit={() => {
-            console.log("Confirmed deletion");
-        }}
+        onSubmit={() => {}}
     />
     
 </div>
