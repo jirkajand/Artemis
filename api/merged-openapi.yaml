@@ -987,6 +987,10 @@ components:
           type: boolean
         type:
           $ref: '#/components/schemas/StudentType'
+        roles:
+          type: array
+          items:
+            type: string
     StudentType:
       type: string
       enum:

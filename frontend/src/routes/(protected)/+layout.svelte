@@ -15,7 +15,7 @@
 </header>
 
 <div class="layout">
-	<Sidebar {currentSemester} />
+	<Sidebar {currentSemester} {userNavbarData} />
 	<div class="content-scroll">
 		<main>
 			<SecondaryRegistrationPopup {clients} {userNavbarData} />
