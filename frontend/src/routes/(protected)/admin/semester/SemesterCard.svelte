@@ -7,10 +7,12 @@
 
     let { 
 		semester,
-		onedit
+		onedit,
+		ondelete
 	}: {
 		semester: SemesterResponse,
-		onedit: () => void
+		onedit: () => void,
+		ondelete: () => void
 	} = $props();
 </script>
 
@@ -38,7 +40,7 @@
             <IconButton onclick={onedit}>
                 <Icon class="material-icons" >edit</Icon>
             </IconButton>
-            <IconButton style="color: var(--error)">
+            <IconButton style="color: var(--error)" onclick={ondelete}>
                 <Icon class="material-icons" >delete</Icon>
             </IconButton>
         </ActionIcons>

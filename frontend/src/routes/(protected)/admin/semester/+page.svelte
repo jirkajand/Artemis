@@ -5,6 +5,7 @@
 	import CrudDialog from "./CrudDialog.svelte";
 	import type { SemesterResponse } from "$lib/api";
 	import SemesterCreateUpdateForm, { type SemesterFormDirty } from "./SemesterCreateUpdateForm.svelte";
+	import DeleteDialog from "./DeleteDialog.svelte";
 
     const { data }: PageProps = $props();
     const { semesters, settingsClient } = $derived(data);
@@ -19,6 +20,7 @@
     let selectedSemester: SemesterResponse | null = $state(null);
 
     let formDialogOpen = $state(false);
+    let deleteDialogOpen = $state(false);
     let loading = $state(false);
     let errorMessage = $state<string | null>(null);
 
@@ -34,6 +36,12 @@
         };
 
         console.log("Editing semester:", semester.semesterName, form);
+    }
+
+    function openDeleteDialog(semester: SemesterResponse) {
+        deleteDialogOpen = true;
+        selectedSemester = semester;
+        console.log("Delete semester:", semester.semesterName);
     }
 
     function openCreateDialog() {
@@ -121,11 +129,20 @@
     >
         <SemesterCreateUpdateForm bind:form={form} />
     </CrudDialog>
+    <DeleteDialog
+        bind:open={deleteDialogOpen}
+        title="Delete Semester"
+        message={`Are you sure you want to delete "${selectedSemester?.semesterName}"? This action cannot be undone.`}
+        onSubmit={() => {
+            console.log("Confirmed deletion");
+        }}
+    />
+    
 </div>
 
 <div class="item-container">
     {#each semesters as semester}
-        <SemesterCard {semester} onedit={() => openEditDialog(semester)} />
+        <SemesterCard {semester} onedit={() => openEditDialog(semester)} ondelete={() => openDeleteDialog(semester)} />
     {/each}
 </div>
 
