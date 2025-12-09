@@ -6,6 +6,7 @@
 	import type { SemesterResponse } from "$lib/api";
 	import SemesterCreateUpdateForm, { type SemesterFormDirty } from "./SemesterCreateUpdateForm.svelte";
 	import DeleteDialog from "./DeleteDialog.svelte";
+	import { invalidateAll } from "$app/navigation";
 
     const { data }: PageProps = $props();
     const { semesters, settingsClient } = $derived(data);
@@ -65,6 +66,7 @@
             });
 
             formDialogOpen = false;
+            await invalidateAll();
         } catch (error) {
             errorMessage = `Failed to create semester: ${error instanceof Error ? error.message : String(error)}`;
         } finally {
@@ -99,6 +101,7 @@
             });
 
             formDialogOpen = false;
+            await invalidateAll();
         } catch (error) {
             errorMessage = `Failed to update semester: ${error instanceof Error ? error.message : String(error)}`;
         } finally {
@@ -128,7 +131,6 @@
         message={`Are you sure you want to delete "${selectedSemester?.semesterName}"? This action cannot be undone.`}
         onSubmit={() => {}}
     />
-    
 </div>
 
 <div class="item-container">
