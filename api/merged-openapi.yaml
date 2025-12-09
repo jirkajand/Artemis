@@ -822,7 +822,15 @@ paths:
       summary: getCurrentSemester
       description: getCurrentSemester endpoint to retrieve the current semester
       operationId: getCurrentSemester
-      security: []
+      security:
+        - keycloak_auth:
+            - USER
+            - TUTOR
+            - ADMIN
+      x-security-roles:
+        - ADMIN
+        - TUTOR
+        - USER
       responses:
         '200':
           description: Current semester details

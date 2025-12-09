@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/state";
+	import type { SemesterResponse } from "$lib/api";
 	import Button from "@smui/button";
 
     // define list of nav pages
@@ -16,6 +17,10 @@
         { name: "Administration", icon: "admin_panel_settings", href: "/admin" },
         // { name: "E-mailing", icon: "mail", href: "/emailing" },
     ];
+
+    let { currentSemester } : {
+        currentSemester?: SemesterResponse;
+    } = $props();
 
     let isOpen = $state(false);
 
@@ -40,8 +45,10 @@
         </ul>
     </nav>
     <section class="semester">
+        {#if currentSemester}
         <span>Current Semester:</span>
-        <span>2025/2026 - Winter semester</span>
+        <span>{`${currentSemester.year} ${currentSemester.semesterName}`}</span>
+        {/if}
     </section>
     <section class="footer">
         <span>2025 ©</span>
