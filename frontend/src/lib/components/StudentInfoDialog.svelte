@@ -25,93 +25,96 @@
 	}
 </script>
 
-<Dialog bind:open>
-	<div class="fab-container">
-		<Fab color="primary" class="dialog-close-button" onclick={handleClose}>
-			<Icon class="material-icons" color="secondary">close</Icon>
-		</Fab>
-	</div>
+<div class="student-details-dialog-wrapper">
+	<Dialog bind:open>
+		<div class="fab-container">
+			<Fab color="primary" class="dialog-close-button" onclick={handleClose}>
+				<Icon class="material-icons" color="secondary">close</Icon>
+			</Fab>
+		</div>
 
-	<DialogTitle>Student Details</DialogTitle>
-	<DialogContent class="dialog-content-column">
-		<div class="details-top-row">
-			<div class="dialog-info-container">
-				<table class="student-details-table">
-					<thead>
-					<tr>
-						<th colspan="2" class="table-heading">Personal information</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td><strong>Name:</strong></td>
-						<td>{student.firstName} {student.lastName}</td>
-					</tr>
-					<tr>
-						<td><strong>Email:</strong></td>
-						<td>{student?.email ?? ''}</td>
-					</tr>
-					<tr>
-						<td><strong>Phone number:</strong></td>
-						<td>{student?.phoneNumber ?? ''}</td>
-					</tr>
-					<tr>
-						<td><strong>Country:</strong></td>
-						<td>{student?.countryName ?? ''}</td>
-					</tr>
-					</tbody>
+		<DialogTitle>Student Details</DialogTitle>
+		<DialogContent class="dialog-content-column">
+			<div class="details-top-row">
+				<div class="dialog-info-container">
+					<table class="student-details-table">
+						<thead>
+						<tr>
+							<th colspan="2" class="table-heading">Personal information</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td><strong>Name:</strong></td>
+							<td>{student.firstName} {student.lastName}</td>
+						</tr>
+						<tr>
+							<td><strong>Email:</strong></td>
+							<td>{student?.email ?? ''}</td>
+						</tr>
+						<tr>
+							<td><strong>Phone number:</strong></td>
+							<td>{student?.phoneNumber ?? ''}</td>
+						</tr>
+						<tr>
+							<td><strong>Country:</strong></td>
+							<td>{student?.countryName ?? ''}</td>
+						</tr>
+						</tbody>
 
-					<thead>
-					<tr>
-						<th colspan="2" class="table-heading">Academic Information</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td><strong>Destination Faculty:</strong></td>
-						<td>{student?.faculty?.facultyNameInternational ?? ''}</td>
-					</tr>
-					<tr>
-						<td><strong>Home Faculty:</strong></td>
-						<td>{student?.homeUniversity ?? ''}</td>
-					</tr>
-					<tr>
-						<td><strong>Born:</strong></td>
-						<td>{new Date(student.dateOfBirth).toLocaleDateString()}</td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
+						<thead>
+						<tr>
+							<th colspan="2" class="table-heading">Academic Information</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td><strong>Destination Faculty:</strong></td>
+							<td>{student?.faculty?.facultyNameInternational ?? ''}</td>
+						</tr>
+						<tr>
+							<td><strong>Home Faculty:</strong></td>
+							<td>{student?.homeUniversity ?? ''}</td>
+						</tr>
+						<tr>
+							<td><strong>Born:</strong></td>
+							<td>{new Date(student.dateOfBirth).toLocaleDateString()}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
 
-			<div class="dialog-picture-wrapper">
-				<div class="picture-container-sized">
-					<img
-						alt="Student pic"
-						class="dialog-picture"
-						src={student.profilePicture}
-					/>
-					<div class="picture-badges">
-						<span class="badge-gender">{student.genderIcon}</span>
-						<span class="badge-country">{student.countryFlag}</span>
+				<div class="dialog-picture-wrapper">
+					<div class="picture-container-sized">
+						<img
+							alt="Student pic"
+							class="dialog-picture"
+							src={student.profilePicture}
+						/>
+						<div class="picture-badges">
+							<span class="badge-gender">{student.genderIcon}</span>
+							<span class="badge-country">{student.countryFlag}</span>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="bio-section">
-			<h4 class="table-heading">About me</h4>
-			<div class="bio-content-full">{student?.bio ?? ''}</div>
-		</div>
-	</DialogContent>
+			<div class="bio-section">
+				<h4 class="table-heading">About me</h4>
+				<div class="bio-content-full">{student?.bio ?? ''}</div>
+			</div>
+		</DialogContent>
 
-	<DialogActions>
-		<Button variant="outlined" onclick={handleClose}>
-			<Label>Close</Label>
-		</Button>
-	</DialogActions>
-</Dialog>
+		<DialogActions>
+			<Button variant="outlined" onclick={handleClose}>
+				<Label>Close</Label>
+			</Button>
+		</DialogActions>
+	</Dialog>
+</div>
 
 <style lang="scss">
+
   :global(.dialog-content-column) {
     display: flex;
     flex-direction: column;
@@ -121,7 +124,7 @@
     overflow-y: visible;
   }
 
-  :global(.mdc-dialog__surface .material-icons) {
+  .student-details-dialog-wrapper :global(.mdc-dialog__surface .material-icons) {
     margin-right: 0;
   }
 
@@ -131,6 +134,8 @@
     gap: 2rem;
     flex: 0 0 auto;
   }
+  // ... (All other non-global styles remain the same for brevity) ...
+  // Keep all your original local styles here
 
   .dialog-info-container {
     display: flex;
@@ -272,19 +277,24 @@
     transform: translateY(-2px) scale(1.08);
   }
 
-  :global(.mdc-dialog__surface) {
+  .student-details-dialog-wrapper {
+		position: absolute;
+	}
+
+
+  .student-details-dialog-wrapper :global(.mdc-dialog__surface) {
     overflow: visible !important;
     display: flex;
     flex-direction: column;
-		border-radius: 5% !important;
+    border-radius: 5% !important;
     max-width: 90vw !important;
   }
 
-  :global(.mdc-dialog .mdc-dialog__surface) {
+  .student-details-dialog-wrapper :global(.mdc-dialog .mdc-dialog__surface) {
     width: max(850px, 50vw);
   }
 
-  :global(.mdc-dialog__title) {
+  .student-details-dialog-wrapper :global(.mdc-dialog__title) {
     text-align: center;
     font-size: 1.75rem;
     margin: 0;
@@ -293,13 +303,13 @@
     flex-shrink: 0;
   }
 
-  :global(.mdc-dialog__actions) {
+  .student-details-dialog-wrapper :global(.mdc-dialog__actions) {
     justify-content: center !important;
     padding: 1rem;
     flex-shrink: 0;
   }
 
-  :global(.mdc-dialog__actions > .mdc-button) {
+  .student-details-dialog-wrapper :global(.mdc-dialog__actions > .mdc-button) {
     font-size: 1.25rem;
     min-width: 200px;
   }
@@ -319,11 +329,11 @@
     width: 100%;
     z-index: 1;
     display: flex;
-		justify-content: flex-end;
+    justify-content: flex-end;
   }
 
   @media (max-width: 800px) {
-    :global(.mdc-dialog .mdc-dialog__surface) {
+    .student-details-dialog-wrapper :global(.mdc-dialog .mdc-dialog__surface) {
       max-width: 95vw !important;
     }
     .picture-badges {

@@ -2,7 +2,7 @@
 	import StudentInfoForm from "./StudentInfoForm.svelte";
 	import ProfileSide from "./ProfileSide.svelte";
 	import ProfileActions from "./ProfileActions.svelte";
-	import ProfileChangeSuccessDialog from "./ProfileChangeSuccessDialog.svelte";
+	import SimpleInfoDialog from "./SimpleInfoDialog.svelte";
 	import { invalidateAll } from '$app/navigation';
 
 	// ---- props
@@ -12,6 +12,7 @@
 	let editableStudent = $state({ ...student });
 	let editing = $state(false);
 	let showSuccessDialog = $state(false);
+	let dialogState = $state({heading: '', message: ''})
 
 	// ---- toggle edit mode
 	const toggleEdit = () => {
@@ -42,12 +43,13 @@
 				await action(editableStudent);
 				await invalidateAll();
 				editing = false;
-				showSuccessDialog = true; // <-- show dialog after saving
+				dialogState = {heading: "Success", message: "Changes to profile saved successfully"}
+				showSuccessDialog = true;
 			} else {
-				console.error("Unknown student type:", student.type);
+				dialogState = {heading: "Error", message: "Something went wrong!"}
 			}
 		} catch (err) {
-			console.error("Failed to save changes:", err);
+			dialogState = {heading: "Error", message: "Something went wrong!"}
 		}
 	};
 
@@ -82,8 +84,8 @@
 />
 
 <!-- ---- Success dialog -->
-<ProfileChangeSuccessDialog bind:open={showSuccessDialog} onClose={() => showSuccessDialog = false} />
 
+<SimpleInfoDialog bind:open={showSuccessDialog} dialogState={dialogState} onClose={() => showSuccessDialog = false} />
 <style lang="scss">
   .split-layout {
     display: flex;

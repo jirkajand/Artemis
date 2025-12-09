@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
-	import TopAppBar, { Row, Section } from '@smui/top-app-bar';
+	import TopAppBar, { Section } from '@smui/top-app-bar';
 	import Autocomplete from '@smui-extra/autocomplete';
 	import Select, { Option } from '@smui/select';
 	import ItemGrid from '$lib/components/ItemGrid.svelte';
@@ -8,6 +8,7 @@
 	import AnonymisedStudentCard from '$lib/components/AnonymisedStudentCard.svelte';
 	import SegmentedButton, { Segment } from '@smui/segmented-button';
 	import { Label } from '@smui/tab';
+	import SimpleInfoDialog from '$lib/components/profile/SimpleInfoDialog.svelte';
 
 	let { data } = $props();
 	let { students, management, filterValues, pagination, activeFilters } = $derived(data);
@@ -24,6 +25,9 @@
 			? countries.find((c) => c.value === activeFilters.country)
 			: undefined
 	);
+
+	let showSuccessDialog = $state(false);
+	let dialogState = $state({heading: '', message: ''})
 
 	let currentParams = $derived({
 		country: selectedCountry?.value ?? '',
@@ -51,7 +55,11 @@
 
 		const query = q.toString();
 		if (query !== new URLSearchParams(location.search).toString()) {
-			goto(`?${query}`, { keepFocus: true, noScroll: true, replaceState: true });
+			goto(`?${query}`, {
+				keepFocus: true,
+				noScroll: true,
+				replaceState: true
+			});
 		}
 	});
 
@@ -60,44 +68,47 @@
 		document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	async function handleBuddyMatch(student: { id?: string; countryName: string }) {
+	async function handleBuddyMatch(student: { id?: string; countryName: string, countryFlag: string}) {
 		try {
 			await management.assignInternationalStudentToLocalStudent({
 				internationalStudentId: student.id
 			});
 
-			alert(`You are now a buddy for this student from ${student.countryName}!`);
-			await invalidateAll();
+				showSuccessDialog = true
+				dialogState = {heading: 'Buddy matched', message: `Student from ${student.countryFlag} ${student.countryName} ${student.countryFlag} picked successfully!`}
+				await invalidateAll();
 
 			if (students.length === 1 && page > 1) {
 				page -= 1;
 			}
 		} catch (e) {
-			alert('Something went wrong!');
+			showSuccessDialog = true
+			dialogState = {heading: 'Error', message: 'Something went wrong!'}
 		}
 	}
 </script>
 
-<TopAppBar variant="static">
+<!-- FILTER BAR -->
+<TopAppBar variant="static" class="filters-bar">
 	<div class="filters-bar-inner">
 		<Section class="filters-left">
 			<Autocomplete
+				class="filter-autocomplete"
 				textfield$variant="outlined"
 				options={countries}
 				bind:value={selectedCountry}
 				label="Country"
 				getOptionLabel={(option) => option?.label || ''}
-				textfield$style="width: 100%;"
 			/>
 
-			<Select variant="outlined" bind:value={faculty} label="Faculty">
+			<Select class="filter-select" variant="outlined" bind:value={faculty} label="Faculty">
 				<Option value=""></Option>
 				{#each destinationFaculties as f}
 					<Option value={f.id}>{f.label}</Option>
 				{/each}
 			</Select>
 
-			<Select variant="outlined" bind:value={semester} label="Semester">
+			<Select class="filter-select" variant="outlined" bind:value={semester} label="Semester">
 				<Option value=""></Option>
 				{#each semesters as s}
 					<Option value={s.id}>{s.label}</Option>
@@ -106,9 +117,14 @@
 		</Section>
 
 		<Section class="filters-right">
-			<SegmentedButton segments={choices} singleSelect bind:selected={assignedFilter}>
+			<SegmentedButton
+				class="assigned-toggle"
+				segments={choices}
+				singleSelect
+				bind:selected={assignedFilter}
+			>
 				{#snippet segment(segment)}
-					<Segment {segment}>
+					<Segment class="toggle-segment" {segment}>
 						<Label>{segment}</Label>
 					</Segment>
 				{/snippet}
@@ -117,12 +133,14 @@
 	</div>
 </TopAppBar>
 
-<ItemGrid>
+<!-- GRID -->
+<ItemGrid class="students-grid">
 	{#each students as student (student.id)}
 		<AnonymisedStudentCard {student} onPick={() => handleBuddyMatch(student)} />
 	{/each}
 </ItemGrid>
 
+<!-- PAGINATION -->
 {#if pagination && pagination.total > pagination.perPage}
 	<div class="pagination-wrapper">
 		<PaginationBar
@@ -134,43 +152,62 @@
 	</div>
 {/if}
 
+<SimpleInfoDialog bind:open={showSuccessDialog} bind:dialogState={dialogState} onClose={() => showSuccessDialog = false} />
+
+
 <style>
     :global(main) {
         max-width: unset !important;
     }
 
-	:global(.filters-bar-inner) {
-		display: flex;
-		flex-flow: row;
-		flex-wrap: wrap;
-		width: 100%;
-		padding: 0.5rem;
-	}
+    .filters-bar-inner {
+        display: flex;
+        flex-flow: row wrap;
+        width: 100%;
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
 
-	:global(.filters-left) {
-		flex-wrap: wrap;
-		flex: 1 1 auto!important;
-	}
+    .filters-left {
+        display: flex;
+        flex-wrap: wrap;
+        flex: 1 1 auto;
+        gap: 0.5rem;
+    }
 
-	:global(.filters-left > *) {
-		flex: 1;
-		min-width: 8rem;
-		max-width: 12rem;
-	}
+    .filter-select,
+    .filter-autocomplete {
+        flex: 1;
+        min-width: 8rem;
+        max-width: 12rem;
+    }
 
-	:global(.filters-right) {
-		flex: 1 1 auto!important;
-		white-space: nowrap;
-	}
+    .filters-right {
+        display: flex;
+        flex: 1 1 auto;
+        justify-content: flex-end;
+    }
 
-	:global(.mdc-segmented-button__segment){
-		background-color: var(--neutral-bg) !important;
-	}
+    .assigned-toggle {
+        /* You theme the segmented button *as a whole* */
+        --toggle-bg: var(--neutral-bg);
+        --toggle-selected-bg: var(--primary);
+        --toggle-selected-color: var(--on-surface);
+    }
 
-	:global(.mdc-segmented-button__segment--selected){
-		background: var(--primary) !important;
-		color: var(--on-surface) !important;
-	}
+    .toggle-segment {
+        background: var(--toggle-bg);
+        border-radius: 6px;
+        padding: 0.4rem 1rem;
+        cursor: pointer;
+        transition: background 120ms;
+        user-select: none;
+    }
+
+    .toggle-segment[data-selected="true"] {
+        background: var(--toggle-selected-bg);
+        color: var(--toggle-selected-color);
+    }
 
     .pagination-wrapper {
         display: flex;
