@@ -1,101 +1,169 @@
 <script lang="ts">
-	import { GenderEnum, type RegisterLocalStudentRequest } from "$lib/api";
-	import Button from "@smui/button";
-    import Textfield from "@smui/textfield";
-	import type { PageProps } from "../../$types";
+	import type { PageProps } from "./$types";
+	import Button, { Icon, Label } from "@smui/button";
+	import CrudDialog from "$lib/components/crud/CrudDialog.svelte";
+	import type { FacultyCreateRequest, FacultyResponse } from "$lib/api";
+	import DeleteDialog from "$lib/components/crud/DeleteDialog.svelte";
+	import { invalidateAll } from "$app/navigation";
+	import FacultyCreateForm from "./FacultyCreateForm.svelte";
+	import FacultyCard from "./FacultyCard.svelte";
+	import { onMount } from "svelte";
 
-    const { data }: PageProps = $props()
-    const { clients } = data;
-    const settingsClient = clients.settings;
+    const { data }: PageProps = $props();
+    const { faculties, settingsClient } = $derived(data);
 
-    const formInitial = {
+    let form: FacultyCreateRequest = $state({
         facultyNameInternational: '',
         facultyNameLocal: '',
-        color: '',
-        shortName: ''
-    }
-  
-    let form = $state(formInitial);
-    let errorMessage = $state<string | null>(null);
-    let successMessage = $state<string | null>(null);
+        shortName: '',
+        color: '#000000',
+    });
+    let formType = $state<'create' | 'edit' | null>('create');
+    let selectedFaculty: FacultyResponse | null = $state(null);
+
+    let formDialogOpen = $state(false);
+    let deleteDialogOpen = $state(false);
     let loading = $state(false);
+    let errorMessage = $state<string | null>(null);
 
-  async function submit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) {
-    event.preventDefault();
-
-    // 1) Basic validation
-    errorMessage = null;
-    if(!form.facultyNameInternational || !form.facultyNameLocal || !form.color || !form.shortName) {
-      errorMessage = "All fields are required.";
-      return;
+    function openEditDialog(faculty: FacultyResponse) {
+        formType = 'edit';
+        formDialogOpen = true;
+        selectedFaculty = faculty;
+        form = {
+            facultyNameInternational: faculty.facultyNameInternational,
+            facultyNameLocal: faculty.facultyNameLocal,
+            shortName: faculty.shortName,
+            color: faculty.color,
+        };
     }
 
-    // 2) Submit the form
-    try {
+    function openDeleteDialog(faculty: FacultyResponse) {
+        deleteDialogOpen = true;
+        selectedFaculty = faculty;
+    }
+
+    function openCreateDialog() {
+        formType = 'create';
+        formDialogOpen = true;
+    }
+
+    async function createNewFaculty() {
         loading = true;
-        
-        const res = await settingsClient.createFaculty({
-            facultyCreateRequest: form
-        });
-        successMessage = `Faculty ${form.facultyNameInternational} created successfully. ${Date.now().toString()}, ${res.id}`;
-        
-    } catch (error: any) {
-        console.error("Failed to register:", error?.message);
-        errorMessage = error?.message || 'An unknown error occurred.';
-    } finally {
-        loading = false;
+        errorMessage = null;
+
+        try {
+            if(!form) {
+                throw new Error("Form data is incomplete.");
+            }
+            const response = await settingsClient.createFaculty({
+                facultyCreateRequest: {
+                    ...form
+                }
+            });
+
+            formDialogOpen = false;
+            await invalidateAll();
+        } catch (error) {
+            errorMessage = `Failed to create faculty: ${error instanceof Error ? error.message : String(error)}`;
+        } finally {
+            loading = false;
+        }
     }
-  }
+
+    async function updateFaculty() {
+        // Logic to update an existing faculty
+        loading = true;
+        errorMessage = null;
+
+        try {
+            if(!form) {
+                throw new Error("Form data is incomplete.");
+            }
+            if(!selectedFaculty) {
+                throw new Error("No faculty selected for update.");
+            }
+            if(selectedFaculty.id === undefined) {
+                throw new Error("Selected faculty has no ID.");
+            }
+            const response = await settingsClient.updateFaculty({
+                id: selectedFaculty.id,
+                facultyCreateRequest: {
+                    ...form
+                },
+            });
+
+            formDialogOpen = false;
+            await invalidateAll();
+        } catch (error) {
+            errorMessage = `Failed to update faculty: ${error instanceof Error ? error.message : String(error)}`;
+        } finally {
+            loading = false;
+        }
+    }
+
+    async function deleteFaculty() {
+        // Logic to delete an existing faculty
+
+        try {
+            if(!selectedFaculty) {
+                throw new Error("No faculty selected for update.");
+            }
+            if(selectedFaculty.id === undefined) {
+                throw new Error("Selected faculty has no ID.");
+            }
+            const response = await settingsClient.deleteFaculty({
+                id: selectedFaculty.id,
+            });
+
+            deleteDialogOpen = false;
+            await invalidateAll();
+        } catch (error) {
+            console.error("Failed to delete faculty:", error);
+        }
+    }
 </script>
 
-<h1>Create Faculty</h1>
+<div class="controls">
+    <Button variant="raised" onclick={openCreateDialog}>
+        <Icon class="material-icons">add</Icon>
+        <Label>Add Faculty</Label>
+    </Button>
+    <CrudDialog
+        bind:open={formDialogOpen}
+        onSubmit={ formType === 'create' ? createNewFaculty : updateFaculty }
+        title={formType === 'create' ? "Create faculty" : "Edit faculty"}
+        {loading}
+        {errorMessage}
+    >
+        <FacultyCreateForm bind:form />
+    </CrudDialog>
+    <DeleteDialog
+        bind:open={deleteDialogOpen}
+        title="Delete Faculty"
+        message={`Are you sure you want to delete "${selectedFaculty?.facultyNameInternational}"? This action cannot be undone.`}
+        onSubmit={deleteFaculty}
+    />
+</div>
 
-<form onsubmit={submit}>
+<div class="item-container">
+    {#each faculties as faculty}
+        <FacultyCard
+            {faculty}
+            onedit={() => openEditDialog(faculty)}
+            ondelete={() => openDeleteDialog(faculty)}
+        />
+    {/each}
+</div>
 
-    <section>
-        <Textfield bind:value={form.facultyNameInternational} label="Faculty Name (International)" required />
-        <Textfield bind:value={form.facultyNameLocal} label="Faculty Name (Local)" required />
-        <Textfield bind:value={form.shortName} label="Short Name" required />
-        <Textfield bind:value={form.color} label="Color (Hex Code)" required />
-    </section>
-
-  <Button type="submit" disabled={loading} variant="outlined">
-    Create Faculty
-  </Button>
-</form>
-{#if loading}
-    <p>Submitting your faculty...</p>
-{/if}
-{#if errorMessage}
-    <p style="color: red;">{errorMessage}</p>
-{/if}
-{#if successMessage}
-    <p style="color: green;">{successMessage}</p>
-{/if}
 
 <style>
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 400px;
-    margin: 1rem 0;
-  }
-
-  form section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  @media (min-width: 550px) {
-    form {
-      max-width: 850px;
+    .item-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+        gap: 1rem;
     }
-    form section {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
+    .controls {
+        margin-bottom: 1rem;
     }
-  }
 </style>
