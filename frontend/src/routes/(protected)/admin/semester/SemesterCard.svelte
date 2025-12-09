@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { SemesterResponse } from "$lib/api";
-	import Button, { Icon, Label } from "@smui/button";
-	import Card, { ActionButtons, ActionIcons, Actions, Content, Media, MediaContent, PrimaryAction } from "@smui/card";
+	import { Icon } from "@smui/button";
+	import Card, { ActionIcons, Actions, Content } from "@smui/card";
 	import IconButton from "@smui/icon-button";
 
 

@@ -56,7 +56,7 @@
                 throw new Error("Form data is incomplete.");
             }
             if('semesterRegisterOpenDate' in form === false) {
-                throw new Error("Form data is for updating, expected creation data.");
+                throw new Error("Open date is not provided");
             }
             const response = await settingsClient.createSemester({
                 semesterCreateRequest: {
@@ -90,7 +90,7 @@
                 throw new Error("Selected semester has no ID.");
             }
             if('semesterRegisterOpenDate' in form === false) {
-                throw new Error("Form data is for updating, expected creation data.");
+                throw new Error("Open date is not provided");
             }
             const response = await settingsClient.updateSemester({
                 id: selectedSemester.id,

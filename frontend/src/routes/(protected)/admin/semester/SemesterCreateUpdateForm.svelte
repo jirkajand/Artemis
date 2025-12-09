@@ -7,7 +7,7 @@
 <script lang="ts">
     import Select, { Option } from "@smui/select";
     import Textfield from '@smui/textfield';
-    import type { SemesterCreateRequest, UpdateSemesterRequest } from '$lib/api';
+    import type { SemesterCreateRequest } from '$lib/api';
 
   let { 
     form = $bindable()

@@ -5,7 +5,7 @@ export const load: Load = async ({ parent }) => {
     const parentData = await parent() as PageParentData;
 
     const { clients } = parentData;
-    const { management, settings } = clients;
+    const { settings } = clients;
 
     const semesters = await settings.getAllSemesters();
 
