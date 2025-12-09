@@ -111,7 +111,6 @@
     }
 
     :global(.custom-card) {
-        border-radius: 16px;
         overflow: visible;
         border: 1px solid #e0e0e0;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -125,11 +124,11 @@
     }
 
     .avatar-container {
+				z-index: 0;
         position: absolute;
         top: -40px;
         left: 0;
         width: 100%;
-        z-index: 5;
         display: flex;
         justify-content: center;
         pointer-events: none;
@@ -148,9 +147,9 @@
         background-position: center;
         border-radius: 50%;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-				border: 3px solid var(--neutral-bg);
+				border: 3px solid var(--on-nav-bg);
         position: relative;
-        z-index: 2;
+        z-index: 0;
     }
 
     .badge-icon {
@@ -165,7 +164,7 @@
         justify-content: center;
         font-size: 1.5rem;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        z-index: 3;
+        z-index: 1;
         pointer-events: auto;
     }
 
@@ -179,9 +178,6 @@
         flex-direction: column;
     }
 
-    :global(.card-content) {
-        padding: 0.5rem 1rem 0;
-    }
 
     .line {
         display: flex;
@@ -246,7 +242,6 @@
     :global(.actions-flex) {
         display: flex;
         justify-content: center;
-        padding: 1rem;
         margin-top: auto;
     }
 

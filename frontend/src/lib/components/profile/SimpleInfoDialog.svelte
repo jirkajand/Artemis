@@ -8,15 +8,16 @@
 
 	let {
 		open = $bindable(false), onClose = () => {
-		}
+		},
+		dialogState = $bindable({message: '', heading: ''})
 	} = $props();
 </script>
 
-<Dialog bind:open onclosed={onClose}>
-	<DialogTitle>Profile Updated</DialogTitle>
+<Dialog class="success-dialog" bind:open onclosed={onClose}>
+	<DialogTitle>{dialogState.heading}</DialogTitle>
 
 	<DialogContent>
-		<p>Your profile has been successfully updated.</p>
+		<p>{dialogState.message}</p>
 	</DialogContent>
 
 	<DialogActions>
@@ -28,20 +29,16 @@
 
 <style>
 
-    :global(.mdc-dialog) {
-
-    }
-
-		:global(.mdc-dialog__surface){
+		:global(.success-dialog .mdc-dialog__surface){
 			border-radius: 20px !important;
         width: max(350px, 25vw) !important;
 		}
 
-		:global(.mdc-dialog__actions) {
+		:global(.success-dialog .mdc-dialog__actions) {
 				justify-content: center !important;
 		}
 
-    :global(.mdc-dialog__container) {
+    :global(.success-dialog .mdc-dialog__container) {
         text-align: center;
     }
 

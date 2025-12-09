@@ -94,7 +94,6 @@
     }
     :global(.custom-card) {
         color: var(--on-background);
-        border-radius: 16px;
         z-index: 0;
         overflow: visible;
         flex: 1;
@@ -116,12 +115,12 @@
         top: -40px;
         left: 0;
         width: 100%;
-        z-index: 5;
         display: flex;
         justify-content: center;
         pointer-events: none;
     }
     .avatar-wrapper {
+        z-index: 0;
         position: relative;
         width: 120px;
         height: 120px;
@@ -133,11 +132,11 @@
         background-position: center;
         border-radius: 50%;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        border: 3px solid var(--neutral-bg);
+        border: 3px solid var(--on-nav-bg);
         position: relative;
-        z-index: 2;
     }
     .badge-icon {
+        z-index: 1;
         background-color: var(--on-secondary) !important;
         position: absolute;
         bottom: 0;
@@ -149,7 +148,6 @@
         justify-content: center;
         font-size: 1.5rem;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        z-index: 3;
         color: var(--mdc-theme-on-surface, #000);
         pointer-events: auto;
     }
