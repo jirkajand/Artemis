@@ -5,7 +5,13 @@
 	import IconButton from "@smui/icon-button";
 
 
-    let { semester }: { semester: SemesterResponse } = $props();
+    let { 
+		semester,
+		onedit
+	}: {
+		semester: SemesterResponse,
+		onedit: () => void
+	} = $props();
 </script>
 
 <Card >
@@ -29,7 +35,7 @@
     </Content>
     <Actions>
         <ActionIcons>
-            <IconButton>
+            <IconButton onclick={onedit}>
                 <Icon class="material-icons" >edit</Icon>
             </IconButton>
             <IconButton style="color: var(--error)">
@@ -40,9 +46,6 @@
 </Card>
 
 <style>
-    .label {
-        color: color-mix(in srgb, currentColor 60%, transparent);
-    }
     .semester-card {
 		display: flex;
 		flex-direction: column;
@@ -61,22 +64,17 @@
 		font-weight: 600;
 	}
 
-	.year {
-		font-size: 0.9rem;
-		opacity: 0.7;
-	}
-
 	.details {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 1rem;
 	}
 
-	label {
+	.label {
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
-		opacity: 0.7;
+        color: color-mix(in srgb, currentColor 70%, transparent);
 	}
 
 	p {

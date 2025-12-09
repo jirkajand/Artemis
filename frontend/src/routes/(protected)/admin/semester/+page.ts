@@ -9,5 +9,5 @@ export const load: Load = async ({ parent }) => {
 
     const semesters = await settings.getAllSemesters();
 
-    return { semesters };
+    return { semesters, settingsClient: settings };
 }
