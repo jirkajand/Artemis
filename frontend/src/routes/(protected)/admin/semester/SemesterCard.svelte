@@ -40,7 +40,7 @@
             <IconButton onclick={onedit}>
                 <Icon class="material-icons" >edit</Icon>
             </IconButton>
-            <IconButton style="color: var(--error)" onclick={ondelete}>
+            <IconButton style="color: var(--error)" onclick={ondelete} disabled={true}>
                 <Icon class="material-icons" >delete</Icon>
             </IconButton>
         </ActionIcons>
