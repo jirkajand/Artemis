@@ -4,6 +4,7 @@
     import Button, { Label } from '@smui/button';
 	import type { CompleteLocalStudentProfileRequest, ResponseStudentNavbar, SettingsServiceApi, UserManagementApi } from '$lib/api';
 	import SecondaryMemberRegistration from './SecondaryMemberRegistration.svelte';
+	import { invalidateAll } from '$app/navigation';
 
     let {
         settingsClient,
@@ -58,6 +59,7 @@
       });
 
       open = false;
+      await invalidateAll();
 
     } catch (error: any) {
       console.error("Failed to register:", error?.message);
