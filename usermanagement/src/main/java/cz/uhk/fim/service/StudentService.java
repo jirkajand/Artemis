@@ -22,6 +22,7 @@ public class StudentService {
     private final LocalStudentRepository localStudentRepository;
 
     private final StudentMapper studentMapper;
+    private final KeycloakService keycloakService;
 
     public ResponseStudentDetail getCurrentStudentDetail(String keycloakId) {
         var keycloakIdUUID = getKeycloakIdUUID(keycloakId);
@@ -54,7 +55,10 @@ public class StudentService {
             log.error("No student found with keycloakId: {}", keycloakIdString);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No student found with keycloakId: " + keycloakIdString);
         }
-        return studentMapper.toResponseStudentNavbarFromLocalStudent(localStudentOpt.get());
+        var roles = keycloakService.getUserRolesByKeycloakId(keycloakIdString);
+        var response = studentMapper.toResponseStudentNavbarFromLocalStudent(localStudentOpt.get());
+        response.setRoles(roles);
+        return response;
     }
 
 

@@ -6,10 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +23,7 @@ public class KeycloakService {
 
     private final UsersResource keycloakUsersResource;
 
+    private static final String DEFAULT_USER_ROLE = "USER";
     public Optional<String> registerUser(RegisterKeycloakUserDTO request, String defaultRole) {
         try {
             // basic user info
@@ -41,7 +45,7 @@ public class KeycloakService {
             user.setCredentials(Collections.singletonList(credential));
 
             // default role
-            user.setRealmRoles(Collections.singletonList(defaultRole));
+            user.setRealmRoles(new ArrayList<>(List.of(DEFAULT_USER_ROLE, defaultRole)));
 
             Response response = keycloakUsersResource.create(user);
 
@@ -102,6 +106,16 @@ public class KeycloakService {
     public void deleteUser(UUID keycloakId) {
         keycloakUsersResource.get(keycloakId.toString()).remove();
         log.info("User deleted successfully: {}", keycloakId);
+    }
+
+    public List<String> getUserRolesByKeycloakId(String keycloakId) {
+        return keycloakUsersResource.get(keycloakId).roles().realmLevel()
+                .listEffective()
+                .stream()
+                .filter(role -> role.getName() != null)
+                .filter(role -> role.getName().toUpperCase().equals(role.getName()))
+                .map(RoleRepresentation::getName)
+                .toList();
     }
 //
 //    public boolean isReadyToAnonymize(UUID keycloakId) {
