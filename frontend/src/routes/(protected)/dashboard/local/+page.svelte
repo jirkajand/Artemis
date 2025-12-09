@@ -27,7 +27,7 @@
 	);
 
 	let showSuccessDialog = $state(false);
-	let dialogState = $state({heading: '', message: ''})
+	let dialogState = $state({ heading: '', message: '' });
 
 	let currentParams = $derived({
 		country: selectedCountry?.value ?? '',
@@ -67,22 +67,25 @@
 		document.querySelector('.content-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	async function handleBuddyMatch(student: { id?: string; countryName: string, countryFlag: string}) {
+	async function handleBuddyMatch(student: { id?: string; countryName: string, countryFlag: string }) {
 		try {
 			await management.assignInternationalStudentToLocalStudent({
 				internationalStudentId: student.id
 			});
 
-				showSuccessDialog = true
-				dialogState = {heading: 'Buddy matched', message: `Student from ${student.countryFlag} ${student.countryName} ${student.countryFlag} picked successfully!`}
-				await invalidateAll();
+			showSuccessDialog = true;
+			dialogState = {
+				heading: 'Buddy matched',
+				message: `Student from ${student.countryFlag} ${student.countryName} ${student.countryFlag} picked successfully!`
+			};
+			await invalidateAll();
 
 			if (students.length === 1 && page > 1) {
 				page -= 1;
 			}
 		} catch (e) {
-			showSuccessDialog = true
-			dialogState = {heading: 'Error', message: 'Something went wrong!'}
+			showSuccessDialog = true;
+			dialogState = { heading: 'Error', message: 'Something went wrong!' };
 		}
 	}
 </script>
@@ -90,7 +93,7 @@
 <!-- FILTER BAR -->
 <TopAppBar variant="static" class="filters-bar">
 	<div class="filters-bar-inner">
-		<Section class="filters-left">
+		<Section class="filters-left section" >
 			<Autocomplete
 				class="filter-autocomplete"
 				textfield$variant="outlined"
@@ -107,7 +110,7 @@
 				{/each}
 			</Select>
 
-			<Select class="filter-select" variant="outlined" bind:value={semester} label="Semester">
+			<Select class="filter-select section" variant="outlined" bind:value={semester} label="Semester">
 				<Option value=""></Option>
 				{#each semesters as s}
 					<Option value={s.id}>{s.label}</Option>
@@ -115,7 +118,7 @@
 			</Select>
 		</Section>
 
-		<Section class="filters-right">
+		<Section class="filters-right section">
 			<SegmentedButton
 				class="assigned-toggle"
 				segments={choices}
@@ -151,7 +154,8 @@
 	</div>
 {/if}
 
-<SimpleInfoDialog bind:open={showSuccessDialog} bind:dialogState={dialogState} onClose={() => showSuccessDialog = false} />
+<SimpleInfoDialog bind:open={showSuccessDialog} bind:dialogState={dialogState}
+									onClose={() => showSuccessDialog = false} />
 
 
 <style>
@@ -227,7 +231,6 @@
     :global(.mdc-top-app-bar__section) {
         gap: 1rem;
         display: flex;
-        flex: 1 !important;
         justify-content: center !important;
     }
 
@@ -235,4 +238,13 @@
         color: var(--on-background);
         font-size: 2rem !important;
     }
+
+    @media (max-width: 1200px) {
+        :global(.filters-bar-inner) {
+            flex-direction: column;
+        }
+
+    }
+
+
 </style>
