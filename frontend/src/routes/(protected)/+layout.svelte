@@ -6,7 +6,7 @@
 
 	let { children, data }: LayoutProps = $props();
 
-	const { clients, userNavbarData, userPicture } = data;	
+	const { clients, userNavbarData, userPicture, currentSemester } = $derived(data);
 
 </script>
 
@@ -15,7 +15,7 @@
 </header>
 
 <div class="layout">
-	<Sidebar />
+	<Sidebar {currentSemester} {userNavbarData} />
 	<div class="content-scroll">
 		<main>
 			<SecondaryRegistrationPopup {clients} {userNavbarData} />

@@ -21,9 +21,9 @@
     <section class="app-title">ARTEMIS DEMO</section>
     <section class="additional-opotions">
         <a href="/register">Register</a>
-        <ThemeSwitch />
     </section>
     <section class="last">
+        <ThemeSwitch />
         {#await Promise.all([userData, userPicture])}
             <CircularProgress style="height: 32px; width: 32px;" indeterminate />
         {:then [userDataSync, userPictureSync]}
@@ -49,6 +49,7 @@
 	}
 
     nav.topbar .last {
+        display: flex;
         margin-left: auto;
     }
 
