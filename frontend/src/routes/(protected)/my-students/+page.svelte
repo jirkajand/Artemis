@@ -2,6 +2,7 @@
 	import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
 	// Assuming StudentCard path is correct for your project
 	import StudentCard from '$lib/components/StudentCard.svelte';
+	import ItemGrid from '$lib/components/ItemGrid.svelte';
 
 	let { data } = $props();
 	// Using $derived to react to data changes
@@ -17,11 +18,11 @@
 	</Row>
 </TopAppBar>
 
-<div class="card-grid">
+<ItemGrid>
 	{#each students as student, i (i)}
 		<StudentCard {student}/>
 	{/each}
-</div>
+</ItemGrid>
 
 <style lang="scss">
   :global(main) {
@@ -31,7 +32,7 @@
   .card-grid {
     display: grid;
     gap: 1rem;
-    padding: 2rem 0;
+    padding: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 

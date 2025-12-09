@@ -57,7 +57,6 @@
 		if (query !== new URLSearchParams(location.search).toString()) {
 			goto(`?${query}`, {
 				keepFocus: true,
-				noScroll: true,
 				replaceState: true
 			});
 		}
@@ -65,7 +64,7 @@
 
 	function onPageChange(newPage: number) {
 		page = newPage;
-		document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
+		document.querySelector('.content-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
 	async function handleBuddyMatch(student: { id?: string; countryName: string, countryFlag: string}) {
@@ -160,7 +159,7 @@
         max-width: unset !important;
     }
 
-    .filters-bar-inner {
+    :global(.filters-bar-inner) {
         display: flex;
         flex-flow: row wrap;
         width: 100%;
@@ -189,7 +188,6 @@
     }
 
     .assigned-toggle {
-        /* You theme the segmented button *as a whole* */
         --toggle-bg: var(--neutral-bg);
         --toggle-selected-bg: var(--primary);
         --toggle-selected-color: var(--on-surface);
@@ -214,5 +212,27 @@
         justify-content: center;
         padding: 1rem;
         width: 100%;
+    }
+
+    :global(.mdc-top-app-bar) {
+        flex-direction: row !important;
+        background-color: var(--menu-bg) !important;
+        border-radius: 15px;
+    }
+
+    :global(.mdc-top-app-bar__row) {
+        margin: 0.5rem;
+    }
+
+    :global(.mdc-top-app-bar__section) {
+        gap: 1rem;
+        display: flex;
+        flex: 1 !important;
+        justify-content: center !important;
+    }
+
+    :global(.mdc-top-app-bar__title) {
+        color: var(--on-background);
+        font-size: 2rem !important;
     }
 </style>
