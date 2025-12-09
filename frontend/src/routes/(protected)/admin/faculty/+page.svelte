@@ -48,7 +48,7 @@
         formDialogOpen = true;
     }
 
-    async function createNewSemester() {
+    async function createNewFaculty() {
         loading = true;
         errorMessage = null;
 
@@ -71,8 +71,8 @@
         }
     }
 
-    async function updateSemester() {
-        // Logic to update an existing semester
+    async function updateFaculty() {
+        // Logic to update an existing faculty
         loading = true;
         errorMessage = null;
 
@@ -102,8 +102,8 @@
         }
     }
 
-    async function deleteSemester() {
-        // Logic to delete an existing semester
+    async function deleteFaculty() {
+        // Logic to delete an existing faculty
 
         try {
             if(!selectedFaculty) {
@@ -122,11 +122,6 @@
             console.error("Failed to delete faculty:", error);
         }
     }
-
-
-    onMount(() => {
-        console.log("Faculties loaded:", faculties);
-    });
 </script>
 
 <div class="controls">
@@ -136,8 +131,8 @@
     </Button>
     <CrudDialog
         bind:open={formDialogOpen}
-        onSubmit={ formType === 'create' ? createNewSemester : updateSemester }
-        title={formType === 'create' ? "Create semester" : "Edit semester"}
+        onSubmit={ formType === 'create' ? createNewFaculty : updateFaculty }
+        title={formType === 'create' ? "Create faculty" : "Edit faculty"}
         {loading}
         {errorMessage}
     >
@@ -147,7 +142,7 @@
         bind:open={deleteDialogOpen}
         title="Delete Faculty"
         message={`Are you sure you want to delete "${selectedFaculty?.facultyNameInternational}"? This action cannot be undone.`}
-        onSubmit={deleteSemester}
+        onSubmit={deleteFaculty}
     />
 </div>
 

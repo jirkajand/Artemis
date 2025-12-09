@@ -30,7 +30,7 @@
         <Button action="close">
             <Label>Close</Label>
         </Button>
-        <Button action="" style="color: var(--error)" onclick={() => onSubmit()}>
+        <Button action="close" style="color: var(--error)" onclick={() => onSubmit()}>
             <Label>Delete</Label>
         </Button>
     </Actions>

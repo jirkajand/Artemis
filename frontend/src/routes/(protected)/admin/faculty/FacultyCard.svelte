@@ -41,7 +41,7 @@
 
 <Card >
     <Content >
-        <div class="semester-card">
+        <div class="faculty-card">
             <div class="header">
                 <h3>{faculty.facultyNameInternational} ({faculty.shortName})</h3>
             </div>
@@ -72,7 +72,7 @@
 </Card>
 
 <style>
-    .semester-card {
+    .faculty-card {
 		display: flex;
 		flex-direction: column;
 		gap: 0.8rem;
@@ -82,12 +82,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: baseline;
-	}
-
-	h2 {
-		margin: 0;
-		font-size: 1.3rem;
-		font-weight: 600;
 	}
 
 	.details {

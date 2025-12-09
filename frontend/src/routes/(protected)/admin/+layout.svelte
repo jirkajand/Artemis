@@ -11,7 +11,7 @@
         'Faculties': { slug: 'faculty'},
     }
     const tabKeys = Object.keys(tabDict);
-    // dynamicaly determine active tab based on current page
+    // dynamically determine active tab based on current page
     const activeTab = tabKeys.find(key => page.url.pathname.includes(tabDict[key].slug)) || tabKeys[0];
 
 </script>
