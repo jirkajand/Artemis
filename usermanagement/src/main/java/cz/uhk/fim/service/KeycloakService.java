@@ -8,7 +8,9 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,12 +63,11 @@ public class KeycloakService {
                 return Optional.of(userId);
             } else {
                 log.error("Failed to create user. Status: {}", status);
-                return Optional.empty();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to create user");
             }
-
         } catch (Exception e) {
             log.error("Error during user registration", e);
-            return Optional.empty();
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
         }
     }
 
